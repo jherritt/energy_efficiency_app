@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.moved-aside
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+# Secrets / signing
+*.mobileprovision
+*.p12
+*.cer
+ExportOptions.plist
+# Python (asset tooling)
+__pycache__/
+*.pyc
+venv/
