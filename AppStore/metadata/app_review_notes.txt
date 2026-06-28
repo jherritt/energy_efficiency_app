@@ -1,0 +1,25 @@
+APP REVIEW NOTES - Amperly
+
+WHAT THE APP DOES
+Amperly visualizes the user's daily energy as a battery that is charged by sleep and drained across the waking day, awards points for healthy behaviors (Apple Move/Exercise/Stand, on-time sleep/wake, hydration), and shows a single 0 to 100 efficiency score for how well the user converts spent energy into completed points. It also provides Home Screen and Lock Screen widgets.
+
+NO ACCOUNT REQUIRED
+There is no sign-in, registration, or login of any kind. The app is fully usable immediately after granting Apple Health access. No demo account is needed.
+
+HEALTH DATA USAGE (read-only, on-device)
+- All data is read from Apple HealthKit with the user's permission and is processed entirely on the device.
+- The app requests READ access only. It never writes to HealthKit and requests no share/update scopes.
+- Nothing is stored, transmitted, sold, or shared. There is no server, no analytics SDK, no advertising SDK, and no tracking. HealthKit data is never used for advertising or marketing.
+- Types read: sleep analysis, active/basal energy, exercise minutes, stand hours, step count, dietary water, heart rate variability (SDNN), resting heart rate, dietary caffeine, time in daylight, workouts, and the activity-summary ring goals. Each is used only to compute the on-screen battery, points, and efficiency numbers.
+- The App Privacy answer is "Data Not Collected."
+
+HOW TO TEST
+1. Launch the app and tap "Connect Apple Health," then grant access to the requested categories.
+2. If the test device or simulator has little or no Health data, the battery and efficiency will show "--" placeholders (by design, the app never fabricates numbers). To see populated values, either test on a device that already has Apple Watch sleep/activity data, or add a few sample entries in the Health app (for example a Sleep session and some Steps/Active Energy and Water) and reopen Amperly.
+3. Widgets: add the Amperly widgets to the Home Screen and Lock Screen. They read Health live and render the same battery and efficiency values, or "--" when access is not granted.
+
+NOTIFICATIONS
+The app sends no remote/push notifications. It can schedule a single, local, opt-in "low energy efficiency" reminder only if the user explicitly enables it in Settings. It is off by default.
+
+CONTACT
+Developer contact for review questions: [your-email@example.com]
