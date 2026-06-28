@@ -1,0 +1,93 @@
+<svg width="1290" height="2796" viewBox="0 0 1290 2796" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="energy3" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#9CFF2E"/>
+      <stop offset="0.5" stop-color="#34F5C5"/>
+      <stop offset="1" stop-color="#19C3FF"/>
+    </linearGradient>
+    <radialGradient id="topGlow3" cx="0.5" cy="0" r="0.9">
+      <stop offset="0" stop-color="#34F5C5" stop-opacity="0.22"/>
+      <stop offset="0.45" stop-color="#19C3FF" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#06080B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="device3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#11181F"/>
+      <stop offset="1" stop-color="#0A0F14"/>
+    </linearGradient>
+    <filter id="ringGlow3" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="18" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow3" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="screenClip3"><rect x="345" y="980" width="600" height="1300" rx="62"/></clipPath>
+  </defs>
+
+  <rect width="1290" height="2796" fill="#06080B"/>
+  <rect width="1290" height="1100" fill="url(#topGlow3)"/>
+
+  <!-- Headline -->
+  <text x="645" y="360" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="96" font-weight="800" fill="#F4F7FA" letter-spacing="-2">One efficiency</text>
+  <text x="645" y="478" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="96" font-weight="800" fill="url(#energy3)" letter-spacing="-2">score that matters</text>
+  <text x="645" y="588" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="40" font-weight="500" fill="#A6B0BB">How well you turned energy into a great day.</text>
+
+  <!-- Device frame -->
+  <rect x="318" y="952" width="654" height="1356" rx="92" fill="#000000"/>
+  <rect x="326" y="960" width="638" height="1340" rx="86" fill="url(#device3)" stroke="#283039" stroke-width="2"/>
+  <rect x="345" y="980" width="600" height="1300" rx="62" fill="#06080B"/>
+
+  <g clip-path="url(#screenClip3)">
+    <rect x="345" y="980" width="600" height="900" fill="url(#topGlow3)"/>
+    <text x="385" y="1045" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="30" font-weight="600" fill="#F4F7FA">9:41</text>
+    <g fill="#F4F7FA">
+      <rect x="838" y="1024" width="34" height="22" rx="5" fill="none" stroke="#F4F7FA" stroke-width="2.5"/>
+      <rect x="841" y="1028" width="26" height="14" rx="2"/>
+      <rect x="874" y="1031" width="4" height="9" rx="2"/>
+    </g>
+    <text x="645" y="1200" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="28" font-weight="700" fill="#5C6772" letter-spacing="3">EFFICIENCY</text>
+
+    <!-- Efficiency ring -->
+    <g transform="translate(645,1560)">
+      <!-- Track -->
+      <circle cx="0" cy="0" r="230" fill="none" stroke="#283039" stroke-width="40"/>
+      <!-- Progress 92% (start at top, clockwise). 92% of circumference -->
+      <circle cx="0" cy="0" r="230" fill="none" stroke="url(#energy3)" stroke-width="40" stroke-linecap="round"
+              stroke-dasharray="1444.6 1445" stroke-dashoffset="115.6"
+              transform="rotate(-90)" filter="url(#ringGlow3)"/>
+      <!-- Hero number -->
+      <text x="0" y="48" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="190" font-weight="800" fill="url(#energy3)" filter="url(#softGlow3)" font-variant-numeric="tabular-nums">92</text>
+      <text x="0" y="118" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="40" font-weight="600" fill="#5C6772">/100</text>
+    </g>
+
+    <!-- Sub label -->
+    <text x="645" y="1900" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="44" font-weight="700" fill="#F4F7FA">Excellent day</text>
+
+    <!-- Factor chips -->
+    <g font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial">
+      <rect x="385" y="1968" width="246" height="84" rx="42" fill="#0E141A" stroke="#283039" stroke-width="2"/>
+      <circle cx="430" cy="2010" r="11" fill="#9CFF2E"/>
+      <text x="455" y="2022" font-size="30" font-weight="600" fill="#A6B0BB">Sleep quality</text>
+      <rect x="659" y="1968" width="246" height="84" rx="42" fill="#0E141A" stroke="#283039" stroke-width="2"/>
+      <circle cx="704" cy="2010" r="11" fill="#34F5C5"/>
+      <text x="729" y="2022" font-size="30" font-weight="600" fill="#A6B0BB">Activity</text>
+
+      <rect x="385" y="2068" width="246" height="84" rx="42" fill="#0E141A" stroke="#283039" stroke-width="2"/>
+      <circle cx="430" cy="2110" r="11" fill="#19C3FF"/>
+      <text x="455" y="2122" font-size="30" font-weight="600" fill="#A6B0BB">Recovery</text>
+      <rect x="659" y="2068" width="246" height="84" rx="42" fill="#0E141A" stroke="#283039" stroke-width="2"/>
+      <circle cx="704" cy="2110" r="11" fill="#34F5C5"/>
+      <text x="729" y="2122" font-size="30" font-weight="600" fill="#A6B0BB">Timing</text>
+    </g>
+  </g>
+
+  <g fill="#283039">
+    <circle cx="585" cy="2420" r="8"/>
+    <circle cx="621" cy="2420" r="8"/>
+    <circle cx="657" cy="2420" r="8" fill="#34F5C5"/>
+    <circle cx="693" cy="2420" r="8"/>
+    <circle cx="729" cy="2420" r="8"/>
+    <circle cx="765" cy="2420" r="8"/>
+  </g>
+</svg>

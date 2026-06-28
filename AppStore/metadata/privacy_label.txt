@@ -1,0 +1,26 @@
+App Privacy Nutrition Label Summary
+
+Data Not Collected
+The developer does not collect any data from this app.
+
+Details
+
+Amperly has no account system and no server. It reads Apple Health data on a read-only basis, with the user's explicit permission, and processes everything on the device.
+
+Health data read (read-only, with permission):
+- Sleep (duration, time in bed, sleep stages)
+- Activity (active and resting energy, steps, exercise minutes, stand hours, and Move, Exercise, and Stand goals)
+- Heart rate and heart rate variability (HRV)
+- Hydration (water intake)
+- Time in daylight
+- Caffeine (timing only)
+
+How the data is handled:
+- All computation happens on device, in real time.
+- No health data is stored to disk, cached for us to read, or written back to Apple Health.
+- No health data is transmitted off the device.
+- No data is sold or shared with third parties.
+- Health data is never used for tracking or advertising.
+- There are no analytics, advertising, or tracking SDKs in the app.
+
+Because nothing is collected, stored, or transmitted, the correct App Privacy answer for every category is Data Not Collected. If a category permission is denied, the app displays "--" and continues to function with whatever the user has shared.

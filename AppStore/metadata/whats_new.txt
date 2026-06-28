@@ -1,0 +1,11 @@
+Version 1.0
+
+The first release of Amperly.
+
+- See your day as a glowing battery, charged by last night's sleep and drained as you go.
+- Earn points for Move, Exercise, and Stand goals, on-time bedtime and wake, and hydration.
+- Read one hero efficiency score out of 100 that shows how well you spent your energy.
+- Keep your battery and efficiency score on the Home Screen, Lock Screen, and in StandBy with widgets.
+- Private by design: read-only Apple Health access, all computation on device, nothing stored or transmitted, no account.
+
+Thank you for trying Amperly. We would love your feedback.

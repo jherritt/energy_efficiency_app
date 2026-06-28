@@ -1,0 +1,87 @@
+<svg width="1290" height="2796" viewBox="0 0 1290 2796" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="energy2" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#9CFF2E"/>
+      <stop offset="0.5" stop-color="#34F5C5"/>
+      <stop offset="1" stop-color="#19C3FF"/>
+    </linearGradient>
+    <radialGradient id="topGlow2" cx="0.5" cy="0" r="0.9">
+      <stop offset="0" stop-color="#34F5C5" stop-opacity="0.22"/>
+      <stop offset="0.45" stop-color="#19C3FF" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#06080B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="device2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#11181F"/>
+      <stop offset="1" stop-color="#0A0F14"/>
+    </linearGradient>
+    <filter id="mintGlow2" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="26" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow2" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="screenClip2"><rect x="345" y="980" width="600" height="1300" rx="62"/></clipPath>
+    <clipPath id="battClip2"><rect x="540" y="1180" width="210" height="700" rx="46"/></clipPath>
+  </defs>
+
+  <rect width="1290" height="2796" fill="#06080B"/>
+  <rect width="1290" height="1100" fill="url(#topGlow2)"/>
+
+  <!-- Headline -->
+  <text x="645" y="360" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="104" font-weight="800" fill="#F4F7FA" letter-spacing="-2">Sleep charges</text>
+  <text x="645" y="492" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="104" font-weight="800" fill="url(#energy2)" letter-spacing="-2">it overnight</text>
+  <text x="645" y="600" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="40" font-weight="500" fill="#A6B0BB">Good rest fills the battery before you wake.</text>
+
+  <!-- Device frame -->
+  <rect x="318" y="952" width="654" height="1356" rx="92" fill="#000000"/>
+  <rect x="326" y="960" width="638" height="1340" rx="86" fill="url(#device2)" stroke="#283039" stroke-width="2"/>
+  <rect x="345" y="980" width="600" height="1300" rx="62" fill="#06080B"/>
+
+  <g clip-path="url(#screenClip2)">
+    <rect x="345" y="980" width="600" height="900" fill="url(#topGlow2)"/>
+    <text x="385" y="1045" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="30" font-weight="600" fill="#F4F7FA">9:41</text>
+    <g fill="#F4F7FA">
+      <rect x="838" y="1024" width="34" height="22" rx="5" fill="none" stroke="#F4F7FA" stroke-width="2.5"/>
+      <rect x="841" y="1028" width="26" height="14" rx="2"/>
+      <rect x="874" y="1031" width="4" height="9" rx="2"/>
+    </g>
+    <text x="385" y="1140" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="26" font-weight="700" fill="#5C6772" letter-spacing="3">THIS MORNING</text>
+    <text x="385" y="1188" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="46" font-weight="700" fill="#F4F7FA">Recharged</text>
+
+    <!-- Battery shell -->
+    <rect x="601" y="1162" width="88" height="22" rx="9" fill="#283039"/>
+    <rect x="540" y="1180" width="210" height="700" rx="46" fill="#0E141A" stroke="#283039" stroke-width="6"/>
+    <!-- Battery fill at 95% -->
+    <g clip-path="url(#battClip2)">
+      <rect x="540" y="1215" width="210" height="665" fill="url(#energy2)" filter="url(#mintGlow2)"/>
+      <rect x="540" y="1215" width="210" height="60" fill="#FFFFFF" opacity="0.2"/>
+    </g>
+    <!-- Charging bolt overlay -->
+    <g filter="url(#softGlow2)">
+      <path d="M656 1430 L612 1560 L644 1560 L630 1660 L688 1510 L652 1510 L656 1430 Z" fill="#06080B" stroke="#FFFFFF" stroke-width="3" opacity="0.92"/>
+    </g>
+    <!-- Percentage -->
+    <text x="645" y="2010" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="120" font-weight="800" fill="url(#energy2)" filter="url(#softGlow2)" font-variant-numeric="tabular-nums">95%</text>
+
+    <!-- Sleep summary card -->
+    <rect x="385" y="2068" width="520" height="172" rx="28" fill="#0E141A" stroke="#283039" stroke-width="2"/>
+    <!-- Moon glyph -->
+    <g transform="translate(450,2154)">
+      <path d="M0 -42 A42 42 0 1 0 0 42 A33 33 0 1 1 0 -42 Z" fill="url(#energy2)"/>
+    </g>
+    <text x="528" y="2128" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="24" font-weight="700" fill="#5C6772" letter-spacing="2">SLEEP</text>
+    <text x="528" y="2186" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="58" font-weight="800" fill="#F4F7FA" font-variant-numeric="tabular-nums">7h 48m</text>
+    <text x="528" y="2222" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="26" font-weight="500" fill="#34F5C5">Deep + REM 31% &#183; On time</text>
+  </g>
+
+  <g fill="#283039">
+    <circle cx="585" cy="2420" r="8"/>
+    <circle cx="621" cy="2420" r="8" fill="#34F5C5"/>
+    <circle cx="657" cy="2420" r="8"/>
+    <circle cx="693" cy="2420" r="8"/>
+    <circle cx="729" cy="2420" r="8"/>
+    <circle cx="765" cy="2420" r="8"/>
+  </g>
+</svg>

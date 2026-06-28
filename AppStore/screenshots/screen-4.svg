@@ -1,0 +1,117 @@
+<svg width="1290" height="2796" viewBox="0 0 1290 2796" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="energy4" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#9CFF2E"/>
+      <stop offset="0.5" stop-color="#34F5C5"/>
+      <stop offset="1" stop-color="#19C3FF"/>
+    </linearGradient>
+    <linearGradient id="barGrad4" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9CFF2E"/>
+      <stop offset="0.55" stop-color="#34F5C5"/>
+      <stop offset="1" stop-color="#19C3FF"/>
+    </linearGradient>
+    <radialGradient id="topGlow4" cx="0.5" cy="0" r="0.9">
+      <stop offset="0" stop-color="#34F5C5" stop-opacity="0.22"/>
+      <stop offset="0.45" stop-color="#19C3FF" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#06080B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="device4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#11181F"/>
+      <stop offset="1" stop-color="#0A0F14"/>
+    </linearGradient>
+    <filter id="softGlow4" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="9" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="screenClip4"><rect x="345" y="980" width="600" height="1300" rx="62"/></clipPath>
+  </defs>
+
+  <rect width="1290" height="2796" fill="#06080B"/>
+  <rect width="1290" height="1100" fill="url(#topGlow4)"/>
+
+  <!-- Headline -->
+  <text x="645" y="360" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="98" font-weight="800" fill="#F4F7FA" letter-spacing="-2">Earn points for</text>
+  <text x="645" y="484" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="98" font-weight="800" fill="url(#energy4)" letter-spacing="-2">healthy habits</text>
+  <text x="645" y="592" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="40" font-weight="500" fill="#A6B0BB">Move, rest, hydrate, and watch them add up.</text>
+
+  <!-- Device frame -->
+  <rect x="318" y="952" width="654" height="1356" rx="92" fill="#000000"/>
+  <rect x="326" y="960" width="638" height="1340" rx="86" fill="url(#device4)" stroke="#283039" stroke-width="2"/>
+  <rect x="345" y="980" width="600" height="1300" rx="62" fill="#06080B"/>
+
+  <g clip-path="url(#screenClip4)">
+    <rect x="345" y="980" width="600" height="700" fill="url(#topGlow4)"/>
+    <text x="385" y="1045" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="30" font-weight="600" fill="#F4F7FA">9:41</text>
+    <g fill="#F4F7FA">
+      <rect x="838" y="1024" width="34" height="22" rx="5" fill="none" stroke="#F4F7FA" stroke-width="2.5"/>
+      <rect x="841" y="1028" width="26" height="14" rx="2"/>
+      <rect x="874" y="1031" width="4" height="9" rx="2"/>
+    </g>
+
+    <!-- Points hero card -->
+    <rect x="385" y="1108" width="520" height="248" rx="34" fill="#0E141A" stroke="#283039" stroke-width="2"/>
+    <text x="421" y="1188" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="26" font-weight="700" fill="#5C6772" letter-spacing="3">POINTS TODAY</text>
+    <text x="421" y="1308" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="148" font-weight="800" fill="url(#energy4)" filter="url(#softGlow4)" font-variant-numeric="tabular-nums">78</text>
+    <text x="648" y="1308" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="50" font-weight="600" fill="#5C6772">of 100</text>
+    <!-- Mini progress -->
+    <rect x="688" y="1148" width="184" height="184" rx="92" fill="none" stroke="#283039" stroke-width="0"/>
+
+    <!-- Breakdown rows -->
+    <g font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial">
+      <!-- Row template: label, track, fill, value -->
+      <!-- Move -->
+      <text x="385" y="1452" font-size="32" font-weight="600" fill="#F4F7FA">Move</text>
+      <rect x="385" y="1474" width="370" height="20" rx="10" fill="#283039"/>
+      <rect x="385" y="1474" width="333" height="20" rx="10" fill="url(#barGrad4)"/>
+      <text x="905" y="1490" text-anchor="end" font-size="30" font-weight="700" fill="#A6B0BB" font-variant-numeric="tabular-nums">18/20</text>
+
+      <!-- Exercise -->
+      <text x="385" y="1556" font-size="32" font-weight="600" fill="#F4F7FA">Exercise</text>
+      <rect x="385" y="1578" width="370" height="20" rx="10" fill="#283039"/>
+      <rect x="385" y="1578" width="296" height="20" rx="10" fill="url(#barGrad4)"/>
+      <text x="905" y="1594" text-anchor="end" font-size="30" font-weight="700" fill="#A6B0BB" font-variant-numeric="tabular-nums">16/20</text>
+
+      <!-- Stand -->
+      <text x="385" y="1660" font-size="32" font-weight="600" fill="#F4F7FA">Stand</text>
+      <rect x="385" y="1682" width="370" height="20" rx="10" fill="#283039"/>
+      <rect x="385" y="1682" width="222" height="20" rx="10" fill="url(#barGrad4)"/>
+      <text x="905" y="1698" text-anchor="end" font-size="30" font-weight="700" fill="#A6B0BB" font-variant-numeric="tabular-nums">9/15</text>
+
+      <!-- Bedtime -->
+      <text x="385" y="1764" font-size="32" font-weight="600" fill="#F4F7FA">Bedtime</text>
+      <rect x="385" y="1786" width="370" height="20" rx="10" fill="#283039"/>
+      <rect x="385" y="1786" width="333" height="20" rx="10" fill="url(#barGrad4)"/>
+      <text x="905" y="1802" text-anchor="end" font-size="30" font-weight="700" fill="#A6B0BB" font-variant-numeric="tabular-nums">14/15</text>
+
+      <!-- Wake -->
+      <text x="385" y="1868" font-size="32" font-weight="600" fill="#F4F7FA">Wake</text>
+      <rect x="385" y="1890" width="370" height="20" rx="10" fill="#283039"/>
+      <rect x="385" y="1890" width="345" height="20" rx="10" fill="url(#barGrad4)"/>
+      <text x="905" y="1906" text-anchor="end" font-size="30" font-weight="700" fill="#A6B0BB" font-variant-numeric="tabular-nums">14/15</text>
+
+      <!-- Hydration -->
+      <text x="385" y="1972" font-size="32" font-weight="600" fill="#F4F7FA">Hydration</text>
+      <rect x="385" y="1994" width="370" height="20" rx="10" fill="#283039"/>
+      <rect x="385" y="1994" width="148" height="20" rx="10" fill="url(#barGrad4)"/>
+      <text x="905" y="2010" text-anchor="end" font-size="30" font-weight="700" fill="#A6B0BB" font-variant-numeric="tabular-nums">7/15</text>
+    </g>
+
+    <!-- Streak strip -->
+    <rect x="385" y="2070" width="520" height="118" rx="28" fill="#0E141A" stroke="#283039" stroke-width="2"/>
+    <!-- Bolt glyph -->
+    <g transform="translate(452,2129)" filter="url(#softGlow4)">
+      <path d="M8 -40 L-22 6 L0 6 L-8 40 L30 -10 L6 -10 L8 -40 Z" fill="url(#energy4)"/>
+    </g>
+    <text x="512" y="2118" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="24" font-weight="700" fill="#5C6772" letter-spacing="2">STREAK</text>
+    <text x="512" y="2168" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="42" font-weight="700" fill="#F4F7FA">12 days &#183; Level 7</text>
+  </g>
+
+  <g fill="#283039">
+    <circle cx="585" cy="2420" r="8"/>
+    <circle cx="621" cy="2420" r="8"/>
+    <circle cx="657" cy="2420" r="8"/>
+    <circle cx="693" cy="2420" r="8" fill="#34F5C5"/>
+    <circle cx="729" cy="2420" r="8"/>
+    <circle cx="765" cy="2420" r="8"/>
+  </g>
+</svg>

@@ -111,6 +111,161 @@ public actor HealthKitService {
         )
     }
 
+    // MARK: Recent history
+
+    /// Build a `DayScore` for each of the last `days` whole days (oldest -> newest),
+    /// including today's partial day with `asOf == now`. Uses one collection query per
+    /// cumulative metric plus a single sample query each for stand hours and sleep,
+    /// then runs the scoring engine per day. Returns `[]` if HealthKit is unavailable
+    /// or anything fails.
+    public func recentDayScores(days: Int = 14, targets: UserTargets = .default, now: Date = Date()) async -> [DayScore] {
+        guard HKHealthStore.isHealthDataAvailable(), days > 0 else { return [] }
+
+        let cal = Calendar.current
+        let todayStart = cal.startOfDay(for: now)
+        guard let windowStart = cal.date(byAdding: .day, value: -(days - 1), to: todayStart) else { return [] }
+
+        // The ordered list of day-starts we will score, oldest -> newest.
+        var dayStarts: [Date] = []
+        for offset in 0..<days {
+            if let d = cal.date(byAdding: .day, value: offset, to: windowStart) { dayStarts.append(d) }
+        }
+        guard !dayStarts.isEmpty else { return [] }
+
+        // Per-day cumulative sums via collection queries (one query each).
+        async let activeByDay = dailySums(.activeEnergyBurned, unit: .kilocalorie(),
+                                          start: windowStart, anchor: todayStart, now: now)
+        async let exerciseByDay = dailySums(.appleExerciseTime, unit: .minute(),
+                                            start: windowStart, anchor: todayStart, now: now)
+        async let waterByDay = dailySums(.dietaryWater, unit: HKUnit.literUnit(with: .milli),
+                                         start: windowStart, anchor: todayStart, now: now)
+        async let standByDay = standHoursByDay(start: windowStart, now: now)
+        async let sleepByDay = sleepByNight(start: windowStart, now: now)
+
+        let active = await activeByDay
+        let exercise = await exerciseByDay
+        let water = await waterByDay
+        let stand = await standByDay
+        let sleep = await sleepByDay
+
+        return dayStarts.map { day in
+            let endOfDay = cal.date(byAdding: .day, value: 1, to: day) ?? day.addingTimeInterval(86400)
+            let asOf = min(endOfDay, now)
+            let snapshot = HealthSnapshot(
+                isAuthorized: true,
+                sleep: sleep[day],
+                activeEnergyKcal: active[day] ?? 0,
+                exerciseMinutes: exercise[day] ?? 0,
+                standHours: stand[day] ?? 0,
+                waterML: water[day] ?? 0,
+                baseline: .neutral,
+                asOf: asOf
+            )
+            return ScoringEngine.score(snapshot, targets: targets)
+        }
+    }
+
+    /// Per-day cumulative sums keyed by `startOfDay`, over `[start, now)`.
+    private func dailySums(_ id: HKQuantityTypeIdentifier, unit: HKUnit,
+                           start: Date, anchor: Date, now: Date) async -> [Date: Double] {
+        let type = HKQuantityType(id)
+        let cal = Calendar.current
+        let predicate = HKQuery.predicateForSamples(withStart: start, end: now, options: .strictStartDate)
+        return await withCheckedContinuation { cont in
+            let q = HKStatisticsCollectionQuery(quantityType: type, quantitySamplePredicate: predicate,
+                                                options: .cumulativeSum, anchorDate: anchor,
+                                                intervalComponents: DateComponents(day: 1))
+            q.initialResultsHandler = { _, collection, _ in
+                guard let collection else { cont.resume(returning: [:]); return }
+                var result: [Date: Double] = [:]
+                collection.enumerateStatistics(from: start, to: now) { stat, _ in
+                    if let sum = stat.sumQuantity()?.doubleValue(for: unit) {
+                        result[cal.startOfDay(for: stat.startDate)] = sum
+                    }
+                }
+                cont.resume(returning: result)
+            }
+            store.execute(q)
+        }
+    }
+
+    /// Count of `.stood` stand hours per calendar day, keyed by `startOfDay`.
+    private func standHoursByDay(start: Date, now: Date) async -> [Date: Double] {
+        let type = HKCategoryType(.appleStandHour)
+        let cal = Calendar.current
+        let predicate = HKQuery.predicateForSamples(withStart: start, end: now, options: .strictStartDate)
+        let samples: [HKCategorySample] = await withCheckedContinuation { cont in
+            let q = HKSampleQuery(sampleType: type, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, s, _ in
+                cont.resume(returning: (s as? [HKCategorySample]) ?? [])
+            }
+            store.execute(q)
+        }
+        var result: [Date: Double] = [:]
+        for s in samples where s.value == HKCategoryValueAppleStandHour.stood.rawValue {
+            result[cal.startOfDay(for: s.startDate), default: 0] += 1
+        }
+        return result
+    }
+
+    /// Group asleep segments into one `SleepData` per night, keyed by the
+    /// `startOfDay` of each segment's `endDate` (the morning the user woke).
+    /// Nights with under 1h of asleep time are dropped.
+    private func sleepByNight(start: Date, now: Date) async -> [Date: SleepData] {
+        let type = HKCategoryType(.sleepAnalysis)
+        let cal = Calendar.current
+        // Reach back before the window start so the first night's bedtime is captured.
+        let queryStart = cal.date(byAdding: .hour, value: -18, to: start) ?? start.addingTimeInterval(-64800)
+        let predicate = HKQuery.predicateForSamples(withStart: queryStart, end: now, options: [])
+        let sort = [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+        let samples: [HKCategorySample] = await withCheckedContinuation { cont in
+            let q = HKSampleQuery(sampleType: type, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: sort) { _, s, _ in
+                cont.resume(returning: (s as? [HKCategorySample]) ?? [])
+            }
+            store.execute(q)
+        }
+        guard !samples.isEmpty else { return [:] }
+
+        func value(_ s: HKCategorySample) -> HKCategoryValueSleepAnalysis? {
+            HKCategoryValueSleepAnalysis(rawValue: s.value)
+        }
+        let asleepValues: Set<Int> = [
+            HKCategoryValueSleepAnalysis.asleepCore.rawValue,
+            HKCategoryValueSleepAnalysis.asleepDeep.rawValue,
+            HKCategoryValueSleepAnalysis.asleepREM.rawValue,
+            HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue
+        ]
+
+        // Bucket every sample by the calendar day of its end date.
+        var byDay: [Date: [HKCategorySample]] = [:]
+        for s in samples {
+            byDay[cal.startOfDay(for: s.endDate), default: []].append(s)
+        }
+
+        func duration(_ arr: [HKCategorySample]) -> TimeInterval {
+            arr.reduce(0) { $0 + $1.endDate.timeIntervalSince($1.startDate) }
+        }
+
+        var result: [Date: SleepData] = [:]
+        for (day, daySamples) in byDay {
+            let asleepSamples = daySamples.filter { asleepValues.contains($0.value) }
+            guard !asleepSamples.isEmpty else { continue }
+            let asleep = duration(asleepSamples)
+            guard asleep >= 3600 else { continue } // ignore naps / partial sessions
+
+            let deep = duration(asleepSamples.filter { value($0) == .asleepDeep })
+            let rem = duration(asleepSamples.filter { value($0) == .asleepREM })
+            let core = duration(asleepSamples.filter { value($0) == .asleepCore })
+            let inBed = duration(daySamples.filter { value($0) == .inBed })
+            let awake = duration(daySamples.filter { value($0) == .awake })
+            let bedTime = asleepSamples.map(\.startDate).min() ?? day
+            let wakeTime = asleepSamples.map(\.endDate).max() ?? day
+
+            result[day] = SleepData(inBed: max(inBed, asleep), asleep: asleep, deep: deep, rem: rem,
+                                    core: core, awake: awake, bedTime: bedTime, wakeTime: wakeTime)
+        }
+        return result
+    }
+
     // MARK: Today sums
 
     private func sumToday(_ id: HKQuantityTypeIdentifier, unit: HKUnit, now: Date) async -> Double {

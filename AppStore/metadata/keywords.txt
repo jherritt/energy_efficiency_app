@@ -1,0 +1,1 @@
+energy,battery,efficiency,sleep,health,wellness,activity,habits,score,hydration,rings,focus,private,widget,vitality

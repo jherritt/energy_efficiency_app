@@ -1,0 +1,138 @@
+<svg width="1290" height="2796" viewBox="0 0 1290 2796" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="energy5" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#9CFF2E"/>
+      <stop offset="0.5" stop-color="#34F5C5"/>
+      <stop offset="1" stop-color="#19C3FF"/>
+    </linearGradient>
+    <radialGradient id="topGlow5" cx="0.5" cy="0" r="0.9">
+      <stop offset="0" stop-color="#34F5C5" stop-opacity="0.22"/>
+      <stop offset="0.45" stop-color="#19C3FF" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#06080B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lockWall5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1117"/>
+      <stop offset="0.5" stop-color="#0E1820"/>
+      <stop offset="1" stop-color="#091016"/>
+    </linearGradient>
+    <linearGradient id="homeWall5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0C141B"/>
+      <stop offset="1" stop-color="#070C11"/>
+    </linearGradient>
+    <filter id="softGlow5" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="battClip5"><rect x="232" y="1742" width="70" height="232" rx="16"/></clipPath>
+  </defs>
+
+  <rect width="1290" height="2796" fill="#06080B"/>
+  <rect width="1290" height="1100" fill="url(#topGlow5)"/>
+
+  <!-- Headline -->
+  <text x="645" y="360" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="100" font-weight="800" fill="#F4F7FA" letter-spacing="-2">Glanceable widgets,</text>
+  <text x="645" y="486" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="100" font-weight="800" fill="url(#energy5)" letter-spacing="-2">everywhere</text>
+  <text x="645" y="594" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="40" font-weight="500" fill="#A6B0BB">Battery and efficiency on Home and Lock Screen.</text>
+
+  <!-- ===================== LOCK SCREEN (left, tilted) ===================== -->
+  <g transform="translate(118,840) rotate(-4)">
+    <rect x="0" y="0" width="520" height="1080" rx="78" fill="#000000"/>
+    <rect x="10" y="10" width="500" height="1060" rx="70" fill="url(#lockWall5)" stroke="#283039" stroke-width="2"/>
+    <!-- Lock label -->
+    <text x="260" y="78" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="22" font-weight="700" fill="#5C6772" letter-spacing="3">LOCK SCREEN</text>
+
+    <!-- Circular complications row -->
+    <g transform="translate(78,150)">
+      <!-- Circular: battery -->
+      <circle cx="60" cy="60" r="56" fill="none" stroke="#283039" stroke-width="12"/>
+      <circle cx="60" cy="60" r="56" fill="none" stroke="url(#energy5)" stroke-width="12" stroke-linecap="round"
+              stroke-dasharray="225 352" stroke-dashoffset="0" transform="rotate(-90 60 60)" filter="url(#softGlow5)"/>
+      <text x="60" y="56" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="40" font-weight="800" fill="#F4F7FA" font-variant-numeric="tabular-nums">64</text>
+      <text x="60" y="88" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="18" font-weight="600" fill="#5C6772">BATT</text>
+    </g>
+    <g transform="translate(244,150)">
+      <!-- Circular: efficiency -->
+      <circle cx="60" cy="60" r="56" fill="none" stroke="#283039" stroke-width="12"/>
+      <circle cx="60" cy="60" r="56" fill="none" stroke="url(#energy5)" stroke-width="12" stroke-linecap="round"
+              stroke-dasharray="324 352" stroke-dashoffset="0" transform="rotate(-90 60 60)" filter="url(#softGlow5)"/>
+      <text x="60" y="56" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="40" font-weight="800" fill="#F4F7FA" font-variant-numeric="tabular-nums">92</text>
+      <text x="60" y="88" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="18" font-weight="600" fill="#5C6772">EFF</text>
+    </g>
+
+    <!-- Big clock -->
+    <text x="260" y="468" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="170" font-weight="700" fill="#F4F7FA" font-variant-numeric="tabular-nums" letter-spacing="-4">9:41</text>
+    <text x="260" y="378" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="30" font-weight="600" fill="#A6B0BB">Saturday, June 28</text>
+
+    <!-- Rectangular widget -->
+    <g transform="translate(50,560)">
+      <rect x="0" y="0" width="420" height="150" rx="28" fill="#0E141A" stroke="#283039" stroke-width="2"/>
+      <!-- mini vertical battery -->
+      <rect x="36" y="34" width="50" height="84" rx="12" fill="#0B0F14" stroke="#283039" stroke-width="3"/>
+      <rect x="50" y="22" width="22" height="10" rx="4" fill="#283039"/>
+      <rect x="39" y="84" width="44" height="31" rx="8" fill="url(#energy5)"/>
+      <text x="118" y="58" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="20" font-weight="700" fill="#5C6772" letter-spacing="2">AMPERLY</text>
+      <text x="118" y="104" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="48" font-weight="800" fill="#F4F7FA" font-variant-numeric="tabular-nums">64%<tspan fill="#5C6772" font-size="30" font-weight="600">  &#183;  EFF 92</tspan></text>
+    </g>
+
+    <!-- bottom flashlight/camera dots -->
+    <circle cx="120" cy="970" r="36" fill="#0E141A"/>
+    <circle cx="400" cy="970" r="36" fill="#0E141A"/>
+  </g>
+
+  <!-- ===================== HOME SCREEN (right, tilted) ===================== -->
+  <g transform="translate(700,920) rotate(4)">
+    <rect x="0" y="0" width="500" height="1040" rx="76" fill="#000000"/>
+    <rect x="10" y="10" width="480" height="1020" rx="68" fill="url(#homeWall5)" stroke="#283039" stroke-width="2"/>
+    <text x="250" y="78" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="22" font-weight="700" fill="#5C6772" letter-spacing="3">HOME SCREEN</text>
+
+    <!-- Large Amperly tile -->
+    <g transform="translate(70,130)">
+      <rect x="0" y="0" width="360" height="360" rx="56" fill="#0A0F14" stroke="#283039" stroke-width="2"/>
+      <rect x="0" y="0" width="360" height="180" rx="56" fill="url(#topGlow5)"/>
+      <text x="34" y="60" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="22" font-weight="700" fill="#5C6772" letter-spacing="2">AMPERLY</text>
+      <!-- vertical battery -->
+      <rect x="40" y="96" width="86" height="210" rx="22" fill="#0E141A" stroke="#283039" stroke-width="4"/>
+      <rect x="68" y="80" width="30" height="14" rx="5" fill="#283039"/>
+      <rect x="44" y="206" width="78" height="96" rx="16" fill="url(#energy5)" filter="url(#softGlow5)"/>
+      <!-- numbers -->
+      <text x="170" y="170" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="80" font-weight="800" fill="url(#energy5)" filter="url(#softGlow5)" font-variant-numeric="tabular-nums">64%</text>
+      <text x="172" y="216" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="22" font-weight="700" fill="#5C6772" letter-spacing="2">CHARGE</text>
+      <text x="170" y="288" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="40" font-weight="700" fill="#F4F7FA">EFF 92<tspan fill="#5C6772" font-size="26">/100</tspan></text>
+    </g>
+
+    <!-- Two small tiles row -->
+    <g transform="translate(70,530)">
+      <rect x="0" y="0" width="168" height="168" rx="40" fill="#0A0F14" stroke="#283039" stroke-width="2"/>
+      <circle cx="84" cy="78" r="52" fill="none" stroke="#283039" stroke-width="12"/>
+      <circle cx="84" cy="78" r="52" fill="none" stroke="url(#energy5)" stroke-width="12" stroke-linecap="round"
+              stroke-dasharray="300 327" transform="rotate(-90 84 78)" filter="url(#softGlow5)"/>
+      <text x="84" y="92" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="44" font-weight="800" fill="#F4F7FA">92</text>
+      <text x="84" y="146" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="18" font-weight="700" fill="#5C6772" letter-spacing="2">EFFICIENCY</text>
+    </g>
+    <g transform="translate(262,530)">
+      <rect x="0" y="0" width="168" height="168" rx="40" fill="#0A0F14" stroke="#283039" stroke-width="2"/>
+      <text x="84" y="74" text-anchor="middle" font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial" font-size="50" font-weight="800" fill="url(#energy5)" filter="url(#softGlow5)">78</text>
+      <text x="84" y="112" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="22" font-weight="600" fill="#5C6772">of 100</text>
+      <text x="84" y="146" text-anchor="middle" font-family="-apple-system, SF Pro Text, Helvetica Neue, Arial" font-size="18" font-weight="700" fill="#5C6772" letter-spacing="2">POINTS</text>
+    </g>
+
+    <!-- App icons hint row -->
+    <g transform="translate(70,740)">
+      <rect x="0" y="0" width="72" height="72" rx="20" fill="#0E141A"/>
+      <rect x="96" y="0" width="72" height="72" rx="20" fill="#0E141A"/>
+      <rect x="192" y="0" width="72" height="72" rx="20" fill="#0E141A"/>
+      <rect x="288" y="0" width="72" height="72" rx="20" fill="url(#energy5)" opacity="0.9"/>
+    </g>
+    <!-- Dock -->
+    <rect x="50" y="870" width="400" height="120" rx="44" fill="#0E141A" opacity="0.7"/>
+  </g>
+
+  <g fill="#283039">
+    <circle cx="585" cy="2520" r="8"/>
+    <circle cx="621" cy="2520" r="8"/>
+    <circle cx="657" cy="2520" r="8"/>
+    <circle cx="693" cy="2520" r="8"/>
+    <circle cx="729" cy="2520" r="8" fill="#34F5C5"/>
+    <circle cx="765" cy="2520" r="8"/>
+  </g>
+</svg>

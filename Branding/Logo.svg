@@ -1,0 +1,90 @@
+<svg width="460" height="128" viewBox="0 0 460 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Amperly">
+  <defs>
+    <!-- Vertical energy gradient: lime (bottom) -> mint -> cyan (top) -->
+    <linearGradient id="logoEnergyVert" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#9CFF2E"/>
+      <stop offset="0.5" stop-color="#34F5C5"/>
+      <stop offset="1" stop-color="#19C3FF"/>
+    </linearGradient>
+
+    <linearGradient id="logoBoltEdge" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#34F5C5"/>
+      <stop offset="1" stop-color="#19C3FF"/>
+    </linearGradient>
+
+    <!-- Soft mint outer glow for the mark fill -->
+    <filter id="logoFillGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/>
+      <feFlood flood-color="#34F5C5" flood-opacity="0.55" result="c"/>
+      <feComposite in="c" in2="b" operator="in" result="g"/>
+      <feMerge>
+        <feMergeNode in="g"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="logoBoltGlow" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="b"/>
+      <feFlood flood-color="#19C3FF" flood-opacity="0.85" result="c"/>
+      <feComposite in="c" in2="b" operator="in" result="g"/>
+      <feMerge>
+        <feMergeNode in="g"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Bolt path authored in mark-local coordinates (mark drawn ~96px tall) -->
+    <path id="logoBoltPath" d="
+      M 56 20
+      L 38 74
+      L 50 74
+      L 40 116
+      L 60 58
+      L 47 58
+      Z"/>
+
+    <!-- Mask: inner fill region minus the bolt -->
+    <mask id="logoFillMask" maskUnits="userSpaceOnUse" x="0" y="0" width="96" height="128">
+      <rect x="0" y="0" width="96" height="128" fill="black"/>
+      <rect x="29" y="61" width="38" height="44" rx="7" fill="white"/>
+      <use href="#logoBoltPath" fill="black" transform="rotate(10 48 64)"/>
+    </mask>
+  </defs>
+
+  <!-- Battery + bolt mark, ~96px tall, vertically centered (canvas height 128) -->
+  <g transform="translate(16 16)">
+    <!-- Terminal cap -->
+    <rect x="38" y="2" width="20" height="8" rx="4" fill="#2A333D"/>
+
+    <!-- Shell stroke -->
+    <rect x="27" y="12" width="42" height="96" rx="14"
+          fill="none" stroke="#283039" stroke-width="5"/>
+
+    <!-- Inner dark area -->
+    <rect x="29" y="14" width="38" height="92" rx="11" fill="#0A1016"/>
+
+    <!-- Energy fill bottom-up to ~70% with bolt punched out -->
+    <g filter="url(#logoFillGlow)">
+      <rect x="29" y="61" width="38" height="44" rx="7"
+            fill="url(#logoEnergyVert)" mask="url(#logoFillMask)"/>
+    </g>
+
+    <!-- Glowing bolt edge stroke -->
+    <use href="#logoBoltPath"
+         transform="rotate(10 48 64)"
+         fill="none"
+         stroke="url(#logoBoltEdge)"
+         stroke-width="1.4"
+         stroke-linejoin="round"
+         filter="url(#logoBoltGlow)"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="138" y="64"
+        font-family="-apple-system, SF Pro Display, Helvetica Neue, Arial, sans-serif"
+        font-size="58"
+        font-weight="700"
+        letter-spacing="-1"
+        fill="#F4F7FA"
+        dominant-baseline="central">Amperly</text>
+</svg>

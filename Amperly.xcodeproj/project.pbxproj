@@ -1,0 +1,646 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0354F0D48B7B2B9621A36400 /* BreakdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E351BD9820880E8286FD48 /* BreakdownView.swift */; };
+		26D4E96E2FF496A786ADF0A7 /* EnergyKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4B305C59DD20ED8BCFB68556 /* EnergyKit */; };
+		29784695B7D74F280104156D /* WidgetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78C15874F2557CF531554E93 /* WidgetTheme.swift */; };
+		2D5F0496E2CFB8280338F3D5 /* AmperlyWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BADC2A1F72351F5ED8D7A546 /* AmperlyWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3B6D2C01F84469735135ADA9 /* ProgressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408A55B6E03ED05BE6849D38 /* ProgressionView.swift */; };
+		4190812C7A9EC88955F8F9BE /* BatteryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89948D9BEDC8B746B81DB637 /* BatteryView.swift */; };
+		554F00FE33C1977196FF8BAB /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1997A0F014D86A042D2BAB6D /* Color+Hex.swift */; };
+		5CFCB248BD5A07F322BE64ED /* HealthPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8222D53F043B7106069F7C6C /* HealthPermissionView.swift */; };
+		7BE084ED62C9F82BFD254D68 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5605DE37EB69C63E8D7F10A /* Provider.swift */; };
+		7F8461183566E1A497A1FF9C /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC1BA849E88A92538088660 /* CardContainer.swift */; };
+		7FF08B0DFEE305EE1C3BA34A /* AmperlyTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E72ADB411A4AC631C1A07F /* AmperlyTheme.swift */; };
+		853B8729182AF84F11BE0B05 /* EnergyKit in Frameworks */ = {isa = PBXBuildFile; productRef = D96E92E23983478C925368DF /* EnergyKit */; };
+		9BFB6E539DB0FFCD9A10D633 /* AmperlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EC65110F11A1C57373AD93 /* AmperlyApp.swift */; };
+		9DED3DF07B5562DF9C8870DF /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8ED19119A9289B683EB4CF4 /* SettingsView.swift */; };
+		9F4033D9053E91E39E350A6B /* AmperlyWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820470D4FE06C6FBCF8AB5 /* AmperlyWidgets.swift */; };
+		A3F2B20AC391A581E0EE9770 /* AmperlyWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A141093096F9A9774D4C67 /* AmperlyWidgetBundle.swift */; };
+		AA88A317B1EA519C6947262B /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B55A2431F55A98CEE15B23 /* NotificationManager.swift */; };
+		B23519DB5FC53C81D190C607 /* PrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DE2EF8C52E6B38FA593385 /* PrivacyView.swift */; };
+		B3EB47DEA8E35AC3CBB136CF /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867862A308E494E9479E42A8 /* InsightsView.swift */; };
+		D7FC1C2608ECBFEBCEB3D1BF /* AmperlyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4594590F746864DE5B8FE7 /* AmperlyModel.swift */; };
+		DA000A10BC49969F94B5B855 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4454E23B01AD2A6129CBCDFB /* OnboardingView.swift */; };
+		ED1F3354A6555573EFC418B9 /* EfficiencyHeroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C0D2B31018864FA6C27236 /* EfficiencyHeroView.swift */; };
+		EE49A824B913C597C480B037 /* PointsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67E88ED4BC8C1124C2D4107 /* PointsCardView.swift */; };
+		F2700F4D8B95C6B53773A648 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8388F3A9F82ACE5A63146075 /* DashboardView.swift */; };
+		F3B3C933E4A724E77DD4B3F8 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E6B3A067EB04961262BC4F /* RootView.swift */; };
+		FC40F229DB6603B6134F666A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 324DEE0FA8C9701058F50009 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2955F493D3E518B28CD79FC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9ADEF67B26BD50DEACE7D9D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F7529B3A120FFC07B908CA90;
+			remoteInfo = AmperlyWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		780F435DE0C700976775E3E6 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2D5F0496E2CFB8280338F3D5 /* AmperlyWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		02A141093096F9A9774D4C67 /* AmperlyWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyWidgetBundle.swift; sourceTree = "<group>"; };
+		1518AB2520EC540B4C9F39AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		1997A0F014D86A042D2BAB6D /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		27B55A2431F55A98CEE15B23 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		324DEE0FA8C9701058F50009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		408A55B6E03ED05BE6849D38 /* ProgressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionView.swift; sourceTree = "<group>"; };
+		4454E23B01AD2A6129CBCDFB /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		44AF05CB5B86E9D9D2F2B8D5 /* AmperlyWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AmperlyWidget.entitlements; sourceTree = "<group>"; };
+		65E6B3A067EB04961262BC4F /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		78C15874F2557CF531554E93 /* WidgetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
+		8222D53F043B7106069F7C6C /* HealthPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthPermissionView.swift; sourceTree = "<group>"; };
+		8388F3A9F82ACE5A63146075 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		867862A308E494E9479E42A8 /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
+		89948D9BEDC8B746B81DB637 /* BatteryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryView.swift; sourceTree = "<group>"; };
+		8E4594590F746864DE5B8FE7 /* AmperlyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyModel.swift; sourceTree = "<group>"; };
+		8FD6310A7075BA556FEEF158 /* Amperly.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Amperly.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		95DE2EF8C52E6B38FA593385 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.swift; sourceTree = "<group>"; };
+		A2C0D2B31018864FA6C27236 /* EfficiencyHeroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EfficiencyHeroView.swift; sourceTree = "<group>"; };
+		A67E88ED4BC8C1124C2D4107 /* PointsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsCardView.swift; sourceTree = "<group>"; };
+		BAC1BA849E88A92538088660 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
+		BADC2A1F72351F5ED8D7A546 /* AmperlyWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = AmperlyWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7EC65110F11A1C57373AD93 /* AmperlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyApp.swift; sourceTree = "<group>"; };
+		C97DB4079617837D233608D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		CEBF517CAE5BC1EC08D6B553 /* EnergyKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = EnergyKit; path = EnergyKit; sourceTree = SOURCE_ROOT; };
+		D2E72ADB411A4AC631C1A07F /* AmperlyTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyTheme.swift; sourceTree = "<group>"; };
+		D5605DE37EB69C63E8D7F10A /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
+		D8ED19119A9289B683EB4CF4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		E3820470D4FE06C6FBCF8AB5 /* AmperlyWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyWidgets.swift; sourceTree = "<group>"; };
+		F03350D7F34C3E7406A9EB9B /* Amperly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Amperly.entitlements; sourceTree = "<group>"; };
+		F1E351BD9820880E8286FD48 /* BreakdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakdownView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		09C2145EDF73B9B234E72B03 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26D4E96E2FF496A786ADF0A7 /* EnergyKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3883D7D465EEBF66DBC8B40D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				853B8729182AF84F11BE0B05 /* EnergyKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1A9FAFE7BB64C3F86F4EB961 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				27B55A2431F55A98CEE15B23 /* NotificationManager.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
+		6FE46C7BD87D67D434254F2D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8FD6310A7075BA556FEEF158 /* Amperly.app */,
+				BADC2A1F72351F5ED8D7A546 /* AmperlyWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		73714E7F56B51BA97813321F /* AmperlyWidget */ = {
+			isa = PBXGroup;
+			children = (
+				44AF05CB5B86E9D9D2F2B8D5 /* AmperlyWidget.entitlements */,
+				02A141093096F9A9774D4C67 /* AmperlyWidgetBundle.swift */,
+				E3820470D4FE06C6FBCF8AB5 /* AmperlyWidgets.swift */,
+				1518AB2520EC540B4C9F39AB /* Info.plist */,
+				D5605DE37EB69C63E8D7F10A /* Provider.swift */,
+				78C15874F2557CF531554E93 /* WidgetTheme.swift */,
+			);
+			path = AmperlyWidget;
+			sourceTree = "<group>";
+		};
+		7E76BE535BCB7B56A669A941 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				CEBF517CAE5BC1EC08D6B553 /* EnergyKit */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		917953FD5A8D8E59DB5DD348 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				8222D53F043B7106069F7C6C /* HealthPermissionView.swift */,
+				4454E23B01AD2A6129CBCDFB /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		9D5395F283B00E4A25DEEE26 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				89948D9BEDC8B746B81DB637 /* BatteryView.swift */,
+				F1E351BD9820880E8286FD48 /* BreakdownView.swift */,
+				8388F3A9F82ACE5A63146075 /* DashboardView.swift */,
+				A2C0D2B31018864FA6C27236 /* EfficiencyHeroView.swift */,
+				867862A308E494E9479E42A8 /* InsightsView.swift */,
+				A67E88ED4BC8C1124C2D4107 /* PointsCardView.swift */,
+				408A55B6E03ED05BE6849D38 /* ProgressionView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		9E8EAE3BDBD758051D10C051 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BF1C764150E0B5D6C53592C0 /* Components */,
+				9D5395F283B00E4A25DEEE26 /* Dashboard */,
+				917953FD5A8D8E59DB5DD348 /* Onboarding */,
+				B1D4E82FFB05427BBE6ECC93 /* Settings */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B1D4E82FFB05427BBE6ECC93 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				95DE2EF8C52E6B38FA593385 /* PrivacyView.swift */,
+				D8ED19119A9289B683EB4CF4 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		BF1C764150E0B5D6C53592C0 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				BAC1BA849E88A92538088660 /* CardContainer.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		BFE6F96286750C1D81E2B525 = {
+			isa = PBXGroup;
+			children = (
+				F4CF8BAB4BB18AA2E962E7AC /* Amperly */,
+				73714E7F56B51BA97813321F /* AmperlyWidget */,
+				7E76BE535BCB7B56A669A941 /* Packages */,
+				6FE46C7BD87D67D434254F2D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C2C38E9034458E1672EA6515 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				8E4594590F746864DE5B8FE7 /* AmperlyModel.swift */,
+				65E6B3A067EB04961262BC4F /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		DEEEA98E1CE4290F465DBE11 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				D2E72ADB411A4AC631C1A07F /* AmperlyTheme.swift */,
+				1997A0F014D86A042D2BAB6D /* Color+Hex.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		F4CF8BAB4BB18AA2E962E7AC /* Amperly */ = {
+			isa = PBXGroup;
+			children = (
+				C2C38E9034458E1672EA6515 /* App */,
+				1A9FAFE7BB64C3F86F4EB961 /* Notifications */,
+				DEEEA98E1CE4290F465DBE11 /* Theme */,
+				9E8EAE3BDBD758051D10C051 /* Views */,
+				F03350D7F34C3E7406A9EB9B /* Amperly.entitlements */,
+				C7EC65110F11A1C57373AD93 /* AmperlyApp.swift */,
+				324DEE0FA8C9701058F50009 /* Assets.xcassets */,
+				C97DB4079617837D233608D0 /* Info.plist */,
+			);
+			path = Amperly;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B50C5C2277211F043E946771 /* Amperly */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7F0962967192F00494BE4398 /* Build configuration list for PBXNativeTarget "Amperly" */;
+			buildPhases = (
+				257D105DD786C99090F55130 /* Sources */,
+				92D873D5F552CBAE25BBB939 /* Resources */,
+				09C2145EDF73B9B234E72B03 /* Frameworks */,
+				780F435DE0C700976775E3E6 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EEE24B778252CCEB049E6475 /* PBXTargetDependency */,
+			);
+			name = Amperly;
+			packageProductDependencies = (
+				4B305C59DD20ED8BCFB68556 /* EnergyKit */,
+			);
+			productName = Amperly;
+			productReference = 8FD6310A7075BA556FEEF158 /* Amperly.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F7529B3A120FFC07B908CA90 /* AmperlyWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E341131429F06A81651781CF /* Build configuration list for PBXNativeTarget "AmperlyWidget" */;
+			buildPhases = (
+				744A47E9F6BEA9FC04841A70 /* Sources */,
+				3883D7D465EEBF66DBC8B40D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AmperlyWidget;
+			packageProductDependencies = (
+				D96E92E23983478C925368DF /* EnergyKit */,
+			);
+			productName = AmperlyWidget;
+			productReference = BADC2A1F72351F5ED8D7A546 /* AmperlyWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C9ADEF67B26BD50DEACE7D9D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					B50C5C2277211F043E946771 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					F7529B3A120FFC07B908CA90 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 57F83102A30515A80FB85EDD /* Build configuration list for PBXProject "Amperly" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = BFE6F96286750C1D81E2B525;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9F887EFC135C2D7F6D341C59 /* XCLocalSwiftPackageReference "EnergyKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 6FE46C7BD87D67D434254F2D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B50C5C2277211F043E946771 /* Amperly */,
+				F7529B3A120FFC07B908CA90 /* AmperlyWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		92D873D5F552CBAE25BBB939 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC40F229DB6603B6134F666A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		257D105DD786C99090F55130 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BFB6E539DB0FFCD9A10D633 /* AmperlyApp.swift in Sources */,
+				D7FC1C2608ECBFEBCEB3D1BF /* AmperlyModel.swift in Sources */,
+				7FF08B0DFEE305EE1C3BA34A /* AmperlyTheme.swift in Sources */,
+				4190812C7A9EC88955F8F9BE /* BatteryView.swift in Sources */,
+				0354F0D48B7B2B9621A36400 /* BreakdownView.swift in Sources */,
+				7F8461183566E1A497A1FF9C /* CardContainer.swift in Sources */,
+				554F00FE33C1977196FF8BAB /* Color+Hex.swift in Sources */,
+				F2700F4D8B95C6B53773A648 /* DashboardView.swift in Sources */,
+				ED1F3354A6555573EFC418B9 /* EfficiencyHeroView.swift in Sources */,
+				5CFCB248BD5A07F322BE64ED /* HealthPermissionView.swift in Sources */,
+				B3EB47DEA8E35AC3CBB136CF /* InsightsView.swift in Sources */,
+				AA88A317B1EA519C6947262B /* NotificationManager.swift in Sources */,
+				DA000A10BC49969F94B5B855 /* OnboardingView.swift in Sources */,
+				EE49A824B913C597C480B037 /* PointsCardView.swift in Sources */,
+				B23519DB5FC53C81D190C607 /* PrivacyView.swift in Sources */,
+				3B6D2C01F84469735135ADA9 /* ProgressionView.swift in Sources */,
+				F3B3C933E4A724E77DD4B3F8 /* RootView.swift in Sources */,
+				9DED3DF07B5562DF9C8870DF /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		744A47E9F6BEA9FC04841A70 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3F2B20AC391A581E0EE9770 /* AmperlyWidgetBundle.swift in Sources */,
+				9F4033D9053E91E39E350A6B /* AmperlyWidgets.swift in Sources */,
+				7BE084ED62C9F82BFD254D68 /* Provider.swift in Sources */,
+				29784695B7D74F280104156D /* WidgetTheme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EEE24B778252CCEB049E6475 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F7529B3A120FFC07B908CA90 /* AmperlyWidget */;
+			targetProxy = 2955F493D3E518B28CD79FC0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		18D73ADF1FD590D1965A2CAA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Amperly/Amperly.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Amperly/Info.plist;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amperly.Amperly;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		2EEF87F8E1F662CA1FF9466D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = AmperlyWidget/AmperlyWidget.entitlements;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = AmperlyWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amperly.Amperly.AmperlyWidget;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		4FD123B86958236D5D1214DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		9C611B71A3EEDCBC9D5B7DBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AE47248B37279DDFB901FAB1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = AmperlyWidget/AmperlyWidget.entitlements;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = AmperlyWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amperly.Amperly.AmperlyWidget;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		C9A8BE514051F80EFF245169 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Amperly/Amperly.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Amperly/Info.plist;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amperly.Amperly;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		57F83102A30515A80FB85EDD /* Build configuration list for PBXProject "Amperly" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9C611B71A3EEDCBC9D5B7DBD /* Debug */,
+				4FD123B86958236D5D1214DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7F0962967192F00494BE4398 /* Build configuration list for PBXNativeTarget "Amperly" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9A8BE514051F80EFF245169 /* Debug */,
+				18D73ADF1FD590D1965A2CAA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E341131429F06A81651781CF /* Build configuration list for PBXNativeTarget "AmperlyWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2EEF87F8E1F662CA1FF9466D /* Debug */,
+				AE47248B37279DDFB901FAB1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		9F887EFC135C2D7F6D341C59 /* XCLocalSwiftPackageReference "EnergyKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = EnergyKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4B305C59DD20ED8BCFB68556 /* EnergyKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = EnergyKit;
+		};
+		D96E92E23983478C925368DF /* EnergyKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = EnergyKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = C9ADEF67B26BD50DEACE7D9D /* Project object */;
+}
