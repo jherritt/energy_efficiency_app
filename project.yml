@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: com.amperly
   deploymentTarget:
     iOS: "17.0"
+    watchOS: "10.0"
   createIntermediateGroups: true
   groupSortPosition: top
   generateEmptyDirectories: true
@@ -80,6 +81,71 @@ targets:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
       path: AmperlyWidget/AmperlyWidget.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+
+  # ---------------------------------------------------------------------------
+  # Apple Watch app + complication.
+  # Deliberately NOT embedded in the iPhone app, so the iPhone scheme builds
+  # without them. To ship the watch app WITH the iPhone app, add this to the
+  # Amperly target's dependencies and regenerate:
+  #   - target: AmperlyWatch
+  #     embed: true
+  # ---------------------------------------------------------------------------
+  AmperlyWatch:
+    type: application
+    platform: watchOS
+    sources:
+      - path: AmperlyWatch
+      - path: AmperlyWatchShared
+    dependencies:
+      - package: EnergyKit
+        product: EnergyKit
+      - target: AmperlyWatchWidget
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.amperly.Amperly.watchkitapp
+        TARGETED_DEVICE_FAMILY: "4"
+        ENABLE_PREVIEWS: YES
+    info:
+      path: AmperlyWatch/Info.plist
+      properties:
+        WKApplication: true
+        CFBundleDisplayName: Amperly
+        CFBundleShortVersionString: "1.0"
+        NSHealthShareUsageDescription: "Amperly reads your sleep, activity, heart, and hydration data from Apple Health to show your energy battery and efficiency on your watch. Your data is never stored or shared."
+    entitlements:
+      path: AmperlyWatch/AmperlyWatch.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+
+  AmperlyWatchWidget:
+    type: app-extension
+    platform: watchOS
+    sources:
+      - path: AmperlyWatchWidget
+      - path: AmperlyWatchShared
+    dependencies:
+      - package: EnergyKit
+        product: EnergyKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.amperly.Amperly.watchkitapp.AmperlyWatchWidget
+        TARGETED_DEVICE_FAMILY: "4"
+        ENABLE_PREVIEWS: YES
+    info:
+      path: AmperlyWatchWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Amperly
+        CFBundleShortVersionString: "1.0"
+        NSHealthShareUsageDescription: "Amperly reads your sleep, activity, heart, and hydration data from Apple Health to show your energy battery and efficiency on your watch. Your data is never stored or shared."
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: AmperlyWatchWidget/AmperlyWatchWidget.entitlements
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []

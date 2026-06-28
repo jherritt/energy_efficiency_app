@@ -137,3 +137,30 @@ HealthKit apps are reviewed carefully. These are the issues that most often caus
 - **Inappropriate Health entitlements.** Requesting write access or clinical records you do not use raises flags. *Amperly requests read-only access to only the categories it displays.*
 
 Work through the checklist in order, keep the review note clear, and Amperly's privacy-first design should make the review straightforward.
+
+---
+
+## Provided assets reference
+
+- **Screenshots:** `AppStore/screenshots/` holds the six 6.7-inch frames (1290 x 2796). `AppStore/screenshots/6.5inch/` holds the same six at 1242 x 2688 for the 6.5-inch size if your listing asks for it.
+- **App Review notes:** paste `AppStore/metadata/app_review_notes.txt` into App Store Connect under App Review Information, Notes. It pre-answers the common HealthKit review questions.
+- **Metadata:** name, subtitle, promotional text, description, keywords, what's new, categories, and the privacy label text are all in `AppStore/metadata/`.
+
+---
+
+## Optional: ship the Apple Watch app + complication
+
+The project includes an Apple Watch app (`AmperlyWatch/`) and a watch complication (`AmperlyWatchWidget/`) that show the same battery and efficiency, reading Apple Health on the watch and storing nothing. They reuse the verified `EnergyKit` engine.
+
+By default these are **not embedded** in the iPhone app, so the iPhone scheme builds and ships without them. To include the watch app in your release:
+
+1. Open `project.yml` and find the `Amperly` target's `dependencies:` list.
+2. Add the watch app as an embedded dependency:
+   ```yaml
+       - target: AmperlyWatch
+         embed: true
+   ```
+3. Regenerate the project: `xcodegen generate`.
+4. In Xcode, select the `AmperlyWatch` scheme and build it once against a watchOS 10 simulator to confirm it compiles on your toolchain, then archive the iPhone app as usual; the watch app rides along in the same submission.
+
+If you prefer to ship the iPhone app alone for v1, do nothing; the watch targets simply sit unused.

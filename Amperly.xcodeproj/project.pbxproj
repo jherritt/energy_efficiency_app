@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0354F0D48B7B2B9621A36400 /* BreakdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E351BD9820880E8286FD48 /* BreakdownView.swift */; };
+		143A875E1A35C86EBD62FC6C /* WatchRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA50EE567148D61F5AA4457B /* WatchRootView.swift */; };
+		1B060158D1DCB6C37A6999BE /* AmperlyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F64169FF5D7B7A914CA5435 /* AmperlyWatchApp.swift */; };
 		26D4E96E2FF496A786ADF0A7 /* EnergyKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4B305C59DD20ED8BCFB68556 /* EnergyKit */; };
 		29784695B7D74F280104156D /* WidgetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78C15874F2557CF531554E93 /* WidgetTheme.swift */; };
 		2D5F0496E2CFB8280338F3D5 /* AmperlyWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BADC2A1F72351F5ED8D7A546 /* AmperlyWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -15,24 +17,33 @@
 		4190812C7A9EC88955F8F9BE /* BatteryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89948D9BEDC8B746B81DB637 /* BatteryView.swift */; };
 		554F00FE33C1977196FF8BAB /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1997A0F014D86A042D2BAB6D /* Color+Hex.swift */; };
 		5CFCB248BD5A07F322BE64ED /* HealthPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8222D53F043B7106069F7C6C /* HealthPermissionView.swift */; };
+		5ED73DA737A16C5D9B75C838 /* EnergyKit in Frameworks */ = {isa = PBXBuildFile; productRef = 50635010E718ED3E5D2A7D0F /* EnergyKit */; };
+		6F8076D3B92822FEE4D10C17 /* WatchTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992E9BF0DC43C9904EE94D2D /* WatchTheme.swift */; };
+		785CA29A0B17CC4839A9D810 /* WatchComplicationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A78F8F8A9887E9E2574FCF15 /* WatchComplicationProvider.swift */; };
 		7BE084ED62C9F82BFD254D68 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5605DE37EB69C63E8D7F10A /* Provider.swift */; };
 		7F8461183566E1A497A1FF9C /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC1BA849E88A92538088660 /* CardContainer.swift */; };
 		7FF08B0DFEE305EE1C3BA34A /* AmperlyTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E72ADB411A4AC631C1A07F /* AmperlyTheme.swift */; };
 		853B8729182AF84F11BE0B05 /* EnergyKit in Frameworks */ = {isa = PBXBuildFile; productRef = D96E92E23983478C925368DF /* EnergyKit */; };
+		9A0424912CCF411B7888DE32 /* AmperlyWatchWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36BCFE95DE6258DC651C3C2 /* AmperlyWatchWidgetBundle.swift */; };
+		9B816BC241E9EC9E2C84F890 /* AmperlyWatchWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F20F6B6A65DF1C7193E0E641 /* AmperlyWatchWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9BFB6E539DB0FFCD9A10D633 /* AmperlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EC65110F11A1C57373AD93 /* AmperlyApp.swift */; };
 		9DED3DF07B5562DF9C8870DF /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8ED19119A9289B683EB4CF4 /* SettingsView.swift */; };
 		9F4033D9053E91E39E350A6B /* AmperlyWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820470D4FE06C6FBCF8AB5 /* AmperlyWidgets.swift */; };
 		A3F2B20AC391A581E0EE9770 /* AmperlyWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A141093096F9A9774D4C67 /* AmperlyWidgetBundle.swift */; };
 		AA88A317B1EA519C6947262B /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B55A2431F55A98CEE15B23 /* NotificationManager.swift */; };
+		AF354A1A018114046B17AC54 /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FA02B564F267FCE76EED48 /* WatchModel.swift */; };
 		B23519DB5FC53C81D190C607 /* PrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DE2EF8C52E6B38FA593385 /* PrivacyView.swift */; };
 		B3EB47DEA8E35AC3CBB136CF /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867862A308E494E9479E42A8 /* InsightsView.swift */; };
 		D7FC1C2608ECBFEBCEB3D1BF /* AmperlyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4594590F746864DE5B8FE7 /* AmperlyModel.swift */; };
 		DA000A10BC49969F94B5B855 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4454E23B01AD2A6129CBCDFB /* OnboardingView.swift */; };
+		E21EABD77B1010A23A07DC7E /* WatchComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B84654080ED3D8EB826495 /* WatchComplications.swift */; };
+		EA5C2048164532C19BEB6A96 /* EnergyKit in Frameworks */ = {isa = PBXBuildFile; productRef = EDBCE64E5816478D76534847 /* EnergyKit */; };
 		ED1F3354A6555573EFC418B9 /* EfficiencyHeroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C0D2B31018864FA6C27236 /* EfficiencyHeroView.swift */; };
 		EE49A824B913C597C480B037 /* PointsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67E88ED4BC8C1124C2D4107 /* PointsCardView.swift */; };
 		F2700F4D8B95C6B53773A648 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8388F3A9F82ACE5A63146075 /* DashboardView.swift */; };
 		F3B3C933E4A724E77DD4B3F8 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E6B3A067EB04961262BC4F /* RootView.swift */; };
 		FC40F229DB6603B6134F666A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 324DEE0FA8C9701058F50009 /* Assets.xcassets */; };
+		FF7A6283C96CB56F6E5DC298 /* WatchTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992E9BF0DC43C9904EE94D2D /* WatchTheme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,9 +54,27 @@
 			remoteGlobalIDString = F7529B3A120FFC07B908CA90;
 			remoteInfo = AmperlyWidget;
 		};
+		EC6BA1CFFFFC4F740C9C96C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9ADEF67B26BD50DEACE7D9D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1DEBFE0A8BA95D2E24994FA9;
+			remoteInfo = AmperlyWatchWidget;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		1EFDEA5D222502D9273A7E9C /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9B816BC241E9EC9E2C84F890 /* AmperlyWatchWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		780F435DE0C700976775E3E6 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -61,13 +90,18 @@
 
 /* Begin PBXFileReference section */
 		02A141093096F9A9774D4C67 /* AmperlyWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyWidgetBundle.swift; sourceTree = "<group>"; };
+		041BB05B6B1043E3216FC132 /* AmperlyWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AmperlyWatch.entitlements; sourceTree = "<group>"; };
+		0DE91F601C45AD1E2E5F3073 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1518AB2520EC540B4C9F39AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1997A0F014D86A042D2BAB6D /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		27B55A2431F55A98CEE15B23 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		324DEE0FA8C9701058F50009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		35FA02B564F267FCE76EED48 /* WatchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchModel.swift; sourceTree = "<group>"; };
 		408A55B6E03ED05BE6849D38 /* ProgressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionView.swift; sourceTree = "<group>"; };
 		4454E23B01AD2A6129CBCDFB /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		44AF05CB5B86E9D9D2F2B8D5 /* AmperlyWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AmperlyWidget.entitlements; sourceTree = "<group>"; };
+		4F64169FF5D7B7A914CA5435 /* AmperlyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyWatchApp.swift; sourceTree = "<group>"; };
+		5E983FEABE3BD70FC67632F3 /* AmperlyWatchWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AmperlyWatchWidget.entitlements; sourceTree = "<group>"; };
 		65E6B3A067EB04961262BC4F /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		78C15874F2557CF531554E93 /* WidgetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
 		8222D53F043B7106069F7C6C /* HealthPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthPermissionView.swift; sourceTree = "<group>"; };
@@ -75,10 +109,16 @@
 		867862A308E494E9479E42A8 /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		89948D9BEDC8B746B81DB637 /* BatteryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryView.swift; sourceTree = "<group>"; };
 		8E4594590F746864DE5B8FE7 /* AmperlyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyModel.swift; sourceTree = "<group>"; };
+		8F8B561A7EF872B52B4A8DDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8FD6310A7075BA556FEEF158 /* Amperly.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Amperly.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		91B84654080ED3D8EB826495 /* WatchComplications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplications.swift; sourceTree = "<group>"; };
 		95DE2EF8C52E6B38FA593385 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.swift; sourceTree = "<group>"; };
+		992E9BF0DC43C9904EE94D2D /* WatchTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTheme.swift; sourceTree = "<group>"; };
 		A2C0D2B31018864FA6C27236 /* EfficiencyHeroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EfficiencyHeroView.swift; sourceTree = "<group>"; };
 		A67E88ED4BC8C1124C2D4107 /* PointsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsCardView.swift; sourceTree = "<group>"; };
+		A78F8F8A9887E9E2574FCF15 /* WatchComplicationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationProvider.swift; sourceTree = "<group>"; };
+		B2476FF48D83B88AF3BD43D0 /* AmperlyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmperlyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BA50EE567148D61F5AA4457B /* WatchRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRootView.swift; sourceTree = "<group>"; };
 		BAC1BA849E88A92538088660 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
 		BADC2A1F72351F5ED8D7A546 /* AmperlyWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = AmperlyWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7EC65110F11A1C57373AD93 /* AmperlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyApp.swift; sourceTree = "<group>"; };
@@ -90,6 +130,8 @@
 		E3820470D4FE06C6FBCF8AB5 /* AmperlyWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyWidgets.swift; sourceTree = "<group>"; };
 		F03350D7F34C3E7406A9EB9B /* Amperly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Amperly.entitlements; sourceTree = "<group>"; };
 		F1E351BD9820880E8286FD48 /* BreakdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakdownView.swift; sourceTree = "<group>"; };
+		F20F6B6A65DF1C7193E0E641 /* AmperlyWatchWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AmperlyWatchWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F36BCFE95DE6258DC651C3C2 /* AmperlyWatchWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyWatchWidgetBundle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +151,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		83453DC42187EC5CB70BC91A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5ED73DA737A16C5D9B75C838 /* EnergyKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9FCC27C27748A582765A0E8D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA5C2048164532C19BEB6A96 /* EnergyKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -120,10 +178,36 @@
 			path = Notifications;
 			sourceTree = "<group>";
 		};
+		1D1CB50E83BB52CA7382A023 /* AmperlyWatch */ = {
+			isa = PBXGroup;
+			children = (
+				041BB05B6B1043E3216FC132 /* AmperlyWatch.entitlements */,
+				4F64169FF5D7B7A914CA5435 /* AmperlyWatchApp.swift */,
+				8F8B561A7EF872B52B4A8DDE /* Info.plist */,
+				35FA02B564F267FCE76EED48 /* WatchModel.swift */,
+				BA50EE567148D61F5AA4457B /* WatchRootView.swift */,
+			);
+			path = AmperlyWatch;
+			sourceTree = "<group>";
+		};
+		6E19657BF0027526FF23487A /* AmperlyWatchWidget */ = {
+			isa = PBXGroup;
+			children = (
+				5E983FEABE3BD70FC67632F3 /* AmperlyWatchWidget.entitlements */,
+				F36BCFE95DE6258DC651C3C2 /* AmperlyWatchWidgetBundle.swift */,
+				0DE91F601C45AD1E2E5F3073 /* Info.plist */,
+				A78F8F8A9887E9E2574FCF15 /* WatchComplicationProvider.swift */,
+				91B84654080ED3D8EB826495 /* WatchComplications.swift */,
+			);
+			path = AmperlyWatchWidget;
+			sourceTree = "<group>";
+		};
 		6FE46C7BD87D67D434254F2D /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				8FD6310A7075BA556FEEF158 /* Amperly.app */,
+				B2476FF48D83B88AF3BD43D0 /* AmperlyWatch.app */,
+				F20F6B6A65DF1C7193E0E641 /* AmperlyWatchWidget.appex */,
 				BADC2A1F72351F5ED8D7A546 /* AmperlyWidget.appex */,
 			);
 			name = Products;
@@ -205,6 +289,9 @@
 			isa = PBXGroup;
 			children = (
 				F4CF8BAB4BB18AA2E962E7AC /* Amperly */,
+				1D1CB50E83BB52CA7382A023 /* AmperlyWatch */,
+				CC7D6B8865DB00B207919EDE /* AmperlyWatchShared */,
+				6E19657BF0027526FF23487A /* AmperlyWatchWidget */,
 				73714E7F56B51BA97813321F /* AmperlyWidget */,
 				7E76BE535BCB7B56A669A941 /* Packages */,
 				6FE46C7BD87D67D434254F2D /* Products */,
@@ -218,6 +305,14 @@
 				65E6B3A067EB04961262BC4F /* RootView.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		CC7D6B8865DB00B207919EDE /* AmperlyWatchShared */ = {
+			isa = PBXGroup;
+			children = (
+				992E9BF0DC43C9904EE94D2D /* WatchTheme.swift */,
+			);
+			path = AmperlyWatchShared;
 			sourceTree = "<group>";
 		};
 		DEEEA98E1CE4290F465DBE11 /* Theme */ = {
@@ -247,6 +342,46 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0BFC375370F96C44291D4A1F /* AmperlyWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 568739D6D736BC9C666AF937 /* Build configuration list for PBXNativeTarget "AmperlyWatch" */;
+			buildPhases = (
+				9E3A4F65B512B3BCD809D7C6 /* Sources */,
+				9FCC27C27748A582765A0E8D /* Frameworks */,
+				1EFDEA5D222502D9273A7E9C /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				434D421C203BB0BCC13B7CD5 /* PBXTargetDependency */,
+			);
+			name = AmperlyWatch;
+			packageProductDependencies = (
+				EDBCE64E5816478D76534847 /* EnergyKit */,
+			);
+			productName = AmperlyWatch;
+			productReference = B2476FF48D83B88AF3BD43D0 /* AmperlyWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		1DEBFE0A8BA95D2E24994FA9 /* AmperlyWatchWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26D6FE1E000BCA7C32FEC61E /* Build configuration list for PBXNativeTarget "AmperlyWatchWidget" */;
+			buildPhases = (
+				F6907E0287FA83331913AF77 /* Sources */,
+				83453DC42187EC5CB70BC91A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AmperlyWatchWidget;
+			packageProductDependencies = (
+				50635010E718ED3E5D2A7D0F /* EnergyKit */,
+			);
+			productName = AmperlyWatchWidget;
+			productReference = F20F6B6A65DF1C7193E0E641 /* AmperlyWatchWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B50C5C2277211F043E946771 /* Amperly */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7F0962967192F00494BE4398 /* Build configuration list for PBXNativeTarget "Amperly" */;
@@ -297,6 +432,14 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					0BFC375370F96C44291D4A1F = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					1DEBFE0A8BA95D2E24994FA9 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					B50C5C2277211F043E946771 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -325,6 +468,8 @@
 			projectRoot = "";
 			targets = (
 				B50C5C2277211F043E946771 /* Amperly */,
+				0BFC375370F96C44291D4A1F /* AmperlyWatch */,
+				1DEBFE0A8BA95D2E24994FA9 /* AmperlyWatchWidget */,
 				F7529B3A120FFC07B908CA90 /* AmperlyWidget */,
 			);
 		};
@@ -378,9 +523,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9E3A4F65B512B3BCD809D7C6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B060158D1DCB6C37A6999BE /* AmperlyWatchApp.swift in Sources */,
+				AF354A1A018114046B17AC54 /* WatchModel.swift in Sources */,
+				143A875E1A35C86EBD62FC6C /* WatchRootView.swift in Sources */,
+				FF7A6283C96CB56F6E5DC298 /* WatchTheme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F6907E0287FA83331913AF77 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9A0424912CCF411B7888DE32 /* AmperlyWatchWidgetBundle.swift in Sources */,
+				785CA29A0B17CC4839A9D810 /* WatchComplicationProvider.swift in Sources */,
+				E21EABD77B1010A23A07DC7E /* WatchComplications.swift in Sources */,
+				6F8076D3B92822FEE4D10C17 /* WatchTheme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		434D421C203BB0BCC13B7CD5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1DEBFE0A8BA95D2E24994FA9 /* AmperlyWatchWidget */;
+			targetProxy = EC6BA1CFFFFC4F740C9C96C7 /* PBXContainerItemProxy */;
+		};
 		EEE24B778252CCEB049E6475 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F7529B3A120FFC07B908CA90 /* AmperlyWidget */;
@@ -423,6 +595,24 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.amperly.Amperly.AmperlyWidget;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		4BDED6E48527424A3E3825C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = AmperlyWatchWidget/AmperlyWatchWidget.entitlements;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = AmperlyWatchWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amperly.Amperly.watchkitapp.AmperlyWatchWidget;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
 		};
@@ -480,10 +670,24 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		6B63A9364B95109A76DEDA38 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = AmperlyWatch/AmperlyWatch.entitlements;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = AmperlyWatch/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amperly.Amperly.watchkitapp;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
 		};
@@ -548,10 +752,10 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
 		};
@@ -569,6 +773,38 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.amperly.Amperly.AmperlyWidget;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		B150E61641F311B223E4488A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = AmperlyWatch/AmperlyWatch.entitlements;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = AmperlyWatch/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amperly.Amperly.watchkitapp;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Debug;
+		};
+		C45BA6809F2FD8CBFAA60A4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = AmperlyWatchWidget/AmperlyWatchWidget.entitlements;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = AmperlyWatchWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amperly.Amperly.watchkitapp.AmperlyWatchWidget;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
 		};
@@ -595,6 +831,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		26D6FE1E000BCA7C32FEC61E /* Build configuration list for PBXNativeTarget "AmperlyWatchWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4BDED6E48527424A3E3825C9 /* Debug */,
+				C45BA6809F2FD8CBFAA60A4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		568739D6D736BC9C666AF937 /* Build configuration list for PBXNativeTarget "AmperlyWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B150E61641F311B223E4488A /* Debug */,
+				6B63A9364B95109A76DEDA38 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		57F83102A30515A80FB85EDD /* Build configuration list for PBXProject "Amperly" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -636,7 +890,15 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = EnergyKit;
 		};
+		50635010E718ED3E5D2A7D0F /* EnergyKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = EnergyKit;
+		};
 		D96E92E23983478C925368DF /* EnergyKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = EnergyKit;
+		};
+		EDBCE64E5816478D76534847 /* EnergyKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = EnergyKit;
 		};

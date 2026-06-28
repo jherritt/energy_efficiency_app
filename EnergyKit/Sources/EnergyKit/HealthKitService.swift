@@ -1,4 +1,4 @@
-#if os(iOS)
+#if os(iOS) || os(watchOS)
 import Foundation
 import HealthKit
 
@@ -7,7 +7,7 @@ import HealthKit
 /// Privacy: read-only. No share/write scopes are ever requested, nothing is
 /// persisted, and no data leaves the device. Each call queries HealthKit fresh
 /// and returns an in-memory snapshot that the caller is free to discard.
-@available(iOS 17.0, *)
+@available(iOS 17.0, watchOS 10.0, *)
 public actor HealthKitService {
 
     public static let shared = HealthKitService()
