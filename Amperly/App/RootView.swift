@@ -5,10 +5,13 @@ import EnergyKit
 /// HealthKit access has been requested yet, and owns the shared `AmperlyModel`.
 struct RootView: View {
     @State private var model = AmperlyModel()
+    @State private var didResolveAccess = false
 
     var body: some View {
         Group {
-            if model.hasRequestedHealthAccess {
+            if !didResolveAccess {
+                LaunchPlaceholder()
+            } else if model.hasRequestedHealthAccess {
                 MainTabView()
             } else {
                 OnboardingView()
@@ -18,10 +21,26 @@ struct RootView: View {
         .background(Color.inkBase)
         .tint(Color.chargeMint)
         .task {
-            // First paint: pull a snapshot if we already have (or were denied) access.
+            // Resolve onboarding-vs-main routing from the HealthKit actor first,
+            // then pull the first snapshot if access was already requested.
+            await model.refreshHealthAccessState()
+            didResolveAccess = true
             if model.hasRequestedHealthAccess {
                 await model.refresh()
             }
+        }
+    }
+}
+
+/// Neutral branded splash shown for the brief moment while we resolve whether
+/// HealthKit access has been requested (avoids flashing onboarding on launch).
+private struct LaunchPlaceholder: View {
+    var body: some View {
+        ZStack {
+            Color.inkBase.ignoresSafeArea()
+            Image(systemName: "bolt.fill")
+                .font(.system(size: 56, weight: .bold))
+                .foregroundStyle(AmperlyTheme.energyGradient)
         }
     }
 }

@@ -23,7 +23,7 @@ public actor HealthKitService {
 
     /// The complete set of read-only types Amperly uses.
     private var readTypes: Set<HKObjectType> {
-        var types: Set<HKObjectType> = [
+        let types: Set<HKObjectType> = [
             HKQuantityType(.activeEnergyBurned),
             HKQuantityType(.basalEnergyBurned),
             HKQuantityType(.appleExerciseTime),
@@ -38,7 +38,6 @@ public actor HealthKitService {
             HKObjectType.workoutType(),
             HKObjectType.activitySummaryType()
         ]
-        types = types.filter { _ in true }
         return types
     }
 

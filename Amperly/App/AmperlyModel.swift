@@ -104,21 +104,29 @@ final class AmperlyModel {
         self.settings = settings
         self.targets = settings.loadTargets()
         self.lowEfficiencyNudgeEnabled = settings.lowEfficiencyNudgeEnabled
-        self.hasRequestedHealthAccess = Self.healthAccessRequested()
+        // Resolved asynchronously on launch via refreshHealthAccessState();
+        // the HealthKit actor cannot be queried from a synchronous init.
+        self.hasRequestedHealthAccess = false
     }
 
     // MARK: Health access
 
     /// Whether HealthKit auth has been requested before (false -> show onboarding).
-    static func healthAccessRequested() -> Bool {
+    static func healthAccessRequested() async -> Bool {
         #if os(iOS)
         if #available(iOS 17.0, *) {
-            return HealthKitService.shared.hasRequestedAuthorization()
+            return await HealthKitService.shared.hasRequestedAuthorization()
         }
         return false
         #else
         return false
         #endif
+    }
+
+    /// Refresh the "has requested Health access" flag. Call once on launch so
+    /// routing (onboarding vs. main UI) settles correctly.
+    func refreshHealthAccessState() async {
+        hasRequestedHealthAccess = await Self.healthAccessRequested()
     }
 
     /// Prompt for HealthKit read access, then refresh. Safe to call repeatedly;
@@ -130,7 +138,7 @@ final class AmperlyModel {
             try? await HealthKitService.shared.requestAuthorization()
         }
         #endif
-        hasRequestedHealthAccess = Self.healthAccessRequested()
+        hasRequestedHealthAccess = await Self.healthAccessRequested()
         await refresh()
     }
 
@@ -151,7 +159,11 @@ final class AmperlyModel {
             let snapshot = await HealthKitService.shared.currentSnapshot(targets: currentTargets, now: now)
             let dayScore = ScoringEngine.score(snapshot, targets: currentTargets)
             self.score = dayScore
-            self.progression = ScoringEngine.progression(history: [dayScore])
+            // Derive streaks/levels from the user's own recent history (read live,
+            // nothing stored). Fall back to today only if history is unavailable.
+            let history = await HealthKitService.shared.recentDayScores(days: 14, targets: currentTargets, now: now)
+            self.progression = ScoringEngine.progression(history: history.isEmpty ? [dayScore] : history)
+            await scheduleNudgeIfNeeded()
             return
         }
         #endif
@@ -169,4 +181,48 @@ final class AmperlyModel {
         targets = newTargets
         settings.saveTargets(newTargets)
     }
+
+    /// Toggle the low-efficiency nudge; requests notification permission when
+    /// enabling, then (re)schedules or cancels the local nudge accordingly.
+    func setLowEfficiencyNudgeEnabled(_ enabled: Bool) async {
+        lowEfficiencyNudgeEnabled = enabled   // didSet persists it
+        #if os(iOS)
+        if enabled {
+            _ = await NotificationManager.shared.requestAuthorization()
+        }
+        #endif
+        await scheduleNudgeIfNeeded()
+    }
+
+    /// Schedule or cancel the opt-in afternoon nudge based on the latest score.
+    private func scheduleNudgeIfNeeded() async {
+        #if os(iOS)
+        guard let score else { return }
+        await NotificationManager.shared.refreshLowEfficiencyNudge(
+            isEnabled: lowEfficiencyNudgeEnabled,
+            efficiency: score.efficiency,
+            energySpent: score.energySpent,
+            pointsEarned: score.points.total)
+        #endif
+    }
 }
+
+#if DEBUG
+extension AmperlyModel {
+    /// Sample model for SwiftUI previews (DEBUG only).
+    static var preview: AmperlyModel {
+        let model = AmperlyModel()
+        model.score = DayScore(
+            date: Date(), isAuthorized: true, hasSleepData: true,
+            morningBattery: 92, currentBattery: 64, energySpent: 28,
+            efficiency: 88,
+            points: PointsBreakdown(move: 22, exercise: 16, stand: 12,
+                                    bedtime: 9, wake: 8, hydration: 14,
+                                    sleepPointsAvailable: true),
+            xp: 320, caffeineLateFlag: false)
+        model.progression = Progression(level: 6, totalXP: 4200, xpIntoLevel: 320,
+                                        xpForNextLevel: 800, pointsStreak: 12, sleepStreak: 5)
+        return model
+    }
+}
+#endif
