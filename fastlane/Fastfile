@@ -1,0 +1,67 @@
+default_platform(:ios)
+
+KEY_ID   = "2DBH9F6S6X"
+ISSUER   = "a61eddc1-073e-458e-adef-989325a894d5"
+KEY_PATH = File.expand_path("~/.appstoreconnect/private_keys/AuthKey_2DBH9F6S6X.p8")
+TEAM_ID  = "VH5QK9LU35"
+
+APP_ID         = "com.amperly.Amperly"
+WIDGET_ID      = "com.amperly.Amperly.AmperlyWidget"
+APP_PROFILE    = "Amperly AppStore"
+WIDGET_PROFILE = "Amperly Widget AppStore"
+IPA_PATH       = "build/Amperly.ipa"
+
+def asc_key
+  app_store_connect_api_key(key_id: KEY_ID, issuer_id: ISSUER, key_filepath: KEY_PATH)
+end
+
+platform :ios do
+  desc "Distribution certificate + App Store profiles; set both targets to manual signing"
+  lane :signing do
+    key = asc_key
+    # Bundle IDs + HealthKit capability are provisioned separately via the ASC REST API.
+    get_certificates(api_key: key, team_id: TEAM_ID)
+    get_provisioning_profile(api_key: key, app_identifier: APP_ID,
+                             provisioning_name: APP_PROFILE, team_id: TEAM_ID, force: true)
+    get_provisioning_profile(api_key: key, app_identifier: WIDGET_ID,
+                             provisioning_name: WIDGET_PROFILE, team_id: TEAM_ID, force: true)
+    update_code_signing_settings(path: "Amperly.xcodeproj", use_automatic_signing: false,
+                                 team_id: TEAM_ID, code_sign_identity: "Apple Distribution",
+                                 profile_name: APP_PROFILE, targets: ["Amperly"],
+                                 build_configurations: ["Release"])
+    update_code_signing_settings(path: "Amperly.xcodeproj", use_automatic_signing: false,
+                                 team_id: TEAM_ID, code_sign_identity: "Apple Distribution",
+                                 profile_name: WIDGET_PROFILE, targets: ["AmperlyWidget"],
+                                 build_configurations: ["Release"])
+  end
+
+  desc "Build the App Store .ipa (manual signing)"
+  lane :build do
+    signing
+    build_app(
+      project: "Amperly.xcodeproj",
+      scheme: "Amperly",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "build",
+      output_name: "Amperly.ipa",
+      export_options: {
+        method: "app-store",
+        signingStyle: "manual",
+        provisioningProfiles: { APP_ID => APP_PROFILE, WIDGET_ID => WIDGET_PROFILE }
+      }
+    )
+  end
+
+  desc "Upload the built .ipa to TestFlight"
+  lane :upload do
+    upload_to_testflight(api_key: asc_key, apple_id: "6785369970", app_identifier: APP_ID,
+                         ipa: IPA_PATH, skip_waiting_for_build_processing: true)
+  end
+
+  desc "Build then upload"
+  lane :beta do
+    build
+    upload
+  end
+end

@@ -24,3 +24,9 @@ venv/
 # App Store Connect API keys (never commit)
 *.p8
 .appstoreconnect/
+
+# fastlane run artifacts
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/test_output/
+*.ipa

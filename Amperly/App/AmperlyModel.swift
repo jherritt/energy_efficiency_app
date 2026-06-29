@@ -221,9 +221,8 @@ final class AmperlyModel {
     }
 }
 
-#if DEBUG
 extension AmperlyModel {
-    /// Sample model for SwiftUI previews (DEBUG only).
+    /// Sample model for SwiftUI previews and placeholders.
     static var preview: AmperlyModel {
         let model = AmperlyModel()
         model.score = DayScore(
@@ -239,4 +238,3 @@ extension AmperlyModel {
         return model
     }
 }
-#endif

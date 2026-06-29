@@ -13,7 +13,7 @@ settings:
     SWIFT_VERSION: "5.0"
     MARKETING_VERSION: "1.0"
     CURRENT_PROJECT_VERSION: "1"
-    DEVELOPMENT_TEAM: ""            # Set your Apple Developer Team ID in Xcode before archiving.
+    DEVELOPMENT_TEAM: "VH5QK9LU35"  # Your paid Apple Developer team.
     CODE_SIGN_STYLE: Automatic
     IPHONEOS_DEPLOYMENT_TARGET: "17.0"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
@@ -52,6 +52,7 @@ targets:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false
         NSHealthShareUsageDescription: "Amperly reads your sleep, activity, heart, and hydration data from Apple Health to compute your energy battery and efficiency score on your device. Your data is never stored or shared."
+        NSHealthUpdateUsageDescription: "Amperly reads your data from Apple Health on your device to calculate your energy battery and efficiency score. Amperly never writes to or modifies your Apple Health data."
     entitlements:
       path: Amperly/Amperly.entitlements
       properties:
@@ -77,6 +78,7 @@ targets:
         CFBundleDisplayName: Amperly
         CFBundleShortVersionString: "1.0"
         NSHealthShareUsageDescription: "Amperly reads your sleep, activity, heart, and hydration data from Apple Health to show your energy battery and efficiency score in the widget. Your data is never stored or shared."
+        NSHealthUpdateUsageDescription: "Amperly reads your data from Apple Health on your device to calculate your energy battery and efficiency score. Amperly never writes to or modifies your Apple Health data."
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
