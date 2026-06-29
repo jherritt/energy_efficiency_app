@@ -138,7 +138,10 @@ final class AmperlyModel {
             try? await HealthKitService.shared.requestAuthorization()
         }
         #endif
-        hasRequestedHealthAccess = await Self.healthAccessRequested()
+        // We have now prompted the user. Advance to the dashboard regardless of the
+        // outcome (granted, denied, or HealthKit unavailable); the dashboard renders
+        // "--" when there is no access, and the next launch re-derives the real state.
+        hasRequestedHealthAccess = true
         await refresh()
     }
 
