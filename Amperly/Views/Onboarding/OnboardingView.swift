@@ -57,7 +57,7 @@ struct OnboardingView: View {
             symbol: "battery.100.bolt",
             eyebrow: "YOUR DAY",
             title: "Your day is a battery",
-            body: "Sleep charges you overnight. Everything you do across the day draws that charge down. Amperly shows the whole arc, live, as a glowing battery you can read at a glance."
+            message: "Sleep charges you overnight. Everything you do across the day draws that charge down. Amperly shows the whole arc, live, as a glowing battery you can read at a glance."
         ) {
             BatteryGlyph()
         }
@@ -68,7 +68,7 @@ struct OnboardingView: View {
             symbol: "gauge.with.dots.needle.67percent",
             eyebrow: "ONE NUMBER",
             title: "One efficiency score that matters",
-            body: "Efficiency is the energy you actually turned into results. Earn points across move, exercise, stand, sleep timing, and hydration, and watch a single score out of 100 tell you how well today is going."
+            message: "Efficiency is the energy you actually turned into results. Earn points across move, exercise, stand, sleep timing, and hydration, and watch a single score out of 100 tell you how well today is going."
         ) {
             ScoreGlyph()
         }
@@ -79,7 +79,7 @@ struct OnboardingView: View {
             symbol: "lock.shield",
             eyebrow: "PRIVATE BY DESIGN",
             title: "Private by design",
-            body: "Amperly reads Apple Health live, computes everything on your device, and stores nothing. No account, no sign-in, no tracking. Your data never leaves your iPhone."
+            message: "Amperly reads Apple Health live, computes everything on your device, and stores nothing. No account, no sign-in, no tracking. Your data never leaves your iPhone."
         ) {
             PrivacyGlyph()
         }
@@ -167,7 +167,7 @@ private struct OnboardingPage<Illustration: View>: View {
     let symbol: String
     let eyebrow: String
     let title: String
-    let body: String
+    let message: String
     @ViewBuilder var illustration: () -> Illustration
 
     var body: some View {
@@ -189,7 +189,7 @@ private struct OnboardingPage<Illustration: View>: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text(body)
+                Text(message)
                     .font(.body)
                     .foregroundStyle(OnbColor.textMid)
                     .multilineTextAlignment(.center)
