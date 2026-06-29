@@ -216,21 +216,39 @@ public enum ScoringEngine {
 
     /// Derive level/streaks from a chronological window of past day scores
     /// (oldest...newest), computed live by the app. Nothing is persisted.
-    public static func progression(history: [DayScore]) -> Progression {
-        let totalXP = history.reduce(0) { $0 + $1.xp }
+    /// Derive a compact, persistable record for one day from its full score.
+    public static func dailyProgress(from day: DayScore) -> DailyProgress {
+        let pointsMet = day.points.maxAvailable > 0
+            && day.points.total >= 0.7 * day.points.maxAvailable
+        let sleepMet = day.hasSleepData && (day.morningBattery ?? 0) >= 70
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone.current
+        return DailyProgress(date: cal.startOfDay(for: day.date),
+                             points: day.points.total, xp: day.xp,
+                             pointsGoalMet: pointsMet, sleepGoalMet: sleepMet)
+    }
+
+    /// Lifetime progression from the user's persisted daily records. XP is the
+    /// running sum over ALL days, so level climbs forever; streaks are date-aware,
+    /// so a missing or unmet calendar day ends the run.
+    public static func progression(from days: [DailyProgress]) -> Progression {
+        let totalXP = days.reduce(0) { $0 + $1.xp }
         let lvl = level(forXP: totalXP)
         let floorXP = xpThreshold(forLevel: lvl)
         let nextXP = xpThreshold(forLevel: lvl + 1)
 
-        // Streaks count consecutive most-recent days meeting a bar.
-        let ordered = history // assumed oldest -> newest
-        let pointsStreak = trailingStreak(ordered) { $0.points.total >= 0.7 * $0.points.maxAvailable }
-        let sleepStreak = trailingStreak(ordered) { $0.hasSleepData && ($0.morningBattery ?? 0) >= 70 }
+        return Progression(
+            level: lvl, totalXP: totalXP,
+            xpIntoLevel: totalXP - floorXP, xpForNextLevel: nextXP - floorXP,
+            pointsStreak: currentStreak(days) { $0.pointsGoalMet },
+            sleepStreak: currentStreak(days) { $0.sleepGoalMet },
+            longestPointsStreak: longestStreak(days) { $0.pointsGoalMet },
+            longestSleepStreak: longestStreak(days) { $0.sleepGoalMet })
+    }
 
-        return Progression(level: lvl, totalXP: totalXP,
-                           xpIntoLevel: totalXP - floorXP,
-                           xpForNextLevel: nextXP - floorXP,
-                           pointsStreak: pointsStreak, sleepStreak: sleepStreak)
+    /// Backward-compatible overload over DayScores (maps to DailyProgress first).
+    public static func progression(history: [DayScore]) -> Progression {
+        progression(from: history.map(dailyProgress(from:)))
     }
 
     /// Cumulative XP needed to *reach* a level: base * L*(L-1)/2 (level 1 == 0 XP).
@@ -245,12 +263,45 @@ public enum ScoringEngine {
         return l
     }
 
-    static func trailingStreak(_ ordered: [DayScore], meets: (DayScore) -> Bool) -> Int {
-        var count = 0
-        for day in ordered.reversed() {
-            if meets(day) { count += 1 } else { break }
+    /// Consecutive calendar days up to the most recent record that meet the bar.
+    /// A missing day or an unmet day ends the streak.
+    static func currentStreak(_ days: [DailyProgress], met: (DailyProgress) -> Bool) -> Int {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone.current
+        var byDay: [Date: DailyProgress] = [:]
+        for d in days { byDay[cal.startOfDay(for: d.date)] = d }
+        guard var cursor = byDay.keys.max() else { return 0 }
+        var streak = 0
+        while let rec = byDay[cursor], met(rec) {
+            streak += 1
+            guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }
+            cursor = prev
         }
-        return count
+        return streak
+    }
+
+    /// The longest run of consecutive calendar days meeting the bar, across all history.
+    static func longestStreak(_ days: [DailyProgress], met: (DailyProgress) -> Bool) -> Int {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone.current
+        let sorted = days
+            .map { (day: cal.startOfDay(for: $0.date), rec: $0) }
+            .sorted { $0.day < $1.day }
+        var longest = 0, run = 0
+        var prev: Date? = nil
+        for item in sorted {
+            let consecutive = prev.map {
+                cal.dateComponents([.day], from: $0, to: item.day).day == 1
+            } ?? false
+            if met(item.rec) {
+                run = (consecutive && run > 0) ? run + 1 : 1
+            } else {
+                run = 0
+            }
+            longest = max(longest, run)
+            prev = item.day
+        }
+        return longest
     }
 
     // MARK: - Shared helpers

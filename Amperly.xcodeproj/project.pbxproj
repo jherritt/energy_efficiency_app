@@ -21,6 +21,7 @@
 		6F8076D3B92822FEE4D10C17 /* WatchTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992E9BF0DC43C9904EE94D2D /* WatchTheme.swift */; };
 		785CA29A0B17CC4839A9D810 /* WatchComplicationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A78F8F8A9887E9E2574FCF15 /* WatchComplicationProvider.swift */; };
 		7BE084ED62C9F82BFD254D68 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5605DE37EB69C63E8D7F10A /* Provider.swift */; };
+		7ED764B02167B22A9F1001E5 /* ProgressionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB4308088F6361B6EFDC691C /* ProgressionStore.swift */; };
 		7F8461183566E1A497A1FF9C /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC1BA849E88A92538088660 /* CardContainer.swift */; };
 		7FF08B0DFEE305EE1C3BA34A /* AmperlyTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E72ADB411A4AC631C1A07F /* AmperlyTheme.swift */; };
 		853B8729182AF84F11BE0B05 /* EnergyKit in Frameworks */ = {isa = PBXBuildFile; productRef = D96E92E23983478C925368DF /* EnergyKit */; };
@@ -132,6 +133,7 @@
 		F1E351BD9820880E8286FD48 /* BreakdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakdownView.swift; sourceTree = "<group>"; };
 		F20F6B6A65DF1C7193E0E641 /* AmperlyWatchWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AmperlyWatchWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F36BCFE95DE6258DC651C3C2 /* AmperlyWatchWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyWatchWidgetBundle.swift; sourceTree = "<group>"; };
+		FB4308088F6361B6EFDC691C /* ProgressionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -268,6 +270,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		A2A5E1C91023C1A8B5B2E656 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				FB4308088F6361B6EFDC691C /* ProgressionStore.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
 		B1D4E82FFB05427BBE6ECC93 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -329,6 +339,7 @@
 			children = (
 				C2C38E9034458E1672EA6515 /* App */,
 				1A9FAFE7BB64C3F86F4EB961 /* Notifications */,
+				A2A5E1C91023C1A8B5B2E656 /* Persistence */,
 				DEEEA98E1CE4290F465DBE11 /* Theme */,
 				9E8EAE3BDBD758051D10C051 /* Views */,
 				F03350D7F34C3E7406A9EB9B /* Amperly.entitlements */,
@@ -506,6 +517,7 @@
 				DA000A10BC49969F94B5B855 /* OnboardingView.swift in Sources */,
 				EE49A824B913C597C480B037 /* PointsCardView.swift in Sources */,
 				B23519DB5FC53C81D190C607 /* PrivacyView.swift in Sources */,
+				7ED764B02167B22A9F1001E5 /* ProgressionStore.swift in Sources */,
 				3B6D2C01F84469735135ADA9 /* ProgressionView.swift in Sources */,
 				F3B3C933E4A724E77DD4B3F8 /* RootView.swift in Sources */,
 				9DED3DF07B5562DF9C8870DF /* SettingsView.swift in Sources */,

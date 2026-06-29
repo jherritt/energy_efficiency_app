@@ -295,14 +295,40 @@ public struct Progression: Sendable, Equatable {
     public var xpForNextLevel: Double
     public var pointsStreak: Int
     public var sleepStreak: Int
+    public var longestPointsStreak: Int
+    public var longestSleepStreak: Int
 
     public init(level: Int, totalXP: Double, xpIntoLevel: Double, xpForNextLevel: Double,
-                pointsStreak: Int, sleepStreak: Int) {
+                pointsStreak: Int, sleepStreak: Int,
+                longestPointsStreak: Int = 0, longestSleepStreak: Int = 0) {
         self.level = level
         self.totalXP = totalXP
         self.xpIntoLevel = xpIntoLevel
         self.xpForNextLevel = xpForNextLevel
         self.pointsStreak = pointsStreak
         self.sleepStreak = sleepStreak
+        self.longestPointsStreak = longestPointsStreak
+        self.longestSleepStreak = longestSleepStreak
+    }
+}
+
+/// A compact, persistable record of one day's gamification progress, derived from a
+/// `DayScore`. Safe to store on-device: it holds only derived numbers (points, XP,
+/// goal-met flags) - no raw health data - and never leaves the device.
+public struct DailyProgress: Sendable, Equatable, Codable {
+    /// Start of the day this record represents (local time).
+    public var date: Date
+    public var points: Double
+    public var xp: Double
+    public var pointsGoalMet: Bool
+    public var sleepGoalMet: Bool
+
+    public init(date: Date, points: Double, xp: Double,
+                pointsGoalMet: Bool, sleepGoalMet: Bool) {
+        self.date = date
+        self.points = points
+        self.xp = xp
+        self.pointsGoalMet = pointsGoalMet
+        self.sleepGoalMet = sleepGoalMet
     }
 }

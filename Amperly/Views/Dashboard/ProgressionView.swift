@@ -44,9 +44,11 @@ struct ProgressionView: View {
                 HStack(spacing: 10) {
                     streakChip(symbol: "flame.fill",
                                value: p.pointsStreak,
+                               best: p.longestPointsStreak,
                                caption: "points")
                     streakChip(symbol: "moon.stars.fill",
                                value: p.sleepStreak,
+                               best: p.longestSleepStreak,
                                caption: "sleep")
                     Spacer(minLength: 0)
                 }
@@ -83,7 +85,7 @@ struct ProgressionView: View {
         .frame(height: 6)
     }
 
-    private func streakChip(symbol: String, value: Int, caption: String) -> some View {
+    private func streakChip(symbol: String, value: Int, best: Int, caption: String) -> some View {
         HStack(spacing: 6) {
             Image(systemName: symbol)
                 .font(.system(size: 12, weight: .semibold))
@@ -95,6 +97,12 @@ struct ProgressionView: View {
             Text(caption)
                 .font(.system(size: 13, weight: .regular))
                 .foregroundStyle(Color.textMid)
+            if best > value && best > 0 {
+                Text("best \(best)")
+                    .font(.system(size: 11, weight: .semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(Color.textLo)
+            }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 7)
@@ -106,7 +114,7 @@ struct ProgressionView: View {
         )
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(caption) streak")
-        .accessibilityValue("\(value) days")
+        .accessibilityValue("\(value) days, best \(best) days")
     }
 
     private func format(_ value: Double) -> String {
@@ -119,7 +127,8 @@ struct ProgressionView: View {
         Color.inkBase.ignoresSafeArea()
         ProgressionView(progression: Progression(
             level: 6, totalXP: 4200, xpIntoLevel: 320, xpForNextLevel: 800,
-            pointsStreak: 12, sleepStreak: 5))
+            pointsStreak: 12, sleepStreak: 5,
+            longestPointsStreak: 28, longestSleepStreak: 14))
         .padding()
     }
 }

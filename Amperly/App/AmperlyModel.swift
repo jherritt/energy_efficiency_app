@@ -162,10 +162,21 @@ final class AmperlyModel {
             let snapshot = await HealthKitService.shared.currentSnapshot(targets: currentTargets, now: now)
             let dayScore = ScoringEngine.score(snapshot, targets: currentTargets)
             self.score = dayScore
-            // Derive streaks/levels from the user's own recent history (read live,
-            // nothing stored). Fall back to today only if history is unavailable.
-            let history = await HealthKitService.shared.recentDayScores(days: 14, targets: currentTargets, now: now)
-            self.progression = ScoringEngine.progression(history: history.isEmpty ? [dayScore] : history)
+
+            // Lifetime progression, persisted on-device (nothing transmitted). On the
+            // very first run we seed from the last 90 days of Apple Health so streaks
+            // and level reflect existing history; after that we accumulate forever,
+            // one record per day, so the user's level keeps climbing for months/years.
+            let store = ProgressionStore.shared
+            if store.isEmpty {
+                let backfill = await HealthKitService.shared.recentDayScores(days: 90, targets: currentTargets, now: now)
+                store.recordAll(backfill.map(ScoringEngine.dailyProgress(from:)))
+            }
+            if dayScore.isAuthorized {
+                store.record(ScoringEngine.dailyProgress(from: dayScore))
+            }
+            self.progression = ScoringEngine.progression(from: store.allDays())
+
             await scheduleNudgeIfNeeded()
             return
         }
