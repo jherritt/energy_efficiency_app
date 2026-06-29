@@ -20,3 +20,7 @@ ExportOptions.plist
 __pycache__/
 *.pyc
 venv/
+
+# App Store Connect API keys (never commit)
+*.p8
+.appstoreconnect/
