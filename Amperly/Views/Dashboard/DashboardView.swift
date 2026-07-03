@@ -1,10 +1,12 @@
 import SwiftUI
 import EnergyKit
 
-/// Amperly's main screen. A scrolling stack on `inkBase` presents the hero
-/// battery, the efficiency hero, the points card, the breakdown ledger, the
-/// compact progression strip, and a link into the transparency screen. It pulls
-/// fresh data on appear and on pull-to-refresh, both via `model.refresh()`.
+/// Amperly's main screen. A scrolling stack on `inkBase` leads with the
+/// EFFICIENCY hero (the app's signature element), then the intraday
+/// efficiency/battery charts, the battery (with sleep-debt and estimated-charge
+/// context), the points card, the breakdown ledger, the compact progression
+/// strip, and a link into the transparency screen. It pulls fresh data on
+/// appear and on pull-to-refresh, both via `model.refresh()`.
 struct DashboardView: View {
     @Environment(AmperlyModel.self) private var model
 
@@ -12,14 +14,14 @@ struct DashboardView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    BatteryView(level: model.score?.currentBattery)
-                        .frame(height: 340)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 4)
-
                     CardContainer {
                         EfficiencyHeroView(efficiency: model.score?.efficiency)
                     }
+                    .padding(.top, 4)
+
+                    EfficiencyChartView(series: model.hourlySeries)
+
+                    batterySection
 
                     if let points = model.score?.points {
                         PointsCardView(points: points)
@@ -41,6 +43,63 @@ struct DashboardView: View {
             .refreshable { await model.refresh() }
             .task { await model.refresh() }
         }
+    }
+
+    // MARK: Battery + context
+
+    /// The battery with its contextual footnotes: an "Estimated" note when the
+    /// morning charge had to be estimated (no sleep recorded), and a compact
+    /// sleep-debt pill once the carried debt is at least half an hour.
+    private var batterySection: some View {
+        VStack(spacing: 10) {
+            BatteryView(level: model.score?.currentBattery)
+                .frame(height: 240)
+                .frame(maxWidth: .infinity)
+
+            if let score = model.score {
+                if score.batteryIsEstimated {
+                    estimatedNote
+                }
+                if score.sleepDebtHours >= 0.5 {
+                    sleepDebtPill(hours: score.sleepDebtHours)
+                }
+            }
+        }
+    }
+
+    private var estimatedNote: some View {
+        HStack(spacing: 5) {
+            Image(systemName: "questionmark.circle")
+                .font(.system(size: 11, weight: .semibold))
+            Text("Estimated from your recent sleep average")
+                .font(.system(size: 12, weight: .regular))
+        }
+        .foregroundStyle(Color.textLo)
+        .accessibilityElement(children: .combine)
+    }
+
+    private func sleepDebtPill(hours: Double) -> some View {
+        let heavy = hours >= 5
+        let tint = heavy ? Color.drainWarn : Color.textMid
+        return HStack(spacing: 6) {
+            Image(systemName: "moon.zzz.fill")
+                .font(.system(size: 11, weight: .semibold))
+            Text("Sleep debt \(String(format: "%.1f", hours))h")
+                .font(.system(size: 13, weight: .semibold))
+                .monospacedDigit()
+        }
+        .foregroundStyle(tint)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(Capsule().fill(Color.inkElev))
+        .overlay(
+            Capsule().strokeBorder(
+                heavy ? Color.drainWarn.opacity(0.5) : Color.track,
+                lineWidth: 1)
+        )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Sleep debt")
+        .accessibilityValue("\(String(format: "%.1f", hours)) hours")
     }
 
     private func insightsLink(score: DayScore) -> some View {

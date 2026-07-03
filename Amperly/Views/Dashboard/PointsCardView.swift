@@ -4,14 +4,21 @@ import EnergyKit
 /// "POINTS TODAY" summary card: the day's earned points against the maximum
 /// available, with a thin gradient progress bar. The maximum drops to 80 when no
 /// sleep data is present (bedtime/wake fall out), which `PointsBreakdown`
-/// already reflects via `maxAvailable`.
+/// already reflects via `maxAvailable`. The total shown here is the SUM OF THE
+/// ROUNDED per-line values, so it always matches the breakdown ledger exactly.
 struct PointsCardView: View {
     let points: PointsBreakdown
 
-    private var earned: Double { points.total }
-    private var maxAvailable: Double { points.maxAvailable }
+    /// Sum of the six rows AS DISPLAYED (each rounded to an Int), so this card
+    /// and `BreakdownView` visibly add up.
+    private var earned: Int {
+        [points.move, points.exercise, points.stand,
+         points.bedtime, points.wake, points.hydration]
+            .reduce(0) { $0 + Int($1.rounded()) }
+    }
+    private var maxAvailable: Int { Int(points.maxAvailable.rounded()) }
     private var fraction: Double {
-        maxAvailable > 0 ? min(1, max(0, earned / maxAvailable)) : 0
+        maxAvailable > 0 ? min(1, max(0, Double(earned) / Double(maxAvailable))) : 0
     }
 
     var body: some View {
@@ -29,11 +36,11 @@ struct PointsCardView: View {
                 }
 
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text(format(earned))
+                    Text("\(earned)")
                         .font(.system(size: 40, weight: .heavy, design: .default))
                         .monospacedDigit()
                         .foregroundStyle(Color.textHi)
-                    Text("of \(format(maxAvailable))")
+                    Text("of \(maxAvailable)")
                         .font(.system(size: 17, weight: .semibold))
                         .monospacedDigit()
                         .foregroundStyle(Color.textLo)
@@ -44,7 +51,7 @@ struct PointsCardView: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Points today")
-        .accessibilityValue("\(format(earned)) of \(format(maxAvailable))")
+        .accessibilityValue("\(earned) of \(maxAvailable)")
     }
 
     private var progressBar: some View {
@@ -60,14 +67,6 @@ struct PointsCardView: View {
             }
         }
         .frame(height: 8)
-    }
-
-    private func format(_ value: Double) -> String {
-        let rounded = (value * 10).rounded() / 10
-        if rounded == rounded.rounded() {
-            return String(Int(rounded))
-        }
-        return String(format: "%.1f", rounded)
     }
 }
 

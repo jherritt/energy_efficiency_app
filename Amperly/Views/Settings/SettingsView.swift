@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import EnergyKit
 
 /// Settings for Amperly. Targets, the single notification opt-in, privacy, and
@@ -23,6 +24,7 @@ struct SettingsView: View {
     @State private var waterGoalLiters: Double = ScoringConstants.defaultWaterGoalML / 1000.0
 
     @State private var nudgeEnabled: Bool = false
+    @State private var notificationsDenied = false
     @State private var didLoad = false
 
     var body: some View {
@@ -33,9 +35,9 @@ struct SettingsView: View {
             aboutSection
         }
         .scrollContentBackground(.hidden)
-        .background(SetColor.inkBase.ignoresSafeArea())
+        .background(Color.inkBase.ignoresSafeArea())
         .navigationTitle("Settings")
-        .tint(SetColor.chargeMint)
+        .tint(Color.chargeMint)
         .onAppear(perform: loadFromModel)
     }
 
@@ -48,26 +50,31 @@ struct SettingsView: View {
                 Stepper(value: $sleepTargetHours, in: 5...11, step: 0.5) {
                     HStack {
                         Label("Sleep target", systemImage: "bed.double.fill")
-                            .labelStyle(.titleAndIcon)
+                            .labelStyle(SettingsRowLabelStyle())
                         Spacer()
                         Text(formattedHours(sleepTargetHours))
                             .font(.body.weight(.semibold).monospacedDigit())
-                            .foregroundStyle(SetColor.textHi)
+                            .foregroundStyle(Color.textHi)
                     }
                 }
+                .tint(Color.chargeMint)
                 .onChange(of: sleepTargetHours) { _, _ in commitTargets() }
             }
 
             // In-app bedtime fallback
             DatePicker(selection: $bedTime, displayedComponents: .hourAndMinute) {
                 Label("Bedtime", systemImage: "moon.fill")
+                    .labelStyle(SettingsRowLabelStyle())
             }
+            .tint(Color.chargeMint)
             .onChange(of: bedTime) { _, _ in commitTargets() }
 
             // In-app wake time fallback
             DatePicker(selection: $wakeTime, displayedComponents: .hourAndMinute) {
                 Label("Wake time", systemImage: "sunrise.fill")
+                    .labelStyle(SettingsRowLabelStyle())
             }
+            .tint(Color.chargeMint)
             .onChange(of: wakeTime) { _, _ in commitTargets() }
 
             // Water goal
@@ -75,21 +82,23 @@ struct SettingsView: View {
                 Stepper(value: $waterGoalLiters, in: 0.5...5.0, step: 0.25) {
                     HStack {
                         Label("Water goal", systemImage: "drop.fill")
+                            .labelStyle(SettingsRowLabelStyle())
                         Spacer()
                         Text(formattedLiters(waterGoalLiters))
                             .font(.body.weight(.semibold).monospacedDigit())
-                            .foregroundStyle(SetColor.textHi)
+                            .foregroundStyle(Color.textHi)
                     }
                 }
+                .tint(Color.chargeMint)
                 .onChange(of: waterGoalLiters) { _, _ in commitTargets() }
             }
         } header: {
             sectionHeader("Targets")
         } footer: {
             Text("Bedtime and wake time are used when Apple Health does not provide a sleep schedule.")
-                .foregroundStyle(SetColor.textLo)
+                .foregroundStyle(Color.textLo)
         }
-        .listRowBackground(SetColor.inkElev)
+        .listRowBackground(Color.inkElev)
     }
 
     // MARK: - Notifications
@@ -99,15 +108,41 @@ struct SettingsView: View {
             Toggle(isOn: nudgeBinding) {
                 VStack(alignment: .leading, spacing: 2) {
                     Label("Low-energy efficiency nudge", systemImage: "bell.badge.fill")
+                        .labelStyle(SettingsRowLabelStyle())
                     Text("One gentle afternoon reminder when the day is trending low.")
                         .font(.footnote)
-                        .foregroundStyle(SetColor.textLo)
+                        .foregroundStyle(Color.textLo)
                 }
+            }
+            .tint(Color.chargeMint)
+
+            // Surface the system-level denial that otherwise makes the toggle
+            // look broken: the app can never fire while iOS has it disabled.
+            if notificationsDenied {
+                Button {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(Color.drainWarn)
+                        Text("Notifications are turned off for Amperly in iOS Settings. Tap to open Settings and allow them.")
+                            .font(.footnote)
+                            .foregroundStyle(Color.textMid)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .buttonStyle(.plain)
             }
         } header: {
             sectionHeader("Notifications")
         }
-        .listRowBackground(SetColor.inkElev)
+        .listRowBackground(Color.inkElev)
+        .task {
+            notificationsDenied = await NotificationManager.shared.isDenied()
+        }
     }
 
     /// Toggling persists the opt-in via the model, which requests authorization
@@ -129,11 +164,11 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(alignment: .firstTextBaseline, spacing: 10) {
                     Image(systemName: "lock.shield.fill")
-                        .foregroundStyle(SetColor.energyGradient)
+                        .foregroundStyle(AmperlyTheme.energyGradient)
                         .accessibilityHidden(true)
                     Text("Amperly stores no data. It reads Apple Health on your device only, with no account and no tracking.")
                         .font(.subheadline)
-                        .foregroundStyle(SetColor.textHi)
+                        .foregroundStyle(Color.textHi)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -143,11 +178,12 @@ struct SettingsView: View {
                 PrivacyView()
             } label: {
                 Label("Privacy statement", systemImage: "doc.text.magnifyingglass")
+                    .labelStyle(SettingsRowLabelStyle())
             }
         } header: {
             sectionHeader("Privacy")
         }
-        .listRowBackground(SetColor.inkElev)
+        .listRowBackground(Color.inkElev)
     }
 
     // MARK: - About
@@ -156,25 +192,26 @@ struct SettingsView: View {
         Section {
             HStack {
                 Label("Version", systemImage: "number")
+                    .labelStyle(SettingsRowLabelStyle())
                 Spacer()
                 Text(Self.appVersion)
                     .font(.body.monospacedDigit())
-                    .foregroundStyle(SetColor.textMid)
+                    .foregroundStyle(Color.textMid)
             }
 
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Image(systemName: "bolt.fill")
-                    .foregroundStyle(SetColor.energyGradient)
+                    .foregroundStyle(AmperlyTheme.energyGradient)
                     .accessibilityHidden(true)
                 Text("Measure the energy you actually use.")
                     .font(.subheadline.italic())
-                    .foregroundStyle(SetColor.textMid)
+                    .foregroundStyle(Color.textMid)
             }
             .padding(.vertical, 2)
         } header: {
             sectionHeader("About")
         }
-        .listRowBackground(SetColor.inkElev)
+        .listRowBackground(Color.inkElev)
     }
 
     // MARK: - Section header style
@@ -183,7 +220,7 @@ struct SettingsView: View {
         Text(text)
             .font(.system(.caption, design: .default, weight: .bold))
             .tracking(3)
-            .foregroundStyle(SetColor.textLo)
+            .foregroundStyle(Color.textLo)
             .textCase(.uppercase)
     }
 
@@ -267,24 +304,21 @@ struct SettingsView: View {
     }
 }
 
-// MARK: - Brand tokens (file-local to avoid cross-agent symbol collisions)
+// MARK: - Row label style
 
-private enum SetColor {
-    static let inkBase = Color(red: 0x06 / 255, green: 0x08 / 255, blue: 0x0B / 255)
-    static let inkElev = Color(red: 0x0E / 255, green: 0x14 / 255, blue: 0x1A / 255)
-    static let track = Color(red: 0x28 / 255, green: 0x30 / 255, blue: 0x39 / 255)
-    static let chargeLime = Color(red: 0x9C / 255, green: 0xFF / 255, blue: 0x2E / 255)
-    static let chargeMint = Color(red: 0x34 / 255, green: 0xF5 / 255, blue: 0xC5 / 255)
-    static let chargeCyan = Color(red: 0x19 / 255, green: 0xC3 / 255, blue: 0xFF / 255)
-    static let textHi = Color(red: 0xF4 / 255, green: 0xF7 / 255, blue: 0xFA / 255)
-    static let textMid = Color(red: 0xA6 / 255, green: 0xB0 / 255, blue: 0xBB / 255)
-    static let textLo = Color(red: 0x5C / 255, green: 0x67 / 255, blue: 0x72 / 255)
-
-    static let energyGradient = LinearGradient(
-        colors: [chargeLime, chargeMint, chargeCyan],
-        startPoint: .bottomLeading,
-        endPoint: .topTrailing
-    )
+/// Row labels on the dark elevated rows: title in high-contrast brand text,
+/// SF Symbol icon in the mint accent. Explicit colors keep every Form row
+/// readable regardless of the system appearance.
+private struct SettingsRowLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Label {
+            configuration.title
+                .foregroundStyle(Color.textHi)
+        } icon: {
+            configuration.icon
+                .foregroundStyle(Color.chargeMint)
+        }
+    }
 }
 
 // MARK: - Preview

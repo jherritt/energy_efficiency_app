@@ -14,6 +14,10 @@ struct InsightsView: View {
             VStack(alignment: .leading, spacing: 22) {
                 intro
                 chargeSection
+                sleepDebtSection
+                if score.batteryIsEstimated {
+                    estimatedChargeSection
+                }
                 drainSection
                 efficiencySection
                 pointsSection
@@ -51,6 +55,32 @@ struct InsightsView: View {
                 paragraph("No sleep was recorded for last night, so the battery starts from your activity instead. Wear your device to bed or log sleep to see the morning charge.")
             } else {
                 paragraph("Sleep was detected but the morning battery is not available yet.")
+            }
+        }
+    }
+
+    // MARK: Sleep debt
+
+    private var sleepDebtSection: some View {
+        section(title: "Sleep debt", symbol: "clock.arrow.circlepath") {
+            paragraph("Sleep debt is a running balance. Nights shorter than your target add to it, and sleeping past your target pays it down. The balance is capped at \(format(ScoringConstants.sleepDebtCapHours)) hours. Each hour of debt carried into today costs \(format(ScoringConstants.debtPenaltyPerHour)) battery-% off the morning charge, up to a maximum of \(format(ScoringConstants.debtPenaltyMax))%.")
+            metricRow("Debt carried into today", "\(format(score.sleepDebtHours)) h")
+            if score.sleepDebtHours > 0 {
+                metricRow("Battery cost this morning",
+                          "-\(format(min(ScoringConstants.debtPenaltyMax, score.sleepDebtHours * ScoringConstants.debtPenaltyPerHour)))%")
+            } else {
+                paragraph("You are carrying no debt right now, so nothing was subtracted.")
+            }
+        }
+    }
+
+    // MARK: Estimated charge (no sleep recorded)
+
+    private var estimatedChargeSection: some View {
+        section(title: "When sleep is missing", symbol: "questionmark.circle") {
+            paragraph("No sleep was recorded last night, so this morning's charge was ESTIMATED from your average sleep over the last seven days. Because it is an estimate rather than a measured night, a confidence discount of \(format(ScoringConstants.sleepFallbackConfidence * 100))% is applied to that charge. Record a night of sleep and the estimate disappears.")
+            if let morning = score.morningBattery {
+                metricRow("Estimated battery at wake", percent(morning))
             }
         }
     }
@@ -206,8 +236,8 @@ struct InsightsView: View {
             date: Date(),
             isAuthorized: true,
             hasSleepData: false,
-            morningBattery: nil,
-            currentBattery: 71,
+            morningBattery: 74,
+            currentBattery: 52,
             energySpent: 22,
             efficiency: 74,
             points: PointsBreakdown(
@@ -215,6 +245,8 @@ struct InsightsView: View {
                 bedtime: 0, wake: 0, hydration: 12,
                 sleepPointsAvailable: false),
             xp: 180,
-            caffeineLateFlag: true))
+            caffeineLateFlag: true,
+            sleepDebtHours: 6.5,
+            batteryIsEstimated: true))
     }
 }

@@ -83,33 +83,47 @@ final class NotificationManager {
         cancelLowEfficiencyNudge()
         guard trendingLow else { return }
 
-        // Do not schedule for a time that has already passed today.
-        var dateComponents = DateComponents()
-        dateComponents.hour = nudgeHour
-        dateComponents.minute = nudgeMinute
-
         let now = Date()
         let calendar = Calendar.current
-        if let fireTime = calendar.date(bySettingHour: nudgeHour, minute: nudgeMinute, second: 0, of: now),
-           fireTime <= now {
-            // The afternoon window has passed; skip until tomorrow's refresh.
-            return
-        }
+        let afternoon = calendar.date(bySettingHour: nudgeHour, minute: nudgeMinute, second: 0, of: now) ?? now
+        let evening = calendar.date(bySettingHour: quietHour, minute: 0, second: 0, of: now) ?? now
 
         let content = UNMutableNotificationContent()
         content.title = "Low energy efficiency"
         content.body = "You have burned a lot of energy with few points so far. A short walk or some water can turn the day around."
         content.sound = .default
 
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-        let request = UNNotificationRequest(identifier: nudgeIdentifier, content: content, trigger: trigger)
+        // Before the afternoon slot: schedule for 3pm today. Already past it but
+        // before quiet hours: nudge shortly (the old code silently gave up here,
+        // which is why nudges never seemed to fire). In quiet hours: skip.
+        let trigger: UNNotificationTrigger
+        if now < afternoon {
+            var comps = DateComponents()
+            comps.hour = nudgeHour
+            comps.minute = nudgeMinute
+            trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
+        } else if now < evening {
+            trigger = UNTimeIntervalNotificationTrigger(timeInterval: 120, repeats: false)
+        } else {
+            return
+        }
 
+        let request = UNNotificationRequest(identifier: nudgeIdentifier, content: content, trigger: trigger)
         do {
             try await center.add(request)
         } catch {
             // Silent failure is acceptable for a best-effort local nudge; we never
             // surface scheduling errors to the user for a non-critical reminder.
         }
+    }
+
+    /// No nudges at or after this hour (avoid pinging near bedtime).
+    private var quietHour: Int { 21 }
+
+    /// True when the user has explicitly DENIED notifications at the system
+    /// level, so Settings can surface why the nudge cannot fire.
+    func isDenied() async -> Bool {
+        await authorizationStatus() == .denied
     }
 
     /// Cancels any pending low-efficiency nudge. Called when the user turns the

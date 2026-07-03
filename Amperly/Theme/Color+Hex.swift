@@ -12,19 +12,21 @@ extension Color {
     }
 }
 
-// MARK: - Brand palette
+// MARK: - Brand palette (dark-only)
 
+// Amperly is a dark-only app. Every token is a fixed brand hex; there is no
+// light-mode variant by design.
 extension Color {
-    /// App background. Adapts to light/dark: deep ink in dark, soft white-blue in light.
-    static let inkBase = Color.dynamic(dark: 0x06080B, light: 0xF4F7FA)
+    /// App background. Deep ink.
+    static let inkBase = Color(hex: 0x06080B)
 
-    /// Card / tile surface. A touch lighter than the base in dark; soft white in light.
-    static let inkElev = Color.dynamic(dark: 0x0E141A, light: 0xFFFFFF)
+    /// Card / tile surface. A touch lighter than the base.
+    static let inkElev = Color(hex: 0x0E141A)
 
     /// Battery shell and empty progress track.
-    static let track = Color.dynamic(dark: 0x283039, light: 0xDCE3EB)
+    static let track = Color(hex: 0x283039)
 
-    // Energy accents (fixed across appearances so the gradient stays vivid).
+    // Energy accents.
     static let chargeLime = Color(hex: 0x9CFF2E)
     static let chargeMint = Color(hex: 0x34F5C5)
     static let chargeCyan = Color(hex: 0x19C3FF)
@@ -32,43 +34,12 @@ extension Color {
     /// Low-battery / depleted state ONLY.
     static let drainWarn = Color(hex: 0xFF6B5A)
 
-    /// Primary text. Near-white in dark, deep ink in light.
-    static let textHi = Color.dynamic(dark: 0xF4F7FA, light: 0x0E141A)
+    /// Primary text. Near-white.
+    static let textHi = Color(hex: 0xF4F7FA)
 
     /// Secondary text.
-    static let textMid = Color.dynamic(dark: 0xA6B0BB, light: 0x5C6772)
+    static let textMid = Color(hex: 0xA6B0BB)
 
     /// Tertiary / eyebrow text.
-    static let textLo = Color.dynamic(dark: 0x5C6772, light: 0x8C97A2)
+    static let textLo = Color(hex: 0x5C6772)
 }
-
-// MARK: - Dynamic (light/dark) helper
-
-private extension Color {
-    /// A color that resolves to one hex in dark mode and another in light mode.
-    /// Falls back to the dark value on platforms without a trait environment.
-    static func dynamic(dark: UInt, light: UInt) -> Color {
-        #if canImport(UIKit)
-        return Color(uiColor: UIColor { traits in
-            traits.userInterfaceStyle == .light
-                ? UIColor(rgb: light)
-                : UIColor(rgb: dark)
-        })
-        #else
-        return Color(hex: dark)
-        #endif
-    }
-}
-
-#if canImport(UIKit)
-private extension UIColor {
-    convenience init(rgb: UInt) {
-        self.init(
-            red: CGFloat((rgb >> 16) & 0xFF) / 255.0,
-            green: CGFloat((rgb >> 8) & 0xFF) / 255.0,
-            blue: CGFloat(rgb & 0xFF) / 255.0,
-            alpha: 1.0
-        )
-    }
-}
-#endif

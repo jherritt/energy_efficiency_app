@@ -29,5 +29,7 @@
 	<string>Amperly reads your sleep, activity, heart, and hydration data from Apple Health to show your energy battery and efficiency score in the widget. Your data is never stored or shared.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Amperly reads your data from Apple Health on your device to calculate your energy battery and efficiency score. Amperly never writes to or modifies your Apple Health data.</string>
+	<key>UIUserInterfaceStyle</key>
+	<string>Dark</string>
 </dict>
 </plist>

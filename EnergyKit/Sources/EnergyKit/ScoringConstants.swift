@@ -35,9 +35,33 @@ public enum ScoringConstants {
     /// Sleep-quality multiplier bounds (stages + efficiency). 1.0 == neutral.
     public static let qualityMin: Double = 0.85
     public static let qualityMax: Double = 1.08
-    /// Overnight-recovery multiplier bounds (HRV + resting HR). 1.0 == neutral.
-    public static let recoveryMin: Double = 0.92
-    public static let recoveryMax: Double = 1.08
+    /// Overnight-recovery multiplier bounds (HRV + resting HR + temperature +
+    /// respiration). 1.0 == neutral. Widened so autonomic recovery carries real
+    /// weight, in line with Whoop/Oura/Fitbit practice.
+    public static let recoveryMin: Double = 0.88
+    public static let recoveryMax: Double = 1.10
+
+    // MARK: Illness guards (downside-only; neutral when data is absent)
+
+    /// Overnight wrist temperature this far above the personal baseline (deg C)
+    /// starts the guard; each further 0.5 C costs 3%, floored below.
+    public static let tempGuardThresholdC: Double = 0.5
+    public static let tempGuardPenaltyPerHalfC: Double = 0.03
+    public static let tempGuardFloor: Double = 0.90
+    /// Overnight respiratory rate this many breaths/min above baseline starts
+    /// the guard; each further breath costs 2%, floored below.
+    public static let respGuardThresholdBPM: Double = 1.5
+    public static let respGuardPenaltyPerBPM: Double = 0.02
+    public static let respGuardFloor: Double = 0.90
+
+    // MARK: Training load (acute:chronic workload ratio)
+
+    /// 7-day vs 28-day active-energy ratio above this indicates spiking load...
+    public static let acwrThreshold: Double = 1.3
+    /// ...reaching the full penalty at this ratio.
+    public static let acwrFullPenaltyRatio: Double = 1.7
+    /// Cap on the fatigue trim taken off the morning charge.
+    public static let acwrMaxPenalty: Double = 5.0
     /// Reference targets where the multipliers sit at 1.0.
     public static let targetSleepEfficiency: Double = 0.90
     public static let targetDeepRemShare: Double = 0.40
@@ -45,9 +69,34 @@ public enum ScoringConstants {
     // MARK: Multi-day sleep debt
 
     /// Battery points subtracted per hour of accumulated sleep debt.
-    public static let debtPenaltyPerHour: Double = 3.0
+    /// (2%/h so the cap is reserved for genuinely severe backlog; RISE's 5h
+    /// "healthy ceiling" lands at a moderate 10-point hit.)
+    public static let debtPenaltyPerHour: Double = 2.0
     /// Cap on the total sleep-debt penalty.
     public static let debtPenaltyMax: Double = 15.0
+    /// Cap on the tracked sleep-debt balance itself (hours).
+    public static let sleepDebtCapHours: Double = 20.0
+    /// Nights in the debt window (Van Dongen 2003 accumulation horizon).
+    public static let sleepDebtWindowNights: Int = 14
+    /// Passive nightly decay of the debt balance (half-life about 4 nights).
+    public static let sleepDebtDecayPerNight: Double = 0.84
+    /// Oversleep pays debt down at this rate (asymmetric recovery)...
+    public static let sleepDebtRecoveryRate: Double = 0.5
+    /// ...and at most this many oversleep hours count per night (no binge repay).
+    public static let sleepDebtRecoveryCapHours: Double = 2.0
+
+    // MARK: Sleep fallback (no sleep recorded)
+
+    /// Confidence discount applied when the estimate must come from average
+    /// sleep HOURS (no charge history available).
+    public static let sleepFallbackConfidence: Double = 0.85
+    /// Flat low-confidence haircut when estimating from the user's typical
+    /// recent morning charge (the preferred fallback).
+    public static let sleepFallbackHaircut: Double = 5.0
+    /// Morning battery when there is no sleep data AND no usable history.
+    /// Leaders start neutral-high: assume sleep need met, do not penalize a
+    /// brand-new user for having no history.
+    public static let noDataNeutralBattery: Double = 72.0
 
     // MARK: Drain (battery depletion across the waking day)
 

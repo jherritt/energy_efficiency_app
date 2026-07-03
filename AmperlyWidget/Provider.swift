@@ -17,11 +17,15 @@ import Foundation
 
 // MARK: - Entry
 
-/// A single timeline entry. Holds the computed score for its `date` plus a flag
-/// so placeholder/snapshot renders can show calm sample data in the gallery.
+/// A single timeline entry. Holds the computed score for its `date`, today's
+/// intraday efficiency series (for the large family's chart), plus a flag so
+/// placeholder/snapshot renders can show calm sample data in the gallery.
 struct AmperlyEntry: TimelineEntry {
     let date: Date
     let score: DayScore
+    /// Today's intraday curve, same engine as the hero numbers. Empty when
+    /// unauthorized or not yet fetched.
+    var series: [EnergySeriesPoint] = []
     var isPlaceholder: Bool = false
 }
 
@@ -38,14 +42,18 @@ struct AmperlyProvider: TimelineProvider {
     // MARK: TimelineProvider
 
     func placeholder(in context: Context) -> AmperlyEntry {
-        AmperlyEntry(date: Date(), score: Self.sampleScore(now: Date()), isPlaceholder: true)
+        let now = Date()
+        return AmperlyEntry(date: now, score: Self.sampleScore(now: now),
+                            series: Self.sampleSeries(now: now), isPlaceholder: true)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (AmperlyEntry) -> Void) {
         // The widget gallery preview is allowed to be a sample so it always
         // looks alive even without Health access.
         if context.isPreview {
-            completion(AmperlyEntry(date: Date(), score: Self.sampleScore(now: Date()), isPlaceholder: true))
+            let now = Date()
+            completion(AmperlyEntry(date: now, score: Self.sampleScore(now: now),
+                                    series: Self.sampleSeries(now: now), isPlaceholder: true))
             return
         }
         Task {
@@ -69,6 +77,12 @@ struct AmperlyProvider: TimelineProvider {
                 return
             }
 
+            // Fetch today's cumulative activity checkpoints ONCE and derive the
+            // intraday efficiency curve with the same engine as the hero numbers.
+            // Projected future entries reuse the curve computed at `now`.
+            let hourly = await HealthKitService.shared.todayHourlyActivity(now: now)
+            let series = ScoringEngine.daySeries(snapshot: snapshot, hourly: hourly)
+
             // Project the same live snapshot forward by advancing `asOf`. Reusing
             // one snapshot keeps everything ephemeral (no extra HealthKit reads)
             // while the battery visibly drains across the next couple of hours.
@@ -79,11 +93,12 @@ struct AmperlyProvider: TimelineProvider {
                 var projected = snapshot
                 projected.asOf = futureDate
                 let score = ScoringEngine.score(projected)
-                entries.append(AmperlyEntry(date: futureDate, score: score))
+                entries.append(AmperlyEntry(date: futureDate, score: score, series: series))
                 t += projectionStep
             }
             if entries.isEmpty {
-                entries.append(AmperlyEntry(date: now, score: ScoringEngine.score(snapshot)))
+                entries.append(AmperlyEntry(date: now, score: ScoringEngine.score(snapshot),
+                                            series: series))
             }
 
             let timeline = Timeline(entries: entries,
@@ -118,5 +133,24 @@ struct AmperlyProvider: TimelineProvider {
             xp: 96,
             caffeineLateFlag: false
         )
+    }
+
+    /// A plausible fabricated intraday curve for placeholders/previews (never
+    /// real data). Eight points from a 7 AM wake: battery drains toward the
+    /// sample's 64%, efficiency climbs toward the sample's 82.
+    static func sampleSeries(now: Date) -> [EnergySeriesPoint] {
+        let wake = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: now)
+            ?? now.addingTimeInterval(-8 * 60 * 60)
+        let batteries: [Double] = [88, 85, 81, 78, 74, 70, 67, 64]
+        let efficiencies: [Double] = [70, 73, 76, 78, 77, 80, 81, 82]
+        return (0..<8).map { i in
+            EnergySeriesPoint(
+                date: wake.addingTimeInterval(Double(i) * 90 * 60),
+                battery: batteries[i],
+                efficiency: efficiencies[i],
+                energySpent: 88 - batteries[i],
+                points: Double(i) * 9.5
+            )
+        }
     }
 }

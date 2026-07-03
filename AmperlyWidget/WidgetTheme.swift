@@ -125,34 +125,32 @@ extension Color {
 
 // MARK: - Battery view
 
-/// A vertical battery used by the home widget families. Renders a rounded shell
-/// (the `track`), a gradient fill proportional to `level` (0...100), and a small
-/// cap nub on top. When `level` is nil (unauthorized), shows an empty shell.
+/// A HORIZONTAL battery used by the home widget families. Renders a rounded
+/// shell (the `track`), a gradient fill anchored LEADING that grows left to
+/// right with `level` (0...100), and a small terminal cap nub on the RIGHT.
+/// When `level` is nil (unauthorized), shows an empty shell.
 struct WidgetBattery: View {
     /// 0...100, or nil for "--" / unauthorized.
     let level: Double?
-    /// Outer width of the battery body.
-    var width: CGFloat = 34
-    /// Outer height of the battery body.
-    var height: CGFloat = 72
+    /// Total width of the battery, INCLUDING the terminal cap on the right.
+    var width: CGFloat = 84
+    /// Height of the battery body (the cap is shorter, centered vertically).
+    var height: CGFloat = 20
 
     private var clamped: Double { max(0, min(100, level ?? 0)) }
     private var isLow: Bool { (level ?? 100) < WidgetTheme.lowBatteryThreshold }
 
     var body: some View {
-        let corner = width * 0.34
-        let capWidth = width * 0.42
-        let capHeight = max(2, height * 0.05)
-        let inset: CGFloat = width * 0.16
+        let corner = height * 0.34
+        let capWidth = max(3, height * 0.16)
+        let capHeight = max(4, height * 0.44)
+        let capSpacing = capWidth * 0.6
+        let bodyWidth = max(0, width - capWidth - capSpacing)
+        let inset: CGFloat = height * 0.16
 
-        VStack(spacing: capHeight * 0.6) {
-            // Cap nub
-            RoundedRectangle(cornerRadius: capHeight, style: .continuous)
-                .fill(WidgetTheme.track)
-                .frame(width: capWidth, height: capHeight)
-
+        HStack(spacing: capSpacing) {
             // Body
-            ZStack(alignment: .bottom) {
+            ZStack(alignment: .leading) {
                 // Empty track / shell
                 RoundedRectangle(cornerRadius: corner, style: .continuous)
                     .fill(WidgetTheme.track.opacity(0.55))
@@ -161,22 +159,28 @@ struct WidgetBattery: View {
                             .strokeBorder(WidgetTheme.track, lineWidth: 1.5)
                     )
 
-                // Fill
+                // Fill grows left -> right
                 GeometryReader { geo in
-                    let innerHeight = geo.size.height - inset * 2
-                    let fillHeight = max(0, innerHeight * CGFloat(clamped / 100.0))
+                    let innerWidth = geo.size.width - inset * 2
+                    let fillWidth = max(0, innerWidth * CGFloat(clamped / 100.0))
                     RoundedRectangle(cornerRadius: max(2, corner - inset), style: .continuous)
                         .fill(WidgetTheme.fillGradient(forLevel: level))
-                        .frame(height: level == nil ? 0 : fillHeight)
-                        .frame(maxHeight: .infinity, alignment: .bottom)
+                        .frame(width: level == nil ? 0 : fillWidth)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(inset)
                         .shadow(color: (isLow ? WidgetTheme.drainWarn : WidgetTheme.chargeMint)
                             .opacity(level == nil ? 0 : 0.5),
                                 radius: 5, x: 0, y: 0)
                 }
             }
-            .frame(width: width, height: height)
+            .frame(width: bodyWidth, height: height)
+
+            // Terminal cap nub on the RIGHT
+            RoundedRectangle(cornerRadius: capWidth * 0.6, style: .continuous)
+                .fill(WidgetTheme.track)
+                .frame(width: capWidth, height: capHeight)
         }
+        .frame(width: width, height: height)
         .accessibilityElement()
         .accessibilityLabel("Battery")
         .accessibilityValue(level == nil ? "No data" : "\(Int(clamped.rounded())) percent")

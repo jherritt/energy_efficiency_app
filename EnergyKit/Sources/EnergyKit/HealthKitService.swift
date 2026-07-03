@@ -33,6 +33,8 @@ public actor HealthKitService {
             HKQuantityType(.restingHeartRate),
             HKQuantityType(.dietaryCaffeine),
             HKQuantityType(.timeInDaylight),
+            HKQuantityType(.appleSleepingWristTemperature),
+            HKQuantityType(.respiratoryRate),
             HKCategoryType(.sleepAnalysis),
             HKCategoryType(.appleStandHour),
             HKObjectType.workoutType(),
@@ -80,6 +82,12 @@ public actor HealthKitService {
         async let caffeine = lastCaffeineDate(now: now)
         async let summary = activitySummary(now: now)
         async let todaysWorkouts = workoutsToday(now: now)
+        async let wristTemp = discreteAverageWindow(.appleSleepingWristTemperature,
+                                                    unit: .degreeCelsius(),
+                                                    start: now.addingTimeInterval(-16 * 3600), end: now)
+        async let respRate = discreteAverageWindow(.respiratoryRate,
+                                                   unit: HKUnit.count().unitDivided(by: .minute()),
+                                                   start: now.addingTimeInterval(-16 * 3600), end: now)
         async let base = baseline(now: now)
 
         let sleep = await sleepInfo
@@ -105,9 +113,25 @@ public actor HealthKitService {
             elevatedHeartRateMinutes: elevatedMinutes > 0 ? elevatedMinutes : nil,
             lastCaffeine: await caffeine,
             workouts: workouts,
+            sleepingWristTempC: await wristTemp,
+            overnightRespiratoryRate: await respRate,
             baseline: await base,
             asOf: now
         )
+    }
+
+    /// Discrete average of a quantity over an arbitrary window (nil when empty).
+    private func discreteAverageWindow(_ id: HKQuantityTypeIdentifier, unit: HKUnit,
+                                       start: Date, end: Date) async -> Double? {
+        let type = HKQuantityType(id)
+        let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: [])
+        return await withCheckedContinuation { cont in
+            let q = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: predicate,
+                                      options: .discreteAverage) { _, stats, _ in
+                cont.resume(returning: stats?.averageQuantity()?.doubleValue(for: unit))
+            }
+            store.execute(q)
+        }
     }
 
     // MARK: Recent history
@@ -149,7 +173,10 @@ public actor HealthKitService {
 
         return dayStarts.map { day in
             let endOfDay = cal.date(byAdding: .day, value: 1, to: day) ?? day.addingTimeInterval(86400)
-            let asOf = min(endOfDay, now)
+            // One second before midnight so the score buckets into THIS day, not the
+            // next one (endOfDay is the next day's 00:00, which startOfDay would
+            // otherwise assign to the following calendar day).
+            let asOf = min(endOfDay.addingTimeInterval(-1), now)
             let snapshot = HealthSnapshot(
                 isAuthorized: true,
                 sleep: sleep[day],
@@ -161,6 +188,99 @@ public actor HealthKitService {
                 asOf: asOf
             )
             return ScoringEngine.score(snapshot, targets: targets)
+        }
+    }
+
+    // MARK: Intraday series (charts)
+
+    /// Cumulative activity checkpoints for today, one per elapsed hour plus a
+    /// final checkpoint at `now`. Feed to `ScoringEngine.daySeries` to draw the
+    /// battery/efficiency curves. Ephemeral like everything else here.
+    public func todayHourlyActivity(now: Date = Date()) async -> [HourlyActivity] {
+        guard HKHealthStore.isHealthDataAvailable() else { return [] }
+        let cal = Calendar.current
+        let dayStart = cal.startOfDay(for: now)
+
+        async let kcalByHour = hourlySums(.activeEnergyBurned, unit: .kilocalorie(), dayStart: dayStart, now: now)
+        async let exerciseByHour = hourlySums(.appleExerciseTime, unit: .minute(), dayStart: dayStart, now: now)
+        async let waterByHour = hourlySums(.dietaryWater, unit: HKUnit.literUnit(with: .milli), dayStart: dayStart, now: now)
+        async let standHours = standHourBuckets(dayStart: dayStart, now: now)
+
+        let kcal = await kcalByHour
+        let exercise = await exerciseByHour
+        let water = await waterByHour
+        let stood = await standHours
+
+        // Checkpoints at each elapsed hour boundary, then one at `now`.
+        var checkpoints: [Date] = []
+        var t = dayStart.addingTimeInterval(3600)
+        while t < now {
+            checkpoints.append(t)
+            t = t.addingTimeInterval(3600)
+        }
+        checkpoints.append(now)
+
+        var series: [HourlyActivity] = []
+        var cumKcal = 0.0, cumExercise = 0.0, cumWater = 0.0, cumStand = 0.0
+        var bucket = dayStart
+        for checkpoint in checkpoints {
+            // Accumulate every full hour bucket that ended at or before this checkpoint.
+            while bucket < checkpoint {
+                cumKcal += kcal[bucket] ?? 0
+                cumExercise += exercise[bucket] ?? 0
+                cumWater += water[bucket] ?? 0
+                cumStand += stood[bucket] ?? 0
+                bucket = bucket.addingTimeInterval(3600)
+            }
+            series.append(HourlyActivity(date: checkpoint,
+                                         activeEnergyKcal: cumKcal,
+                                         exerciseMinutes: cumExercise,
+                                         standHours: cumStand,
+                                         waterML: cumWater))
+        }
+        return series
+    }
+
+    /// Per-hour sums for today keyed by hour-bucket start.
+    private func hourlySums(_ id: HKQuantityTypeIdentifier, unit: HKUnit,
+                            dayStart: Date, now: Date) async -> [Date: Double] {
+        let type = HKQuantityType(id)
+        let predicate = HKQuery.predicateForSamples(withStart: dayStart, end: now, options: .strictStartDate)
+        return await withCheckedContinuation { cont in
+            let q = HKStatisticsCollectionQuery(quantityType: type, quantitySamplePredicate: predicate,
+                                                options: .cumulativeSum, anchorDate: dayStart,
+                                                intervalComponents: DateComponents(hour: 1))
+            q.initialResultsHandler = { _, collection, _ in
+                guard let collection else { cont.resume(returning: [:]); return }
+                var byHour: [Date: Double] = [:]
+                collection.enumerateStatistics(from: dayStart, to: now) { stat, _ in
+                    if let sum = stat.sumQuantity()?.doubleValue(for: unit), sum > 0 {
+                        byHour[stat.startDate] = sum
+                    }
+                }
+                cont.resume(returning: byHour)
+            }
+            store.execute(q)
+        }
+    }
+
+    /// Stood stand-hours for today, keyed by hour-bucket start (1.0 per stood hour).
+    private func standHourBuckets(dayStart: Date, now: Date) async -> [Date: Double] {
+        let type = HKCategoryType(.appleStandHour)
+        let predicate = HKQuery.predicateForSamples(withStart: dayStart, end: now, options: .strictStartDate)
+        return await withCheckedContinuation { cont in
+            let q = HKSampleQuery(sampleType: type, predicate: predicate,
+                                  limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, samples, _ in
+                var byHour: [Date: Double] = [:]
+                for s in (samples as? [HKCategorySample]) ?? []
+                where s.value == HKCategoryValueAppleStandHour.stood.rawValue {
+                    let hour = dayStart.addingTimeInterval(
+                        (s.startDate.timeIntervalSince(dayStart) / 3600).rounded(.down) * 3600)
+                    byHour[hour, default: 0] += 1
+                }
+                cont.resume(returning: byHour)
+            }
+            store.execute(q)
         }
     }
 
@@ -418,12 +538,17 @@ public actor HealthKitService {
 
     private func baseline(now: Date) async -> Baseline {
         async let activeAvg = dailyAverage(.activeEnergyBurned, unit: .kilocalorie(), days: 7, now: now)
+        async let chronicAvg = dailyAverage(.activeEnergyBurned, unit: .kilocalorie(), days: 28, now: now)
         async let basalAvg = dailyAverage(.basalEnergyBurned, unit: .kilocalorie(), days: 7, now: now)
         async let hrvAvg = discreteAverage(.heartRateVariabilitySDNN,
                                            unit: HKUnit.secondUnit(with: .milli), days: 14, now: now)
         async let rhrAvg = discreteAverage(.restingHeartRate,
                                            unit: HKUnit.count().unitDivided(by: .minute()), days: 14, now: now)
-        async let sleepStats = sleepBaseline(days: 7, now: now)
+        async let tempBase = discreteAverage(.appleSleepingWristTemperature,
+                                             unit: .degreeCelsius(), days: 30, now: now)
+        async let respBase = discreteAverage(.respiratoryRate,
+                                             unit: HKUnit.count().unitDivided(by: .minute()), days: 30, now: now)
+        async let sleepStats = sleepBaseline(days: ScoringConstants.sleepDebtWindowNights, now: now)
 
         let s = await sleepStats
         return Baseline(averageSleepHours: s.averageHours,
@@ -432,7 +557,11 @@ public actor HealthKitService {
                         sleepConsistencySDMinutes: s.consistencySDMinutes,
                         averageDailyActiveKcal: await activeAvg,
                         dailyBasalKcal: await basalAvg,
-                        sleepDebtHours: s.debtHours)
+                        sleepDebtHours: s.debtHours,
+                        chronicDailyActiveKcal: await chronicAvg,
+                        wristTempBaselineC: await tempBase,
+                        respiratoryRateBaseline: await respBase,
+                        typicalMorningCharge: s.typicalMorningCharge)
     }
 
     private func dailyAverage(_ id: HKQuantityTypeIdentifier, unit: HKUnit, days: Int, now: Date) async -> Double? {
@@ -476,11 +605,12 @@ public actor HealthKitService {
 
     /// Average nightly sleep, bedtime-consistency SD, and accumulated sleep debt
     /// over the last `days` nights.
-    private func sleepBaseline(days: Int, now: Date) async -> (averageHours: Double?, consistencySDMinutes: Double?, debtHours: Double) {
+    private func sleepBaseline(days: Int, now: Date) async
+        -> (averageHours: Double?, consistencySDMinutes: Double?, debtHours: Double, typicalMorningCharge: Double?) {
         let type = HKCategoryType(.sleepAnalysis)
         let cal = Calendar.current
         let anchor = cal.startOfDay(for: now)
-        guard let start = cal.date(byAdding: .day, value: -(days + 1), to: anchor) else { return (nil, nil, 0) }
+        guard let start = cal.date(byAdding: .day, value: -(days + 1), to: anchor) else { return (nil, nil, 0, nil) }
         let predicate = HKQuery.predicateForSamples(withStart: start, end: now, options: [])
         let sort = [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
         let samples: [HKCategorySample] = await withCheckedContinuation { cont in
@@ -507,10 +637,25 @@ public actor HealthKitService {
             if let existing = bedMinutesByDay[day] { bedMinutesByDay[day] = min(existing, bedMin) }
             else { bedMinutesByDay[day] = bedMin }
         }
-        let nights = hoursByDay.values.filter { $0 >= 1.0 }
-        guard !nights.isEmpty else { return (nil, nil, 0) }
-        let avg = nights.reduce(0, +) / Double(nights.count)
-        let debt = nights.reduce(0.0) { $0 + max(0, ScoringConstants.sleepTargetHours - $1) }
+        // Chronological nightly totals: the debt model is a decaying running
+        // balance (short nights add debt, oversleep pays down at 0.5:1 capped).
+        // Last night is EXCLUDED from the debt array - it is already priced into
+        // the acute morning charge, and including it would double-count.
+        let orderedNights = hoursByDay.sorted { $0.key < $1.key }
+            .map(\.value).filter { $0 >= 1.0 }
+        guard !orderedNights.isEmpty else { return (nil, nil, 0, nil) }
+        let avg = orderedNights.reduce(0, +) / Double(orderedNights.count)
+        let debt = ScoringEngine.sleepDebt(nightlyHours: Array(orderedNights.dropLast()))
+
+        // Typical measured morning charge (duration formula per night, median):
+        // the preferred base for estimating an unrecorded night.
+        let charges = orderedNights
+            .map { ScoringConstants.durationChargeMax * min($0 / ScoringConstants.sleepTargetHours, 1.0) }
+            .sorted()
+        let typical: Double? = charges.isEmpty ? nil
+            : charges.count % 2 == 1
+                ? charges[charges.count / 2]
+                : (charges[charges.count / 2 - 1] + charges[charges.count / 2]) / 2
 
         // Bedtime consistency: SD of bedtime-minutes (shifted to handle after-midnight).
         let bedValues = bedMinutesByDay.values.map { $0 > 720 ? $0 - 1440 : $0 } // wrap late-night to negative
@@ -520,7 +665,7 @@ public actor HealthKitService {
             let variance = bedValues.reduce(0.0) { $0 + pow(Double($1) - mean, 2) } / Double(bedValues.count)
             sd = variance.squareRoot()
         }
-        return (avg, sd, debt)
+        return (avg, sd, debt, typical)
     }
 }
 #endif

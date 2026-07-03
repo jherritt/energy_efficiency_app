@@ -10,13 +10,16 @@
 		0354F0D48B7B2B9621A36400 /* BreakdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E351BD9820880E8286FD48 /* BreakdownView.swift */; };
 		143A875E1A35C86EBD62FC6C /* WatchRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA50EE567148D61F5AA4457B /* WatchRootView.swift */; };
 		1B060158D1DCB6C37A6999BE /* AmperlyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F64169FF5D7B7A914CA5435 /* AmperlyWatchApp.swift */; };
+		22F962C21162E4439E1EC98B /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9878E772759CF14285BB457 /* DesignSystem.swift */; };
 		26D4E96E2FF496A786ADF0A7 /* EnergyKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4B305C59DD20ED8BCFB68556 /* EnergyKit */; };
 		29784695B7D74F280104156D /* WidgetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78C15874F2557CF531554E93 /* WidgetTheme.swift */; };
 		2D5F0496E2CFB8280338F3D5 /* AmperlyWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BADC2A1F72351F5ED8D7A546 /* AmperlyWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		316F67DA438123F6E4B66460 /* EfficiencyChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A183E493332D6745C8ACEE /* EfficiencyChartView.swift */; };
 		3B6D2C01F84469735135ADA9 /* ProgressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408A55B6E03ED05BE6849D38 /* ProgressionView.swift */; };
 		4190812C7A9EC88955F8F9BE /* BatteryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89948D9BEDC8B746B81DB637 /* BatteryView.swift */; };
 		554F00FE33C1977196FF8BAB /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1997A0F014D86A042D2BAB6D /* Color+Hex.swift */; };
 		5CFCB248BD5A07F322BE64ED /* HealthPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8222D53F043B7106069F7C6C /* HealthPermissionView.swift */; };
+		5DD192EE79C56902531B36E0 /* BackgroundRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = F29996BDDEF05F4FB213193A /* BackgroundRefresh.swift */; };
 		5ED73DA737A16C5D9B75C838 /* EnergyKit in Frameworks */ = {isa = PBXBuildFile; productRef = 50635010E718ED3E5D2A7D0F /* EnergyKit */; };
 		6F8076D3B92822FEE4D10C17 /* WatchTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992E9BF0DC43C9904EE94D2D /* WatchTheme.swift */; };
 		785CA29A0B17CC4839A9D810 /* WatchComplicationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A78F8F8A9887E9E2574FCF15 /* WatchComplicationProvider.swift */; };
@@ -119,6 +122,7 @@
 		A67E88ED4BC8C1124C2D4107 /* PointsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsCardView.swift; sourceTree = "<group>"; };
 		A78F8F8A9887E9E2574FCF15 /* WatchComplicationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationProvider.swift; sourceTree = "<group>"; };
 		B2476FF48D83B88AF3BD43D0 /* AmperlyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmperlyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2A183E493332D6745C8ACEE /* EfficiencyChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EfficiencyChartView.swift; sourceTree = "<group>"; };
 		BA50EE567148D61F5AA4457B /* WatchRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRootView.swift; sourceTree = "<group>"; };
 		BAC1BA849E88A92538088660 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
 		BADC2A1F72351F5ED8D7A546 /* AmperlyWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = AmperlyWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -128,10 +132,12 @@
 		D2E72ADB411A4AC631C1A07F /* AmperlyTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyTheme.swift; sourceTree = "<group>"; };
 		D5605DE37EB69C63E8D7F10A /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
 		D8ED19119A9289B683EB4CF4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D9878E772759CF14285BB457 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		E3820470D4FE06C6FBCF8AB5 /* AmperlyWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyWidgets.swift; sourceTree = "<group>"; };
 		F03350D7F34C3E7406A9EB9B /* Amperly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Amperly.entitlements; sourceTree = "<group>"; };
 		F1E351BD9820880E8286FD48 /* BreakdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakdownView.swift; sourceTree = "<group>"; };
 		F20F6B6A65DF1C7193E0E641 /* AmperlyWatchWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AmperlyWatchWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F29996BDDEF05F4FB213193A /* BackgroundRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefresh.swift; sourceTree = "<group>"; };
 		F36BCFE95DE6258DC651C3C2 /* AmperlyWatchWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyWatchWidgetBundle.swift; sourceTree = "<group>"; };
 		FB4308088F6361B6EFDC691C /* ProgressionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -175,6 +181,7 @@
 		1A9FAFE7BB64C3F86F4EB961 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				F29996BDDEF05F4FB213193A /* BackgroundRefresh.swift */,
 				27B55A2431F55A98CEE15B23 /* NotificationManager.swift */,
 			);
 			path = Notifications;
@@ -251,6 +258,7 @@
 				89948D9BEDC8B746B81DB637 /* BatteryView.swift */,
 				F1E351BD9820880E8286FD48 /* BreakdownView.swift */,
 				8388F3A9F82ACE5A63146075 /* DashboardView.swift */,
+				B2A183E493332D6745C8ACEE /* EfficiencyChartView.swift */,
 				A2C0D2B31018864FA6C27236 /* EfficiencyHeroView.swift */,
 				867862A308E494E9479E42A8 /* InsightsView.swift */,
 				A67E88ED4BC8C1124C2D4107 /* PointsCardView.swift */,
@@ -330,6 +338,7 @@
 			children = (
 				D2E72ADB411A4AC631C1A07F /* AmperlyTheme.swift */,
 				1997A0F014D86A042D2BAB6D /* Color+Hex.swift */,
+				D9878E772759CF14285BB457 /* DesignSystem.swift */,
 			);
 			path = Theme;
 			sourceTree = "<group>";
@@ -444,19 +453,19 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					0BFC375370F96C44291D4A1F = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = VH5QK9LU35;
 						ProvisioningStyle = Automatic;
 					};
 					1DEBFE0A8BA95D2E24994FA9 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = VH5QK9LU35;
 						ProvisioningStyle = Automatic;
 					};
 					B50C5C2277211F043E946771 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = VH5QK9LU35;
 						ProvisioningStyle = Automatic;
 					};
 					F7529B3A120FFC07B908CA90 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = VH5QK9LU35;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -505,11 +514,14 @@
 				9BFB6E539DB0FFCD9A10D633 /* AmperlyApp.swift in Sources */,
 				D7FC1C2608ECBFEBCEB3D1BF /* AmperlyModel.swift in Sources */,
 				7FF08B0DFEE305EE1C3BA34A /* AmperlyTheme.swift in Sources */,
+				5DD192EE79C56902531B36E0 /* BackgroundRefresh.swift in Sources */,
 				4190812C7A9EC88955F8F9BE /* BatteryView.swift in Sources */,
 				0354F0D48B7B2B9621A36400 /* BreakdownView.swift in Sources */,
 				7F8461183566E1A497A1FF9C /* CardContainer.swift in Sources */,
 				554F00FE33C1977196FF8BAB /* Color+Hex.swift in Sources */,
 				F2700F4D8B95C6B53773A648 /* DashboardView.swift in Sources */,
+				22F962C21162E4439E1EC98B /* DesignSystem.swift in Sources */,
+				316F67DA438123F6E4B66460 /* EfficiencyChartView.swift in Sources */,
 				ED1F3354A6555573EFC418B9 /* EfficiencyHeroView.swift in Sources */,
 				5CFCB248BD5A07F322BE64ED /* HealthPermissionView.swift in Sources */,
 				B3EB47DEA8E35AC3CBB136CF /* InsightsView.swift in Sources */,
@@ -665,7 +677,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = VH5QK9LU35;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -740,7 +752,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = VH5QK9LU35;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;

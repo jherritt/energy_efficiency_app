@@ -83,6 +83,10 @@ final class AmperlyModel {
     /// Level / XP / streak state derived from recent history. `nil` until refreshed.
     var progression: Progression?
 
+    /// Today's intraday battery/efficiency curve for the charts. Empty until the
+    /// first refresh (or when unauthorized).
+    var hourlySeries: [EnergySeriesPoint] = []
+
     /// Active user targets (bed/wake/water goal etc.).
     var targets: UserTargets
 
@@ -163,11 +167,24 @@ final class AmperlyModel {
             let dayScore = ScoringEngine.score(snapshot, targets: currentTargets)
             self.score = dayScore
 
+            // Intraday curve for the efficiency/battery charts, rebuilt live from
+            // hourly Apple Health checkpoints run through the same engine.
+            let hourly = await HealthKitService.shared.todayHourlyActivity(now: now)
+            self.hourlySeries = ScoringEngine.daySeries(snapshot: snapshot, hourly: hourly, targets: currentTargets)
+
             // Lifetime progression, persisted on-device (nothing transmitted). On the
             // very first run we seed from the last 90 days of Apple Health so streaks
             // and level reflect existing history; after that we accumulate forever,
             // one record per day, so the user's level keeps climbing for months/years.
             let store = ProgressionStore.shared
+            // One-time migration: v1 records were bucketed onto the wrong calendar
+            // day (backfill off-by-one), which broke XP totals and streaks. Wipe and
+            // rebuild from Apple Health with the fixed derivation.
+            let schemaKey = "progressionSchemaVersion"
+            if UserDefaults.standard.integer(forKey: schemaKey) < 2 {
+                store.reset()
+                UserDefaults.standard.set(2, forKey: schemaKey)
+            }
             if store.isEmpty {
                 let backfill = await HealthKitService.shared.recentDayScores(days: 90, targets: currentTargets, now: now)
                 store.recordAll(backfill.map(ScoringEngine.dailyProgress(from:)))

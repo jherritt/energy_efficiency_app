@@ -42,7 +42,6 @@ struct OnboardingView: View {
             }
             .padding(.top, 32)
         }
-        .preferredColorScheme(nil)
         .sheet(isPresented: $showWhyHealth) {
             WhyHealthAccessSheet()
                 .presentationDetents([.medium, .large])

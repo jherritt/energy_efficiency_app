@@ -20,6 +20,7 @@ struct RootView: View {
         .environment(model)
         .background(Color.inkBase)
         .tint(Color.chargeMint)
+        .preferredColorScheme(.dark)
         .task {
             // Resolve onboarding-vs-main routing from the HealthKit actor first,
             // then pull the first snapshot if access was already requested.

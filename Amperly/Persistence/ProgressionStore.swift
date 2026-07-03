@@ -97,4 +97,11 @@ final class ProgressionStore {
         let descriptor = FetchDescriptor<DayRecord>(sortBy: [SortDescriptor(\.dayStart, order: .forward)])
         return ((try? context.fetch(descriptor)) ?? []).map(\.asDailyProgress)
     }
+
+    /// Wipe every stored day. Used by one-time schema migrations when the
+    /// derivation logic changes (the data is rebuilt from Apple Health).
+    func reset() {
+        try? context.delete(model: DayRecord.self)
+        try? context.save()
+    }
 }

@@ -27,6 +27,11 @@ public enum ScoringEngine {
         let eff = efficiency(points: pts, energySpent: spent)
         let xpValue = xp(points: pts, snapshot: snapshot, targets: targets)
         let caffeine = caffeineLate(snapshot: snapshot, targets: targets)
+        // The charge is an estimate when nothing was recorded but history let us
+        // do better than the flat neutral default (either fallback tier).
+        let estimated = !hasSleep
+            && (snapshot.baseline.typicalMorningCharge != nil
+                || snapshot.baseline.averageSleepHours != nil)
 
         return DayScore(date: snapshot.asOf,
                         isAuthorized: true,
@@ -37,17 +42,25 @@ public enum ScoringEngine {
                         efficiency: eff,
                         points: pts,
                         xp: xpValue,
-                        caffeineLateFlag: caffeine)
+                        caffeineLateFlag: caffeine,
+                        sleepDebtHours: max(0, snapshot.baseline.sleepDebtHours),
+                        batteryIsEstimated: estimated)
     }
 
     // MARK: - Morning charge (sleep -> battery)
 
     /// Battery level at wake (0...100). Returns nil only when unauthorized.
-    /// With no sleep detected, boots to a neutral 50%.
+    ///
+    /// Fallback ladder when no sleep was recorded (watch not worn, etc.):
+    /// 1. Estimate the charge from the user's own 7-day average sleep, discounted
+    ///    by a confidence factor and still reduced by any tracked sleep debt.
+    /// 2. With no usable history either, boot to the neutral default.
     public static func morningBattery(snapshot: HealthSnapshot,
                                       targets: UserTargets) -> Double? {
         guard snapshot.isAuthorized else { return nil }
-        guard let sleep = snapshot.sleep else { return 50.0 }
+        guard let sleep = snapshot.sleep else {
+            return estimatedMorningBattery(snapshot: snapshot, targets: targets)
+        }
 
         // 1) Duration component (0...85), with a boot floor for any real sleep.
         let target = max(1.0, targets.sleepTargetHours)
@@ -71,8 +84,57 @@ public enum ScoringEngine {
         let debtPenalty = min(ScoringConstants.debtPenaltyMax,
                               ScoringConstants.debtPenaltyPerHour * max(0, snapshot.baseline.sleepDebtHours))
 
-        let charge = durationCharge * quality * recovery + consistency + regularity - debtPenalty
+        // Fatigue trim: sustained training-load spikes cost a bounded few points.
+        let fatigue = acwrPenalty(snapshot.baseline)
+
+        let charge = durationCharge * quality * recovery + consistency + regularity - debtPenalty - fatigue
         return clamp(charge, 0, 100)
+    }
+
+    /// Estimated charge when no sleep was recorded. Tiered ladder (never assume
+    /// zero sleep and never assume a perfect night):
+    /// B1. Preferred: the user's typical recent MEASURED morning charge (median),
+    ///     minus a flat low-confidence haircut.
+    /// B2. Else: the recent average night run through the duration formula,
+    ///     discounted for uncertainty.
+    /// C.  Brand-new user, no history: neutral-high default, no debt penalty.
+    static func estimatedMorningBattery(snapshot: HealthSnapshot,
+                                        targets: UserTargets) -> Double {
+        if let typical = snapshot.baseline.typicalMorningCharge {
+            return clamp(typical - ScoringConstants.sleepFallbackHaircut, 0, 100)
+        }
+        guard let avg = snapshot.baseline.averageSleepHours, avg >= 1.0 else {
+            return ScoringConstants.noDataNeutralBattery
+        }
+        let target = max(1.0, targets.sleepTargetHours)
+        let durationCharge = ScoringConstants.durationChargeMax * min(avg / target, 1.0)
+        return clamp(durationCharge * ScoringConstants.sleepFallbackConfidence, 0, 100)
+    }
+
+    /// Running-balance sleep debt over recent nights (oldest -> newest), in
+    /// hours. Evidence-based shape (Van Dongen 2003 accumulation; RISE-style
+    /// backlog): each night the balance first DECAYS (half-life about 4 nights),
+    /// then a short night adds its shortfall linearly, while oversleep pays down
+    /// at 0.5:1 with at most 2 credited hours per night - one long lie-in cannot
+    /// wipe a two-week backlog. Clamped to [0, cap]. Pure and unit-testable.
+    /// Callers should EXCLUDE last night (it is already priced into the acute
+    /// morning charge).
+    public static func sleepDebt(nightlyHours: [Double],
+                                 targetHours: Double = ScoringConstants.sleepTargetHours) -> Double {
+        var debt = 0.0
+        for night in nightlyHours {
+            debt *= ScoringConstants.sleepDebtDecayPerNight
+            let shortfall = targetHours - night
+            if shortfall > 0 {
+                debt += shortfall
+            } else {
+                let credit = min(-shortfall, ScoringConstants.sleepDebtRecoveryCapHours)
+                    * ScoringConstants.sleepDebtRecoveryRate
+                debt -= credit
+            }
+            debt = clamp(debt, 0, ScoringConstants.sleepDebtCapHours)
+        }
+        return debt
     }
 
     /// Sleep-quality multiplier from efficiency + Deep/REM share. Neutral 1.0
@@ -84,8 +146,10 @@ public enum ScoringEngine {
         return clamp(raw, ScoringConstants.qualityMin, ScoringConstants.qualityMax)
     }
 
-    /// Overnight-recovery multiplier from HRV (higher is better) and resting HR
-    /// (lower is better) versus the user's own baseline. Neutral 1.0 when absent.
+    /// Overnight-recovery multiplier: HRV (higher is better) and resting HR
+    /// (lower is better) versus the user's own baseline, then two downside-only
+    /// illness guards (elevated wrist temperature, elevated respiratory rate).
+    /// The same signal blend Whoop/Oura lean on. Neutral 1.0 when data is absent.
     static func recoveryMultiplier(snapshot: HealthSnapshot) -> Double {
         let b = snapshot.baseline
         let hrvRatio: Double = {
@@ -96,8 +160,45 @@ public enum ScoringEngine {
             guard let rhr = snapshot.restingHeartRate, let base = b.restingHeartRateBaseline, rhr > 0 else { return 1.0 }
             return base / rhr
         }()
-        let raw = 0.5 * hrvRatio + 0.5 * rhrRatio
+        let raw = (0.5 * hrvRatio + 0.5 * rhrRatio) * tempGuard(snapshot) * respGuard(snapshot)
         return clamp(raw, ScoringConstants.recoveryMin, ScoringConstants.recoveryMax)
+    }
+
+    /// Downside-only guard: a night noticeably WARMER than the personal baseline
+    /// signals illness/poor recovery. Never rewards running cool.
+    static func tempGuard(_ snapshot: HealthSnapshot) -> Double {
+        guard let temp = snapshot.sleepingWristTempC,
+              let base = snapshot.baseline.wristTempBaselineC else { return 1.0 }
+        let delta = temp - base
+        guard delta > ScoringConstants.tempGuardThresholdC else { return 1.0 }
+        let halves = (delta - ScoringConstants.tempGuardThresholdC) / 0.5
+        return max(ScoringConstants.tempGuardFloor,
+                   1.0 - ScoringConstants.tempGuardPenaltyPerHalfC * halves)
+    }
+
+    /// Downside-only guard: overnight breathing meaningfully FASTER than the
+    /// personal baseline flags illness/overtraining.
+    static func respGuard(_ snapshot: HealthSnapshot) -> Double {
+        guard let resp = snapshot.overnightRespiratoryRate,
+              let base = snapshot.baseline.respiratoryRateBaseline else { return 1.0 }
+        let delta = resp - base
+        guard delta > ScoringConstants.respGuardThresholdBPM else { return 1.0 }
+        return max(ScoringConstants.respGuardFloor,
+                   1.0 - ScoringConstants.respGuardPenaltyPerBPM * (delta - ScoringConstants.respGuardThresholdBPM))
+    }
+
+    /// Fatigue trim from the acute:chronic workload ratio (7-day vs 28-day mean
+    /// active energy). Spiking training load above the habitual level shaves a
+    /// bounded few points off the morning charge, the way Samsung/Oura/Whoop
+    /// carry accumulated load. Neutral 0 without both baselines.
+    static func acwrPenalty(_ baseline: Baseline) -> Double {
+        guard let acute = baseline.averageDailyActiveKcal,
+              let chronic = baseline.chronicDailyActiveKcal, chronic > 0 else { return 0 }
+        let ratio = acute / chronic
+        guard ratio > ScoringConstants.acwrThreshold else { return 0 }
+        let span = ScoringConstants.acwrFullPenaltyRatio - ScoringConstants.acwrThreshold
+        let fraction = clamp((ratio - ScoringConstants.acwrThreshold) / span, 0, 1)
+        return ScoringConstants.acwrMaxPenalty * fraction
     }
 
     /// 7-day regularity bonus (0...5) from the standard deviation of recent
@@ -175,6 +276,36 @@ public enum ScoringEngine {
         let floor = ScoringConstants.efficiencyFloor * total / ScoringConstants.totalPointsWithSleep
         let expected = max(total * min(energySpent / ScoringConstants.dailyEnergyBudget, 1.0), floor)
         return clamp(100.0 * points.total / expected, 0, 100)
+    }
+
+    // MARK: - Intraday series (charts)
+
+    /// Reconstruct the day's battery/efficiency curves from cumulative activity
+    /// checkpoints. Each checkpoint is scored with the SAME engine as the live
+    /// number, so the chart and the hero score always agree.
+    public static func daySeries(snapshot: HealthSnapshot,
+                                 hourly: [HourlyActivity],
+                                 targets: UserTargets = .default) -> [EnergySeriesPoint] {
+        guard snapshot.isAuthorized else { return [] }
+        let wake = snapshot.sleep?.wakeTime ?? startOfDay(snapshot.asOf, fallbackWake: targets.wakeTarget)
+
+        var series: [EnergySeriesPoint] = []
+        for point in hourly.sorted(by: { $0.date < $1.date }) {
+            guard point.date >= wake, point.date <= snapshot.asOf else { continue }
+            var at = snapshot
+            at.asOf = point.date
+            at.activeEnergyKcal = point.activeEnergyKcal
+            at.exerciseMinutes = point.exerciseMinutes
+            at.standHours = point.standHours
+            at.waterML = point.waterML
+            let score = score(at, targets: targets)
+            series.append(EnergySeriesPoint(date: point.date,
+                                            battery: score.currentBattery ?? 0,
+                                            efficiency: score.efficiency ?? 0,
+                                            energySpent: score.energySpent,
+                                            points: score.points.total))
+        }
+        return series
     }
 
     // MARK: - XP / difficulty weighting (gamification only)
@@ -264,7 +395,9 @@ public enum ScoringEngine {
     }
 
     /// Consecutive calendar days up to the most recent record that meet the bar.
-    /// A missing day or an unmet day ends the streak.
+    /// A missing day or an unmet PAST day ends the streak. The most recent record
+    /// (today, still in progress) counts when met but never BREAKS the run -
+    /// otherwise every streak would read 0 each morning until the bar is re-hit.
     static func currentStreak(_ days: [DailyProgress], met: (DailyProgress) -> Bool) -> Int {
         var cal = Calendar(identifier: .gregorian)
         cal.timeZone = TimeZone.current
@@ -272,6 +405,11 @@ public enum ScoringEngine {
         for d in days { byDay[cal.startOfDay(for: d.date)] = d }
         guard var cursor = byDay.keys.max() else { return 0 }
         var streak = 0
+        // Today in progress: skip it (without breaking) unless already met.
+        if let today = byDay[cursor], !met(today) {
+            guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { return 0 }
+            cursor = prev
+        }
         while let rec = byDay[cursor], met(rec) {
             streak += 1
             guard let prev = cal.date(byAdding: .day, value: -1, to: cursor) else { break }

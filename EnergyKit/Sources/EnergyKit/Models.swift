@@ -77,6 +77,16 @@ public struct Baseline: Sendable, Equatable {
     public var dailyBasalKcal: Double?
     /// Accumulated sleep deficit (hours), floored at 0.
     public var sleepDebtHours: Double
+    /// 28-day mean daily active kcal (chronic training load; pairs with the
+    /// 7-day `averageDailyActiveKcal` for the acute:chronic workload ratio).
+    public var chronicDailyActiveKcal: Double?
+    /// Personal overnight wrist-temperature baseline (deg C).
+    public var wristTempBaselineC: Double?
+    /// Personal overnight respiratory-rate baseline (breaths/min).
+    public var respiratoryRateBaseline: Double?
+    /// Median of the user's recent MEASURED morning charges (duration formula),
+    /// the preferred base for estimating an unrecorded night.
+    public var typicalMorningCharge: Double?
 
     public init(averageSleepHours: Double? = nil,
                 hrvBaseline: Double? = nil,
@@ -84,7 +94,11 @@ public struct Baseline: Sendable, Equatable {
                 sleepConsistencySDMinutes: Double? = nil,
                 averageDailyActiveKcal: Double? = nil,
                 dailyBasalKcal: Double? = nil,
-                sleepDebtHours: Double = 0) {
+                sleepDebtHours: Double = 0,
+                chronicDailyActiveKcal: Double? = nil,
+                wristTempBaselineC: Double? = nil,
+                respiratoryRateBaseline: Double? = nil,
+                typicalMorningCharge: Double? = nil) {
         self.averageSleepHours = averageSleepHours
         self.hrvBaseline = hrvBaseline
         self.restingHeartRateBaseline = restingHeartRateBaseline
@@ -92,6 +106,10 @@ public struct Baseline: Sendable, Equatable {
         self.averageDailyActiveKcal = averageDailyActiveKcal
         self.dailyBasalKcal = dailyBasalKcal
         self.sleepDebtHours = sleepDebtHours
+        self.chronicDailyActiveKcal = chronicDailyActiveKcal
+        self.wristTempBaselineC = wristTempBaselineC
+        self.respiratoryRateBaseline = respiratoryRateBaseline
+        self.typicalMorningCharge = typicalMorningCharge
     }
 
     /// Neutral baseline: every enhancement multiplier resolves to 1.0 / no penalty.
@@ -154,6 +172,11 @@ public struct HealthSnapshot: Sendable {
     public var elevatedHeartRateMinutes: Double?
     public var lastCaffeine: Date?
     public var workouts: [WorkoutSummary]
+    /// Last night's average wrist temperature (deg C), when a compatible watch
+    /// recorded it. Compared against `baseline.wristTempBaselineC`.
+    public var sleepingWristTempC: Double?
+    /// Last night's average respiratory rate (breaths/min).
+    public var overnightRespiratoryRate: Double?
     public var baseline: Baseline
     /// "Now" for the snapshot (lets widgets project future timeline entries).
     public var asOf: Date
@@ -175,6 +198,8 @@ public struct HealthSnapshot: Sendable {
                 elevatedHeartRateMinutes: Double? = nil,
                 lastCaffeine: Date? = nil,
                 workouts: [WorkoutSummary] = [],
+                sleepingWristTempC: Double? = nil,
+                overnightRespiratoryRate: Double? = nil,
                 baseline: Baseline = .neutral,
                 asOf: Date) {
         self.isAuthorized = isAuthorized
@@ -194,6 +219,8 @@ public struct HealthSnapshot: Sendable {
         self.elevatedHeartRateMinutes = elevatedHeartRateMinutes
         self.lastCaffeine = lastCaffeine
         self.workouts = workouts
+        self.sleepingWristTempC = sleepingWristTempC
+        self.overnightRespiratoryRate = overnightRespiratoryRate
         self.baseline = baseline
         self.asOf = asOf
     }
@@ -255,6 +282,11 @@ public struct DayScore: Sendable, Equatable {
     public var xp: Double
     /// True when caffeine was logged too close to bedtime.
     public var caffeineLateFlag: Bool
+    /// Accumulated sleep debt (hours) carried into today. 0 when unknown.
+    public var sleepDebtHours: Double
+    /// True when the morning charge was ESTIMATED (no sleep recorded last night;
+    /// charge derived from the user's recent average instead).
+    public var batteryIsEstimated: Bool
 
     public init(date: Date,
                 isAuthorized: Bool,
@@ -265,7 +297,9 @@ public struct DayScore: Sendable, Equatable {
                 efficiency: Double?,
                 points: PointsBreakdown,
                 xp: Double,
-                caffeineLateFlag: Bool) {
+                caffeineLateFlag: Bool,
+                sleepDebtHours: Double = 0,
+                batteryIsEstimated: Bool = false) {
         self.date = date
         self.isAuthorized = isAuthorized
         self.hasSleepData = hasSleepData
@@ -276,6 +310,8 @@ public struct DayScore: Sendable, Equatable {
         self.points = points
         self.xp = xp
         self.caffeineLateFlag = caffeineLateFlag
+        self.sleepDebtHours = sleepDebtHours
+        self.batteryIsEstimated = batteryIsEstimated
     }
 
     /// A neutral "connect Health" placeholder used before authorization.
@@ -309,6 +345,47 @@ public struct Progression: Sendable, Equatable {
         self.sleepStreak = sleepStreak
         self.longestPointsStreak = longestPointsStreak
         self.longestSleepStreak = longestSleepStreak
+    }
+}
+
+/// Cumulative activity totals as of a moment within the day. Used to reconstruct
+/// the intraday battery/efficiency curves for the charts.
+public struct HourlyActivity: Sendable, Equatable {
+    /// The moment these cumulative totals were true.
+    public var date: Date
+    public var activeEnergyKcal: Double
+    public var exerciseMinutes: Double
+    public var standHours: Double
+    public var waterML: Double
+
+    public init(date: Date, activeEnergyKcal: Double, exerciseMinutes: Double,
+                standHours: Double, waterML: Double) {
+        self.date = date
+        self.activeEnergyKcal = activeEnergyKcal
+        self.exerciseMinutes = exerciseMinutes
+        self.standHours = standHours
+        self.waterML = waterML
+    }
+}
+
+/// One point on the intraday chart: the battery and efficiency as they stood at
+/// `date`. Derived, never persisted.
+public struct EnergySeriesPoint: Sendable, Equatable, Identifiable {
+    public var date: Date
+    public var battery: Double
+    public var efficiency: Double
+    public var energySpent: Double
+    public var points: Double
+
+    public var id: Date { date }
+
+    public init(date: Date, battery: Double, efficiency: Double,
+                energySpent: Double, points: Double) {
+        self.date = date
+        self.battery = battery
+        self.efficiency = efficiency
+        self.energySpent = energySpent
+        self.points = points
     }
 }
 
