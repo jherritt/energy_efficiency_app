@@ -35,7 +35,7 @@ struct SettingsView: View {
             aboutSection
         }
         .scrollContentBackground(.hidden)
-        .background(Color.inkBase.ignoresSafeArea())
+        .background(DS.AmbientBackground())
         .navigationTitle("Settings")
         .tint(Color.chargeMint)
         .onAppear(perform: loadFromModel)
@@ -46,7 +46,7 @@ struct SettingsView: View {
     private var targetsSection: some View {
         Section {
             // Sleep target hours
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: DS.Space.xs) {
                 Stepper(value: $sleepTargetHours, in: 5...11, step: 0.5) {
                     HStack {
                         Label("Sleep target", systemImage: "bed.double.fill")
@@ -78,7 +78,7 @@ struct SettingsView: View {
             .onChange(of: wakeTime) { _, _ in commitTargets() }
 
             // Water goal
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: DS.Space.xs) {
                 Stepper(value: $waterGoalLiters, in: 0.5...5.0, step: 0.25) {
                     HStack {
                         Label("Water goal", systemImage: "drop.fill")
@@ -106,7 +106,7 @@ struct SettingsView: View {
     private var notificationsSection: some View {
         Section {
             Toggle(isOn: nudgeBinding) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: DS.Space.xxs) {
                     Label("Low-energy efficiency nudge", systemImage: "bell.badge.fill")
                         .labelStyle(SettingsRowLabelStyle())
                     Text("One gentle afternoon reminder when the day is trending low.")
@@ -124,7 +124,7 @@ struct SettingsView: View {
                         UIApplication.shared.open(url)
                     }
                 } label: {
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    HStack(alignment: .firstTextBaseline, spacing: DS.Space.xs) {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .foregroundStyle(Color.drainWarn)
                         Text("Notifications are turned off for Amperly in iOS Settings. Tap to open Settings and allow them.")
@@ -161,10 +161,11 @@ struct SettingsView: View {
 
     private var privacySection: some View {
         Section {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(alignment: .firstTextBaseline, spacing: 10) {
+            VStack(alignment: .leading, spacing: DS.Space.sm) {
+                HStack(alignment: .firstTextBaseline, spacing: DS.Space.sm) {
                     Image(systemName: "lock.shield.fill")
                         .foregroundStyle(AmperlyTheme.energyGradient)
+                        .frame(width: 28)
                         .accessibilityHidden(true)
                     Text("Amperly stores no data. It reads Apple Health on your device only, with no account and no tracking.")
                         .font(.subheadline)
@@ -172,7 +173,7 @@ struct SettingsView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, DS.Space.xxs)
 
             NavigationLink {
                 PrivacyView()
@@ -195,19 +196,20 @@ struct SettingsView: View {
                     .labelStyle(SettingsRowLabelStyle())
                 Spacer()
                 Text(Self.appVersion)
-                    .font(.body.monospacedDigit())
-                    .foregroundStyle(Color.textMid)
+                    .font(.body.weight(.semibold).monospacedDigit())
+                    .foregroundStyle(Color.textHi)
             }
 
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: DS.Space.sm) {
                 Image(systemName: "bolt.fill")
                     .foregroundStyle(AmperlyTheme.energyGradient)
+                    .frame(width: 28)
                     .accessibilityHidden(true)
                 Text("Measure the energy you actually use.")
-                    .font(.subheadline.italic())
+                    .font(.subheadline)
                     .foregroundStyle(Color.textMid)
             }
-            .padding(.vertical, 2)
+            .padding(.vertical, DS.Space.xxs)
         } header: {
             sectionHeader("About")
         }
@@ -218,10 +220,7 @@ struct SettingsView: View {
 
     private func sectionHeader(_ text: String) -> some View {
         Text(text)
-            .font(.system(.caption, design: .default, weight: .bold))
-            .tracking(3)
-            .foregroundStyle(Color.textLo)
-            .textCase(.uppercase)
+            .eyebrowStyle()
     }
 
     // MARK: - Load / commit
@@ -307,7 +306,8 @@ struct SettingsView: View {
 // MARK: - Row label style
 
 /// Row labels on the dark elevated rows: title in high-contrast brand text,
-/// SF Symbol icon in the mint accent. Explicit colors keep every Form row
+/// SF Symbol icon in the mint accent on a fixed-width column so every row's
+/// title starts on the same left edge. Explicit colors keep every Form row
 /// readable regardless of the system appearance.
 private struct SettingsRowLabelStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -317,6 +317,7 @@ private struct SettingsRowLabelStyle: LabelStyle {
         } icon: {
             configuration.icon
                 .foregroundStyle(Color.chargeMint)
+                .frame(width: 28)
         }
     }
 }

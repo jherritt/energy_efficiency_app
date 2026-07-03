@@ -33,14 +33,15 @@ struct OnboardingView: View {
                 .animation(.easeInOut(duration: 0.3), value: page)
 
                 pageIndicator
-                    .padding(.top, 8)
+                    .padding(.top, DS.Space.xs)
 
                 controls
-                    .padding(.horizontal, 24)
-                    .padding(.top, 20)
-                    .padding(.bottom, 12)
+                    .frame(minHeight: 128, alignment: .bottom)
+                    .padding(.horizontal, DS.Space.xl)
+                    .padding(.top, DS.Space.lg)
+                    .padding(.bottom, DS.Space.sm)
             }
-            .padding(.top, 32)
+            .padding(.top, DS.Space.xxl)
         }
         .sheet(isPresented: $showWhyHealth) {
             WhyHealthAccessSheet()
@@ -90,6 +91,7 @@ struct OnboardingView: View {
     private var controls: some View {
         if page < pageCount - 1 {
             Button {
+                DS.tapHaptic(.light)
                 advance()
             } label: {
                 Text("Continue")
@@ -97,11 +99,11 @@ struct OnboardingView: View {
             }
             .buttonStyle(OnboardingPrimaryButtonStyle())
         } else {
-            VStack(spacing: 14) {
+            VStack(spacing: DS.Space.sm) {
                 Button {
                     Task { await connectHealth() }
                 } label: {
-                    HStack(spacing: 10) {
+                    HStack(spacing: DS.Space.xs) {
                         if isConnecting {
                             ProgressView()
                                 .tint(OnbColor.inkBase)
@@ -118,7 +120,7 @@ struct OnboardingView: View {
                 Button {
                     showWhyHealth = true
                 } label: {
-                    HStack(spacing: 6) {
+                    HStack(spacing: DS.Space.xxs) {
                         Image(systemName: "info.circle")
                         Text("Why Health access")
                     }
@@ -154,6 +156,7 @@ struct OnboardingView: View {
     private func connectHealth() async {
         isConnecting = true
         await model.requestHealthAccess()
+        DS.tapHaptic(.success)
         isConnecting = false
         onFinished()
     }
@@ -171,16 +174,16 @@ private struct OnboardingPage<Illustration: View>: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer(minLength: 12)
+            Spacer(minLength: DS.Space.sm)
 
             illustration()
                 .frame(maxHeight: 220)
 
-            Spacer(minLength: 28)
+            Spacer(minLength: DS.Space.xl)
 
-            VStack(spacing: 14) {
+            VStack(spacing: DS.Space.sm) {
                 Text(eyebrow)
-                    .onboardingEyebrow()
+                    .eyebrowStyle()
 
                 Text(title)
                     .font(.system(.largeTitle, design: .default, weight: .heavy))
@@ -195,9 +198,9 @@ private struct OnboardingPage<Illustration: View>: View {
                     .lineSpacing(3)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.horizontal, 28)
+            .padding(.horizontal, DS.Space.xxl)
 
-            Spacer(minLength: 12)
+            Spacer(minLength: DS.Space.sm)
         }
         .frame(maxWidth: .infinity)
     }
@@ -213,7 +216,7 @@ private struct BatteryGlyph: View {
                 .font(.system(size: 96, weight: .regular))
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(OnbColor.energyGradient, OnbColor.track)
-                .shadow(color: OnbColor.chargeMint.opacity(0.5), radius: 24)
+                .shadow(color: OnbColor.chargeMint.opacity(0.3), radius: 24)
         }
         .accessibilityHidden(true)
     }
@@ -228,7 +231,7 @@ private struct ScoreGlyph: View {
                     .font(.system(size: 88, weight: .heavy, design: .default))
                     .monospacedDigit()
                     .foregroundStyle(OnbColor.energyGradient)
-                    .shadow(color: OnbColor.chargeMint.opacity(0.5), radius: 22)
+                    .shadow(color: OnbColor.chargeMint.opacity(0.3), radius: 22)
                 Text("/100")
                     .font(.system(.title3, design: .default, weight: .bold))
                     .foregroundStyle(OnbColor.textLo)
@@ -246,7 +249,7 @@ private struct PrivacyGlyph: View {
                 .font(.system(size: 92, weight: .regular))
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(OnbColor.energyGradient, OnbColor.track)
-                .shadow(color: OnbColor.chargeCyan.opacity(0.45), radius: 22)
+                .shadow(color: OnbColor.chargeCyan.opacity(0.3), radius: 22)
         }
         .accessibilityHidden(true)
     }
@@ -258,7 +261,7 @@ private struct GlowHalo: View {
         Circle()
             .fill(
                 RadialGradient(
-                    colors: [OnbColor.chargeMint.opacity(0.28), .clear],
+                    colors: [OnbColor.chargeMint.opacity(0.18), .clear],
                     center: .center,
                     startRadius: 4,
                     endRadius: 160
@@ -317,12 +320,12 @@ private struct WhyHealthAccessSheet: View {
                         .fixedSize(horizontal: false, vertical: true)
 
                     ForEach(items, id: \.title) { item in
-                        HStack(alignment: .top, spacing: 14) {
+                        HStack(alignment: .top, spacing: DS.Space.sm) {
                             Image(systemName: item.symbol)
                                 .font(.title3)
                                 .foregroundStyle(OnbColor.energyGradient)
                                 .frame(width: 30)
-                            VStack(alignment: .leading, spacing: 3) {
+                            VStack(alignment: .leading, spacing: DS.Space.xxs) {
                                 Text(item.title)
                                     .font(.headline)
                                     .foregroundStyle(OnbColor.textHi)
@@ -334,7 +337,7 @@ private struct WhyHealthAccessSheet: View {
                         }
                     }
                 }
-                .padding(24)
+                .padding(DS.Space.xl)
             }
             .background(OnbColor.inkBase.ignoresSafeArea())
             .navigationTitle("Why Health access")
@@ -350,27 +353,15 @@ private struct OnboardingPrimaryButtonStyle: ButtonStyle {
         configuration.label
             .font(.headline.weight(.bold))
             .foregroundStyle(OnbColor.inkBase)
-            .padding(.vertical, 16)
+            .padding(.vertical, DS.Space.md)
             .background(
                 OnbColor.energyGradient,
-                in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+                in: RoundedRectangle(cornerRadius: DS.Radius.control, style: .continuous)
             )
-            .shadow(color: OnbColor.chargeMint.opacity(0.35), radius: 16, y: 6)
+            .shadow(color: Color.black.opacity(0.3), radius: 12, y: 6)
             .opacity(configuration.isPressed ? 0.85 : 1)
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
-    }
-}
-
-// MARK: - Eyebrow modifier
-
-private extension View {
-    func onboardingEyebrow() -> some View {
-        self
-            .font(.system(.caption, design: .default, weight: .bold))
-            .tracking(3)
-            .foregroundStyle(OnbColor.textLo)
-            .textCase(.uppercase)
     }
 }
 

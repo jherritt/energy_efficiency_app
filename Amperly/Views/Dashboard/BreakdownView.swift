@@ -38,13 +38,11 @@ struct BreakdownView: View {
 
     var body: some View {
         CardContainer {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: DS.Space.md) {
                 Text("BREAKDOWN")
-                    .font(.system(size: 13, weight: .bold))
-                    .tracking(3)
-                    .foregroundStyle(Color.textLo)
+                    .eyebrowStyle()
 
-                VStack(spacing: 14) {
+                VStack(spacing: DS.Space.md) {
                     ForEach(lines) { line in
                         row(for: line)
                     }
@@ -60,7 +58,7 @@ struct BreakdownView: View {
         let inactive = dimmed || line.earned == 0
         let fraction = line.max > 0 ? min(1, max(0, line.earned / line.max)) : 0
 
-        VStack(spacing: 6) {
+        VStack(spacing: DS.Space.xs) {
             HStack(spacing: 12) {
                 Image(systemName: line.symbol)
                     .font(.system(size: 15, weight: .semibold))
@@ -98,7 +96,7 @@ struct BreakdownView: View {
                     }
                 }
             }
-            .frame(height: 5)
+            .frame(height: 4)
         }
         .opacity(dimmed ? 0.7 : 1)
         .accessibilityElement(children: .ignore)

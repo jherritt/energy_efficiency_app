@@ -28,15 +28,15 @@ struct HealthPermissionView: View {
 
             ScrollView {
                 VStack(spacing: 0) {
-                    Spacer(minLength: 36)
+                    Spacer(minLength: DS.Space.xxl)
 
                     hero
 
-                    Spacer(minLength: 32)
+                    Spacer(minLength: DS.Space.xxl)
 
-                    VStack(spacing: 12) {
+                    VStack(spacing: DS.Space.sm) {
                         Text("CONNECT APPLE HEALTH")
-                            .permissionEyebrow()
+                            .eyebrowStyle()
 
                         Text("Read-only, on your device")
                             .font(.system(.title, design: .default, weight: .heavy))
@@ -51,22 +51,22 @@ struct HealthPermissionView: View {
                             .lineSpacing(3)
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                    .padding(.horizontal, 28)
+                    .padding(.horizontal, DS.Space.xxl)
 
-                    Spacer(minLength: 28)
+                    Spacer(minLength: DS.Space.xl)
 
                     dataTypeList
-                        .padding(.horizontal, 24)
+                        .padding(.horizontal, DS.Space.xl)
 
-                    Spacer(minLength: 24)
+                    Spacer(minLength: DS.Space.xl)
                 }
             }
 
             VStack {
                 Spacer()
                 connectButton
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 16)
+                    .padding(.horizontal, DS.Space.xl)
+                    .padding(.bottom, DS.Space.md)
                     .background(
                         LinearGradient(
                             colors: [HpColor.inkBase.opacity(0), HpColor.inkBase],
@@ -87,7 +87,7 @@ struct HealthPermissionView: View {
             Circle()
                 .fill(
                     RadialGradient(
-                        colors: [HpColor.chargeMint.opacity(0.28), .clear],
+                        colors: [HpColor.chargeMint.opacity(0.18), .clear],
                         center: .center,
                         startRadius: 4,
                         endRadius: 150
@@ -100,7 +100,7 @@ struct HealthPermissionView: View {
                 .font(.system(size: 96, weight: .regular))
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(HpColor.energyGradient, HpColor.track)
-                .shadow(color: HpColor.chargeMint.opacity(0.5), radius: 22)
+                .shadow(color: HpColor.chargeMint.opacity(0.3), radius: 22)
         }
         .accessibilityHidden(true)
     }
@@ -110,7 +110,7 @@ struct HealthPermissionView: View {
     private var dataTypeList: some View {
         VStack(spacing: 0) {
             ForEach(Array(dataTypes.enumerated()), id: \.element.label) { index, item in
-                HStack(spacing: 14) {
+                HStack(spacing: DS.Space.sm) {
                     Image(systemName: item.symbol)
                         .font(.body)
                         .foregroundStyle(HpColor.energyGradient)
@@ -124,8 +124,8 @@ struct HealthPermissionView: View {
                         .foregroundStyle(HpColor.textLo)
                         .accessibilityLabel("Read only")
                 }
-                .padding(.vertical, 13)
-                .padding(.horizontal, 16)
+                .padding(.vertical, DS.Space.sm)
+                .padding(.horizontal, DS.Space.md)
 
                 if index < dataTypes.count - 1 {
                     Divider()
@@ -134,7 +134,17 @@ struct HealthPermissionView: View {
                 }
             }
         }
-        .background(HpColor.inkElev, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(HpColor.inkElev, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .strokeBorder(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.10), Color.white.opacity(0.02)],
+                        startPoint: .top, endPoint: .bottom
+                    ),
+                    lineWidth: 1
+                )
+        )
     }
 
     // MARK: - Connect button
@@ -143,7 +153,7 @@ struct HealthPermissionView: View {
         Button {
             Task { await connect() }
         } label: {
-            HStack(spacing: 10) {
+            HStack(spacing: DS.Space.xs) {
                 if isConnecting {
                     ProgressView()
                         .tint(HpColor.inkBase)
@@ -178,6 +188,7 @@ struct HealthPermissionView: View {
     private func connect() async {
         isConnecting = true
         await model.requestHealthAccess()
+        DS.tapHaptic(.success)
         isConnecting = false
         onConnected()
     }
@@ -190,27 +201,15 @@ private struct PermissionPrimaryButtonStyle: ButtonStyle {
         configuration.label
             .font(.headline.weight(.bold))
             .foregroundStyle(HpColor.inkBase)
-            .padding(.vertical, 16)
+            .padding(.vertical, DS.Space.md)
             .background(
                 HpColor.energyGradient,
-                in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+                in: RoundedRectangle(cornerRadius: DS.Radius.control, style: .continuous)
             )
-            .shadow(color: HpColor.chargeMint.opacity(0.35), radius: 16, y: 6)
+            .shadow(color: Color.black.opacity(0.3), radius: 12, y: 6)
             .opacity(configuration.isPressed ? 0.85 : 1)
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
-    }
-}
-
-// MARK: - Eyebrow modifier
-
-private extension View {
-    func permissionEyebrow() -> some View {
-        self
-            .font(.system(.caption, design: .default, weight: .bold))
-            .tracking(3)
-            .foregroundStyle(HpColor.textLo)
-            .textCase(.uppercase)
     }
 }
 

@@ -3,14 +3,17 @@ import Charts
 import EnergyKit
 
 /// Tesla-style intraday chart card. The top chart traces today's EFFICIENCY as a
-/// glowing gradient line over a soft mint area fill, with a dashed rule at the
-/// day's average. A second, smaller chart below traces the BATTERY level using
-/// the battery-fill gradient. Both charts share the same x domain (first to last
-/// series point). With fewer than two points the card shows a quiet placeholder
-/// instead of empty axes.
+/// gradient line over a soft mint area fill, with a dashed rule at the day's
+/// average. A second, smaller chart below traces the BATTERY level using the
+/// battery-fill gradient. Both charts share the same x domain (first to last
+/// series point) and reveal left-to-right on first appearance. With fewer than
+/// two points the card shows a quiet placeholder instead of empty axes.
 struct EfficiencyChartView: View {
     /// Today's intraday curve from `ScoringEngine.daySeries`.
     let series: [EnergySeriesPoint]
+
+    /// False until first appearance; drives the left-to-right draw-in reveal.
+    @State private var appeared = false
 
     private var hasEnoughData: Bool { series.count >= 2 }
 
@@ -37,30 +40,50 @@ struct EfficiencyChartView: View {
 
     var body: some View {
         CardContainer {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: DS.Space.sm) {
                 Text("TODAY'S EFFICIENCY")
-                    .font(.system(size: 13, weight: .bold))
-                    .tracking(3)
-                    .foregroundStyle(Color.textLo)
+                    .eyebrowStyle()
 
                 if hasEnoughData {
-                    efficiencyChart
-                        .frame(height: 170)
+                    VStack(alignment: .leading, spacing: DS.Space.sm) {
+                        efficiencyChart
+                            .frame(height: 170)
 
-                    Text("BATTERY")
-                        .font(.system(size: 13, weight: .bold))
-                        .tracking(3)
-                        .foregroundStyle(Color.textLo)
-                        .padding(.top, 6)
+                        Text("BATTERY")
+                            .eyebrowStyle()
+                            .padding(.top, DS.Space.xs)
 
-                    batteryChart
-                        .frame(height: 84)
+                        batteryChart
+                            .frame(height: 84)
+                    }
+                    .mask(
+                        GeometryReader { g in
+                            Rectangle()
+                            // Taller than the content so the top/bottom axis
+                            // labels are never clipped by the reveal mask.
+                                .frame(width: appeared ? g.size.width : 0,
+                                       height: g.size.height + 24,
+                                       alignment: .leading)
+                                .offset(y: -12)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    )
+                    .onAppear {
+                        withAnimation(.easeOut(duration: 0.8)) {
+                            appeared = true
+                        }
+                    }
                 } else {
-                    Text("Charts appear as your day unfolds")
-                        .font(.system(size: 14))
-                        .foregroundStyle(Color.textLo)
-                        .frame(maxWidth: .infinity, minHeight: 120)
-                        .multilineTextAlignment(.center)
+                    VStack(spacing: DS.Space.xs) {
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                            .font(.system(size: 22, weight: .medium))
+                            .foregroundStyle(Color.textLo)
+                        Text("Charts appear as your day unfolds")
+                            .font(.footnote)
+                            .foregroundStyle(Color.textMid)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 120)
+                    .multilineTextAlignment(.center)
                 }
             }
         }
@@ -87,16 +110,6 @@ struct EfficiencyChartView: View {
                         startPoint: .top,
                         endPoint: .bottom)
                 )
-
-                // Wide, faint pass under the line reads as a glow on the dark card.
-                LineMark(
-                    x: .value("Time", point.date),
-                    y: .value("Efficiency", point.efficiency),
-                    series: .value("Layer", "glow")
-                )
-                .interpolationMethod(.monotone)
-                .lineStyle(StrokeStyle(lineWidth: 7, lineCap: .round))
-                .foregroundStyle(Color.chargeMint.opacity(0.22))
 
                 LineMark(
                     x: .value("Time", point.date),

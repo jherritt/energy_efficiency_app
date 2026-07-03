@@ -8,18 +8,18 @@ struct EfficiencyHeroView: View {
     /// 0...100 efficiency, or nil when HealthKit is unauthorized.
     let efficiency: Double?
 
+    @State private var appeared = false
+
     private var clamped: Double { min(100, max(0, efficiency ?? 0)) }
     private var hasValue: Bool { efficiency != nil }
     private var fraction: Double { clamped / 100 }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: DS.Space.sm) {
             Text("EFFICIENCY")
-                .font(.system(size: 13, weight: .bold))
-                .tracking(3)
-                .foregroundStyle(Color.textLo)
+                .eyebrowStyle()
 
-            HStack(spacing: 18) {
+            HStack(spacing: DS.Space.md) {
                 numberRow
 
                 Spacer(minLength: 8)
@@ -29,9 +29,14 @@ struct EfficiencyHeroView: View {
             }
 
             Text(subtitle)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.footnote)
                 .foregroundStyle(Color.textMid)
                 .fixedSize(horizontal: false, vertical: true)
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.7, dampingFraction: 0.85).delay(0.15)) {
+                appeared = true
+            }
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Efficiency")
@@ -44,6 +49,7 @@ struct EfficiencyHeroView: View {
                 if hasValue {
                     Text("\(Int(clamped.rounded()))")
                         .foregroundStyle(AmperlyTheme.energyGradient)
+                        .dsNumeric(clamped)
                 } else {
                     Text("--")
                         .foregroundStyle(Color.textLo)
@@ -51,6 +57,7 @@ struct EfficiencyHeroView: View {
             }
             .font(.system(size: 120, weight: .heavy, design: .default))
             .monospacedDigit()
+            .tracking(-2)
             .shadow(color: Color.chargeMint.opacity(hasValue ? 0.45 : 0),
                     radius: 18, x: 0, y: 0)
 
@@ -69,7 +76,7 @@ struct EfficiencyHeroView: View {
                 .stroke(Color.track, lineWidth: 13)
 
             Circle()
-                .trim(from: 0, to: hasValue ? fraction : 0)
+                .trim(from: 0, to: appeared && hasValue ? fraction : 0)
                 .stroke(
                     AmperlyTheme.energyGradient,
                     style: StrokeStyle(lineWidth: 13, lineCap: .round)

@@ -1,8 +1,9 @@
 import SwiftUI
 import EnergyKit
 
-/// Amperly's main screen. A scrolling stack on `inkBase` leads with the
-/// EFFICIENCY hero (the app's signature element), then the intraday
+/// Amperly's main screen. A scrolling stack on the ambient background leads
+/// with the EFFICIENCY hero floating unboxed above the cards (the app's
+/// signature element), then the intraday
 /// efficiency/battery charts, the battery (with sleep-debt and estimated-charge
 /// context), the points card, the breakdown ledger, the compact progression
 /// strip, and a link into the transparency screen. It pulls fresh data on
@@ -13,11 +14,10 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
-                    CardContainer {
-                        EfficiencyHeroView(efficiency: model.score?.efficiency)
-                    }
-                    .padding(.top, 4)
+                VStack(spacing: DS.Space.lg) {
+                    EfficiencyHeroView(efficiency: model.score?.efficiency)
+                        .padding(.horizontal, DS.Space.xxs)
+                        .padding(.top, DS.Space.xs)
 
                     EfficiencyChartView(series: model.hourlySeries)
 
@@ -34,13 +34,16 @@ struct DashboardView: View {
                         insightsLink(score: score)
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 28)
+                .padding(.horizontal, DS.Space.md)
+                .padding(.bottom, DS.Space.xxl)
             }
-            .background(Color.inkBase.ignoresSafeArea())
+            .background(DS.AmbientBackground())
             .scrollIndicators(.hidden)
             .navigationTitle("Today")
-            .refreshable { await model.refresh() }
+            .refreshable {
+                await model.refresh()
+                DS.tapHaptic(.success)
+            }
             .task { await model.refresh() }
         }
     }
@@ -51,7 +54,7 @@ struct DashboardView: View {
     /// morning charge had to be estimated (no sleep recorded), and a compact
     /// sleep-debt pill once the carried debt is at least half an hour.
     private var batterySection: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: DS.Space.sm) {
             BatteryView(level: model.score?.currentBattery)
                 .frame(height: 240)
                 .frame(maxWidth: .infinity)
@@ -71,10 +74,11 @@ struct DashboardView: View {
         HStack(spacing: 5) {
             Image(systemName: "questionmark.circle")
                 .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(Color.textLo)
             Text("Estimated from your recent sleep average")
-                .font(.system(size: 12, weight: .regular))
+                .font(.footnote)
+                .foregroundStyle(Color.textMid)
         }
-        .foregroundStyle(Color.textLo)
         .accessibilityElement(children: .combine)
     }
 
@@ -89,14 +93,12 @@ struct DashboardView: View {
                 .monospacedDigit()
         }
         .foregroundStyle(tint)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(Capsule().fill(Color.inkElev))
-        .overlay(
-            Capsule().strokeBorder(
-                heavy ? Color.drainWarn.opacity(0.5) : Color.track,
-                lineWidth: 1)
-        )
+        .dsChip()
+        .overlay {
+            if heavy {
+                Capsule().strokeBorder(Color.drainWarn.opacity(0.5), lineWidth: 1)
+            }
+        }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Sleep debt")
         .accessibilityValue("\(String(format: "%.1f", hours)) hours")
@@ -106,7 +108,7 @@ struct DashboardView: View {
         NavigationLink {
             InsightsView(score: score)
         } label: {
-            CardContainer(padding: 16) {
+            CardContainer(padding: DS.Space.md) {
                 HStack(spacing: 12) {
                     Image(systemName: "info.circle.fill")
                         .font(.system(size: 18, weight: .semibold))
@@ -127,7 +129,8 @@ struct DashboardView: View {
                 }
             }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(DSPressableStyle())
+        .simultaneousGesture(TapGesture().onEnded { DS.tapHaptic(.light) })
     }
 }
 

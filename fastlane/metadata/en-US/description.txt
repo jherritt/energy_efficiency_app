@@ -1,0 +1,35 @@
+Your body runs on a battery. Amperly shows you the charge.
+
+Every morning you wake up with a certain amount of energy. Amperly reads your sleep from Apple Health and turns it into a glowing battery: a good night charges you up, a short or restless one leaves you running low. Then, as you move through your day, life draws that battery down. You can see it happen in real time.
+
+One number tells you how well you are doing: your efficiency score, out of 100. Efficiency is not about burning the most calories. It rewards spending the energy you have on the things that count, so a calm, well-paced day can score higher than a frantic one.
+
+CHARGED BY SLEEP
+Your morning battery comes straight from last night's sleep, measured against your own target and the quality of your rest. Sleep well and you start the day full.
+
+DRAINED BY YOUR DAY
+Activity and the simple passage of the day draw the battery down. Watch it deplete, and notice when you are running low before you feel it.
+
+POINTS FOR WHAT MATTERS
+Earn points for the habits that keep your energy healthy:
+- Move, Exercise, and Stand goals
+- An on-time bedtime and an on-time wake
+- Staying hydrated
+The points ledger shows what you have earned today and what is still within reach.
+
+ONE EFFICIENCY SCORE
+A single hero number out of 100 that captures how well you spent your energy against your goals. Simple to read, hard to fake.
+
+PRIVATE BY DESIGN
+Amperly collects nothing. It reads Apple Health read-only, with your permission, computes everything on your device, and stores or transmits nothing. No account. No sign-in. No analytics, no ads, no trackers. Your health data is never used for advertising and never leaves your phone.
+
+WIDGETS EVERYWHERE
+Keep your battery and efficiency score in view on the Home Screen, the Lock Screen, and in StandBy. The widgets use the same on-device calculation as the app, so they always agree.
+
+DESIGNED TO BE CALM
+A dark-first electric theme with full light-mode support, clean typography, and Dynamic Type throughout. Premium, quiet, and easy to read at a glance.
+
+FREE
+Amperly is free, with no ads and no in-app purchases.
+
+Charge up. Spend well. See your day as a battery.

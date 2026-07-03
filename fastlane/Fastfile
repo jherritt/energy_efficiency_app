@@ -64,4 +64,35 @@ platform :ios do
     build
     upload
   end
+
+  desc "Upload App Store listing metadata + screenshots (no binary)"
+  lane :metadata do
+    upload_to_app_store(
+      api_key: asc_key,
+      app_identifier: APP_ID,
+      app_version: "1.0",
+      skip_binary_upload: true,
+      overwrite_screenshots: true,
+      force: true,
+      submit_for_review: false,
+      run_precheck_before_submit: false,
+      precheck_include_in_app_purchases: false,
+      automatic_release: false
+    )
+  end
+
+  desc "Upload only the App Store screenshots"
+  lane :screenshots do
+    upload_to_app_store(
+      api_key: asc_key,
+      app_identifier: APP_ID,
+      app_version: "1.0",
+      skip_binary_upload: true,
+      skip_metadata: true,
+      overwrite_screenshots: true,
+      force: true,
+      submit_for_review: false,
+      run_precheck_before_submit: false
+    )
+  end
 end

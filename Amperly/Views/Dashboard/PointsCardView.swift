@@ -23,12 +23,10 @@ struct PointsCardView: View {
 
     var body: some View {
         CardContainer {
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: DS.Space.md) {
                 HStack(alignment: .firstTextBaseline) {
                     Text("POINTS TODAY")
-                        .font(.system(size: 13, weight: .bold))
-                        .tracking(3)
-                        .foregroundStyle(Color.textLo)
+                        .eyebrowStyle()
                     Spacer()
                     Image(systemName: "trophy.fill")
                         .font(.system(size: 13, weight: .semibold))
@@ -39,8 +37,10 @@ struct PointsCardView: View {
                     Text("\(earned)")
                         .font(.system(size: 40, weight: .heavy, design: .default))
                         .monospacedDigit()
+                        .tracking(-1)
                         .foregroundStyle(Color.textHi)
-                    Text("of \(maxAvailable)")
+                        .dsNumeric(earned)
+                    Text("/ \(maxAvailable)")
                         .font(.system(size: 17, weight: .semibold))
                         .monospacedDigit()
                         .foregroundStyle(Color.textLo)
@@ -62,11 +62,10 @@ struct PointsCardView: View {
                 Capsule()
                     .fill(AmperlyTheme.energyGradient)
                     .frame(width: max(0, geo.size.width * fraction))
-                    .shadow(color: Color.chargeMint.opacity(0.4), radius: 6, x: 0, y: 0)
                     .animation(.spring(response: 0.6, dampingFraction: 0.85), value: fraction)
             }
         }
-        .frame(height: 8)
+        .frame(height: 6)
     }
 }
 

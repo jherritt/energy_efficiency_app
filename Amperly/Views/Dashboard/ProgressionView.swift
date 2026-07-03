@@ -21,27 +21,26 @@ struct ProgressionView: View {
             : 0
 
         CardContainer {
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: DS.Space.md) {
                 HStack(spacing: 12) {
                     levelBadge(p.level)
 
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
                             Text("LEVEL \(p.level)")
-                                .font(.system(size: 13, weight: .bold))
-                                .tracking(3)
-                                .foregroundStyle(Color.textLo)
+                                .eyebrowStyle()
                             Spacer()
                             Text("\(format(p.xpIntoLevel)) / \(format(p.xpForNextLevel)) XP")
                                 .font(.system(size: 12, weight: .semibold))
                                 .monospacedDigit()
                                 .foregroundStyle(Color.textMid)
+                                .dsNumeric(p.xpIntoLevel)
                         }
                         xpBar(fraction: fraction)
                     }
                 }
 
-                HStack(spacing: 10) {
+                HStack(spacing: DS.Space.sm) {
                     streakChip(symbol: "flame.fill",
                                value: p.pointsStreak,
                                best: p.longestPointsStreak,
@@ -67,9 +66,9 @@ struct ProgressionView: View {
                 .font(.system(size: 20, weight: .heavy, design: .default))
                 .monospacedDigit()
                 .foregroundStyle(AmperlyTheme.energyGradient)
+                .dsNumeric(level)
         }
         .frame(width: 48, height: 48)
-        .shadow(color: Color.chargeMint.opacity(0.35), radius: 8, x: 0, y: 0)
     }
 
     private func xpBar(fraction: Double) -> some View {
@@ -91,9 +90,10 @@ struct ProgressionView: View {
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(value > 0 ? Color.chargeMint : Color.textLo)
             Text("\(value)")
-                .font(.system(size: 15, weight: .heavy))
+                .font(.system(size: 15, weight: .semibold))
                 .monospacedDigit()
                 .foregroundStyle(Color.textHi)
+                .dsNumeric(value)
             Text(caption)
                 .font(.system(size: 13, weight: .regular))
                 .foregroundStyle(Color.textMid)
@@ -104,14 +104,7 @@ struct ProgressionView: View {
                     .foregroundStyle(Color.textLo)
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 7)
-        .background(
-            Capsule().fill(Color.inkBase)
-        )
-        .overlay(
-            Capsule().strokeBorder(Color.track, lineWidth: 1)
-        )
+        .dsChip()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(caption) streak")
         .accessibilityValue("\(value) days, best \(best) days")

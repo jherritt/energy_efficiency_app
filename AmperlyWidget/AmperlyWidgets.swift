@@ -27,11 +27,9 @@ struct AmperlyHomeWidget: Widget {
         StaticConfiguration(kind: kind, provider: AmperlyProvider()) { entry in
             AmperlyHomeView(entry: entry)
                 .containerBackground(for: .widget) {
-                    LinearGradient(
-                        colors: [WidgetTheme.inkElev, WidgetTheme.inkBase],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
+                    // The app's signature ambient surface (inkBase + faint mint
+                    // radial falloff at the top), replicated in WidgetTheme.
+                    WidgetTheme.ambientBackground
                 }
         }
         .configurationDisplayName("Energy Battery")
@@ -112,14 +110,18 @@ private struct HomeSmallView: View {
     let score: DayScore
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: WidgetTheme.spaceXS) {
+            VStack(alignment: .leading, spacing: WidgetTheme.spaceXXS) {
                 WidgetEyebrow(text: "Efficiency")
                 HStack(alignment: .lastTextBaseline, spacing: 3) {
                     Text(WidgetFormat.whole(score.efficiency))
                         .font(.system(size: 46, weight: .heavy, design: .default))
+                        .tracking(-1)
                         .monospacedDigit()
                         .foregroundStyle(heroStyle(for: score.efficiency))
+                        .shadow(color: WidgetTheme.chargeMint
+                            .opacity(score.efficiency == nil ? 0 : 0.18),
+                                radius: 8, x: 0, y: 0)
                         .minimumScaleFactor(0.6)
                         .lineLimit(1)
                     Text("/100")
@@ -131,38 +133,45 @@ private struct HomeSmallView: View {
 
             Spacer(minLength: 0)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text("BATTERY \(WidgetFormat.percent(score.currentBattery))")
-                    .font(.system(size: 9, weight: .bold, design: .default))
-                    .tracking(1.5)
-                    .monospacedDigit()
-                    .foregroundStyle(WidgetTheme.textMid)
-                    .lineLimit(1)
+            VStack(alignment: .leading, spacing: WidgetTheme.spaceXXS) {
+                HStack(alignment: .firstTextBaseline) {
+                    WidgetEyebrow(text: "Battery")
+                    Spacer(minLength: WidgetTheme.spaceXXS)
+                    Text(WidgetFormat.percent(score.currentBattery))
+                        .font(.system(.caption2, design: .default).weight(.semibold))
+                        .monospacedDigit()
+                        .foregroundStyle(WidgetTheme.textHi)
+                }
                 FlexibleBattery(level: score.currentBattery, height: 16)
             }
         }
-        .padding(2)
     }
 }
 
 // MARK: Medium home
 
 /// Efficiency block on the LEFT, horizontal battery on the RIGHT, exactly as
-/// requested. Below the battery: a 3-line mini breakdown, or the sleep-debt
-/// line when meaningful debt is carried into today.
+/// requested. Below the battery: a FIXED three-row detail slot so the layout
+/// reads identically day to day. Move and Exercise always show; the third row
+/// is Hydration normally, or the carried sleep debt when it is meaningful.
 private struct HomeMediumView: View {
     let score: DayScore
 
     var body: some View {
-        HStack(alignment: .top, spacing: 16) {
+        // firstTextBaseline puts both column eyebrows on one shared line.
+        HStack(alignment: .firstTextBaseline, spacing: WidgetTheme.spaceMD) {
             // LEFT half: efficiency hero
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: WidgetTheme.spaceXXS) {
                 WidgetEyebrow(text: "Efficiency")
-                HStack(alignment: .lastTextBaseline, spacing: 2) {
+                HStack(alignment: .lastTextBaseline, spacing: 3) {
                     Text(WidgetFormat.whole(score.efficiency))
                         .font(.system(size: 48, weight: .heavy, design: .default))
+                        .tracking(-1)
                         .monospacedDigit()
                         .foregroundStyle(heroStyle(for: score.efficiency))
+                        .shadow(color: WidgetTheme.chargeMint
+                            .opacity(score.efficiency == nil ? 0 : 0.18),
+                                radius: 8, x: 0, y: 0)
                         .minimumScaleFactor(0.6)
                         .lineLimit(1)
                     Text("/100")
@@ -176,11 +185,12 @@ private struct HomeMediumView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            // RIGHT half: horizontal battery with its percentage above
-            VStack(alignment: .leading, spacing: 5) {
+            // RIGHT half: horizontal battery with its percentage above, then
+            // the fixed three-row slot.
+            VStack(alignment: .leading, spacing: WidgetTheme.spaceXXS) {
                 HStack(alignment: .firstTextBaseline) {
                     WidgetEyebrow(text: "Battery")
-                    Spacer(minLength: 4)
+                    Spacer(minLength: WidgetTheme.spaceXXS)
                     Text(WidgetFormat.percent(score.currentBattery))
                         .font(.system(.callout, design: .default).weight(.bold))
                         .monospacedDigit()
@@ -188,17 +198,15 @@ private struct HomeMediumView: View {
                 }
                 FlexibleBattery(level: score.currentBattery, height: 18)
 
-                if score.sleepDebtHours >= 0.5 {
-                    Text(String(format: "Debt %.1fh", score.sleepDebtHours))
-                        .font(.system(.caption2, design: .default).weight(.medium))
-                        .monospacedDigit()
-                        .foregroundStyle(WidgetTheme.textMid)
-                } else {
-                    VStack(alignment: .leading, spacing: 3) {
-                        BreakdownRow(symbol: "flame.fill", label: "Move",
-                                     value: score.isAuthorized ? score.points.move : nil)
-                        BreakdownRow(symbol: "figure.run", label: "Exercise",
-                                     value: score.isAuthorized ? score.points.exercise : nil)
+                VStack(alignment: .leading, spacing: WidgetTheme.spaceXXS) {
+                    BreakdownRow(symbol: "flame.fill", label: "Move",
+                                 value: score.isAuthorized ? score.points.move : nil)
+                    BreakdownRow(symbol: "figure.run", label: "Exercise",
+                                 value: score.isAuthorized ? score.points.exercise : nil)
+                    if score.sleepDebtHours >= 0.5 {
+                        BreakdownRow(symbol: "moon.zzz.fill", label: "Debt",
+                                     text: String(format: "%.1fh", score.sleepDebtHours))
+                    } else {
                         BreakdownRow(symbol: "drop.fill", label: "Hydration",
                                      value: score.isAuthorized ? score.points.hydration : nil)
                     }
@@ -206,34 +214,38 @@ private struct HomeMediumView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(2)
     }
 }
 
 // MARK: Large home
 
-/// Efficiency hero on top, a mini intraday efficiency chart in the middle, and
-/// a full-width horizontal battery with a three-stat row at the bottom.
+/// Efficiency hero on top, a mini intraday efficiency chart in the middle,
+/// then the battery (eyebrow + percent above the bar, matching medium) and a
+/// two-stat row. Glance path: hero -> chart -> battery -> stats.
 private struct HomeLargeView: View {
     let score: DayScore
     let series: [EnergySeriesPoint]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: WidgetTheme.spaceSM) {
             // Top: efficiency hero
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: WidgetTheme.spaceXXS) {
                 WidgetEyebrow(text: "Efficiency")
-                HStack(alignment: .lastTextBaseline, spacing: 4) {
+                HStack(alignment: .lastTextBaseline, spacing: 3) {
                     Text(WidgetFormat.whole(score.efficiency))
                         .font(.system(size: 62, weight: .heavy, design: .default))
+                        .tracking(-1.5)
                         .monospacedDigit()
                         .foregroundStyle(heroStyle(for: score.efficiency))
+                        .shadow(color: WidgetTheme.chargeMint
+                            .opacity(score.efficiency == nil ? 0 : 0.18),
+                                radius: 10, x: 0, y: 0)
                         .minimumScaleFactor(0.6)
                         .lineLimit(1)
                     Text("/100")
                         .font(.system(.callout, design: .default).weight(.semibold))
                         .foregroundStyle(WidgetTheme.textLo)
-                    Spacer(minLength: 8)
+                    Spacer(minLength: WidgetTheme.spaceXS)
                     Text("\(pointsFraction(score)) pts")
                         .font(.system(.footnote, design: .default).weight(.medium))
                         .monospacedDigit()
@@ -247,17 +259,23 @@ private struct HomeLargeView: View {
 
             Spacer(minLength: 0)
 
-            // Bottom: full-width horizontal battery + three stats
-            VStack(alignment: .leading, spacing: 10) {
+            // Bottom: battery header row above the bar (same grammar as the
+            // medium family), then Points / Debt.
+            VStack(alignment: .leading, spacing: WidgetTheme.spaceXS) {
+                HStack(alignment: .firstTextBaseline) {
+                    WidgetEyebrow(text: "Battery")
+                    Spacer(minLength: WidgetTheme.spaceXXS)
+                    Text(WidgetFormat.percent(score.currentBattery))
+                        .font(.system(.callout, design: .default).weight(.bold))
+                        .monospacedDigit()
+                        .foregroundStyle(WidgetTheme.textHi)
+                }
                 FlexibleBattery(level: score.currentBattery, height: 22)
                 HStack(alignment: .top) {
-                    StatCell(label: "Battery",
-                             value: WidgetFormat.percent(score.currentBattery))
-                    Spacer(minLength: 8)
                     StatCell(label: "Points",
                              value: score.isAuthorized
                                 ? "\(Int(score.points.total.rounded()))" : "--")
-                    Spacer(minLength: 8)
+                    Spacer(minLength: WidgetTheme.spaceXS)
                     StatCell(label: "Debt",
                              value: score.isAuthorized
                                 ? String(format: "%.1fh", score.sleepDebtHours) : "--",
@@ -265,49 +283,83 @@ private struct HomeLargeView: View {
                 }
             }
         }
-        .padding(2)
     }
 }
 
 /// The large widget's mini chart: a gradient efficiency line over a soft area
-/// fill. No y-axis; sparse hour marks along the bottom in the low text color.
+/// fill, ending in a single emphasized "now" dot. The y-domain is fitted to
+/// the data (with breathing room) so the day's shape is legible; no y-axis,
+/// just sparse hour marks along the bottom in the low text color.
 private struct EfficiencyChart: View {
     let series: [EnergySeriesPoint]
 
+    /// Fit the domain to the data with 8pt of breathing room on each side,
+    /// clamped to the metric's 0...100 range. Mirrors the axis-padding
+    /// discipline used across the product.
+    private var yDomain: ClosedRange<Double> {
+        let values = series.map(\.efficiency)
+        guard let lo = values.min(), let hi = values.max() else { return 0...100 }
+        return max(0, lo - 8)...min(100, hi + 8)
+    }
+
     var body: some View {
         if series.isEmpty {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(WidgetTheme.track.opacity(0.35))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .strokeBorder(WidgetTheme.hairline, lineWidth: 1)
+                )
                 .overlay(
                     Text("No intraday data yet")
                         .font(.system(.caption2, design: .default).weight(.medium))
                         .foregroundStyle(WidgetTheme.textLo)
                 )
         } else {
-            Chart(series) { point in
-                AreaMark(
-                    x: .value("Time", point.date),
-                    y: .value("Efficiency", point.efficiency)
-                )
-                .interpolationMethod(.monotone)
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [WidgetTheme.chargeMint.opacity(0.28),
-                                 WidgetTheme.chargeCyan.opacity(0.02)],
-                        startPoint: .top,
-                        endPoint: .bottom
+            Chart {
+                ForEach(series) { point in
+                    AreaMark(
+                        x: .value("Time", point.date),
+                        y: .value("Efficiency", point.efficiency)
                     )
-                )
+                    .interpolationMethod(.monotone)
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [WidgetTheme.chargeMint.opacity(0.28),
+                                     WidgetTheme.chargeCyan.opacity(0.02)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
 
-                LineMark(
-                    x: .value("Time", point.date),
-                    y: .value("Efficiency", point.efficiency)
-                )
-                .interpolationMethod(.monotone)
-                .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                .foregroundStyle(WidgetTheme.energyGradient)
+                    LineMark(
+                        x: .value("Time", point.date),
+                        y: .value("Efficiency", point.efficiency)
+                    )
+                    .interpolationMethod(.monotone)
+                    .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
+                    .foregroundStyle(WidgetTheme.energyGradient)
+                }
+
+                // Terminal "now" marker: a mint dot on an inkBase ring, the
+                // only emphasized point on the line.
+                if let last = series.last {
+                    PointMark(
+                        x: .value("Time", last.date),
+                        y: .value("Efficiency", last.efficiency)
+                    )
+                    .symbolSize(81)
+                    .foregroundStyle(WidgetTheme.inkBase)
+
+                    PointMark(
+                        x: .value("Time", last.date),
+                        y: .value("Efficiency", last.efficiency)
+                    )
+                    .symbolSize(25)
+                    .foregroundStyle(WidgetTheme.chargeMint)
+                }
             }
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: yDomain)
             .chartYAxis(.hidden)
             .chartXAxis {
                 AxisMarks(values: .automatic(desiredCount: 4)) { _ in
@@ -321,42 +373,55 @@ private struct EfficiencyChart: View {
     }
 }
 
-/// One bottom-row stat in the large widget: eyebrow label + textMid value.
+/// One bottom-row stat in the large widget: eyebrow label + textHi value.
 private struct StatCell: View {
     let label: String
     let value: String
     var alignment: HorizontalAlignment = .leading
 
     var body: some View {
-        VStack(alignment: alignment, spacing: 2) {
+        VStack(alignment: alignment, spacing: WidgetTheme.spaceXXS) {
             WidgetEyebrow(text: label)
             Text(value)
                 .font(.system(.subheadline, design: .default).weight(.semibold))
                 .monospacedDigit()
-                .foregroundStyle(WidgetTheme.textMid)
+                .foregroundStyle(WidgetTheme.textHi)
                 .lineLimit(1)
         }
     }
 }
 
-/// One line of the medium-widget mini breakdown: SF Symbol + label + points.
+/// One line of the medium-widget detail slot: SF Symbol + label + value.
+/// Icons stay in the low text color so the hero keeps sole ownership of the
+/// brand accent.
 private struct BreakdownRow: View {
     let symbol: String
     let label: String
-    /// Points value, or nil for "--".
-    let value: Double?
+    /// Preformatted value string ("18", "1.2h", or "--").
+    let text: String
+
+    init(symbol: String, label: String, text: String) {
+        self.symbol = symbol
+        self.label = label
+        self.text = text
+    }
+
+    /// Convenience for point values; nil renders as "--".
+    init(symbol: String, label: String, value: Double?) {
+        self.init(symbol: symbol, label: label, text: WidgetFormat.whole(value))
+    }
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: WidgetTheme.spaceXS) {
             Image(systemName: symbol)
                 .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(WidgetTheme.chargeMint)
+                .foregroundStyle(WidgetTheme.textLo)
                 .frame(width: 14)
             Text(label)
                 .font(.system(.caption2, design: .default).weight(.medium))
                 .foregroundStyle(WidgetTheme.textMid)
-            Spacer(minLength: 4)
-            Text(WidgetFormat.whole(value))
+            Spacer(minLength: WidgetTheme.spaceXXS)
+            Text(text)
                 .font(.system(.caption2, design: .default).weight(.semibold))
                 .monospacedDigit()
                 .foregroundStyle(WidgetTheme.textHi)
@@ -409,6 +474,21 @@ private struct LockCircularView: View {
     private var gaugeValue: Double { score.efficiency ?? 0 }
 }
 
+// MARK: Lock battery glyph
+
+/// Choose an SF Symbol battery glyph by level; lock screen is monochrome so we
+/// never rely on color to convey "low". Shared by the inline and rectangular
+/// families so the glyph always tracks the actual charge.
+private func batterySymbol(forLevel level: Double?) -> String {
+    guard let level else { return "bolt.slash" }
+    switch level {
+    case ..<15: return "battery.25"
+    case ..<50: return "battery.50"
+    case ..<85: return "battery.75"
+    default: return "battery.100"
+    }
+}
+
 // MARK: Inline (battery %)
 
 private struct LockInlineView: View {
@@ -418,27 +498,15 @@ private struct LockInlineView: View {
         Label {
             Text("Battery \(WidgetFormat.percent(score.currentBattery))")
         } icon: {
-            Image(systemName: batterySymbol)
+            Image(systemName: batterySymbol(forLevel: score.currentBattery))
         }
         .widgetAccentable()
         .accessibilityLabel("Battery")
         .accessibilityValue(WidgetFormat.percent(score.currentBattery))
     }
-
-    /// Choose an SF Symbol battery glyph by level; lock screen is monochrome so
-    /// we never rely on color to convey "low".
-    private var batterySymbol: String {
-        guard let level = score.currentBattery else { return "bolt.slash" }
-        switch level {
-        case ..<15: return "battery.25"
-        case ..<50: return "battery.50"
-        case ..<85: return "battery.75"
-        default: return "battery.100"
-        }
-    }
 }
 
-// MARK: Rectangular (battery % + efficiency %)
+// MARK: Rectangular (efficiency /100 + battery %)
 
 private struct LockRectangularView: View {
     let score: DayScore
@@ -452,17 +520,18 @@ private struct LockRectangularView: View {
                     .font(.system(.caption2, design: .default).weight(.bold))
                     .tracking(2)
             }
+            // Efficiency leads, in the product's "/100" unit grammar.
             HStack(spacing: 6) {
-                Image(systemName: "battery.100")
+                Image(systemName: "gauge.medium")
                     .font(.caption2)
-                Text("Battery \(WidgetFormat.percent(score.currentBattery))")
+                Text("Efficiency \(WidgetFormat.whole(score.efficiency))/100")
                     .font(.system(.caption, design: .default).weight(.semibold))
                     .monospacedDigit()
             }
             HStack(spacing: 6) {
-                Image(systemName: "gauge.medium")
+                Image(systemName: batterySymbol(forLevel: score.currentBattery))
                     .font(.caption2)
-                Text("Efficiency \(WidgetFormat.percent(score.efficiency))")
+                Text("Battery \(WidgetFormat.percent(score.currentBattery))")
                     .font(.system(.caption, design: .default).weight(.semibold))
                     .monospacedDigit()
             }
@@ -471,7 +540,7 @@ private struct LockRectangularView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Amperly energy")
-        .accessibilityValue("Battery \(WidgetFormat.percent(score.currentBattery)), efficiency \(WidgetFormat.percent(score.efficiency))")
+        .accessibilityValue("Efficiency \(WidgetFormat.whole(score.efficiency)) of 100, battery \(WidgetFormat.percent(score.currentBattery))")
     }
 }
 

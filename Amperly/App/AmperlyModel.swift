@@ -251,7 +251,19 @@ extension AmperlyModel {
                                     sleepPointsAvailable: true),
             xp: 320, caffeineLateFlag: false)
         model.progression = Progression(level: 6, totalXP: 4200, xpIntoLevel: 320,
-                                        xpForNextLevel: 800, pointsStreak: 12, sleepStreak: 5)
+                                        xpForNextLevel: 800, pointsStreak: 12, sleepStreak: 5,
+                                        longestPointsStreak: 28, longestSleepStreak: 14)
+        model.score?.sleepDebtHours = 3.2
+        // A plausible intraday curve so the charts render in previews.
+        let cal = Calendar.current
+        let wake = cal.date(bySettingHour: 7, minute: 0, second: 0, of: Date()) ?? Date()
+        let effCurve: [Double] = [100, 100, 96, 88, 84, 90, 93, 89, 88]
+        let batCurve: [Double] = [92, 88, 84, 79, 74, 70, 68, 66, 64]
+        model.hourlySeries = (0..<9).map { i in
+            EnergySeriesPoint(date: wake.addingTimeInterval(Double(i) * 3600),
+                              battery: batCurve[i], efficiency: effCurve[i],
+                              energySpent: Double(i) * 4.2, points: Double(i) * 9)
+        }
         return model
     }
 }

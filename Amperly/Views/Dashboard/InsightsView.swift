@@ -11,7 +11,7 @@ struct InsightsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
+            VStack(alignment: .leading, spacing: DS.Space.xl) {
                 intro
                 chargeSection
                 sleepDebtSection
@@ -21,12 +21,11 @@ struct InsightsView: View {
                 drainSection
                 efficiencySection
                 pointsSection
-                privacyNote
             }
-            .padding(20)
+            .padding(DS.Space.lg)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .background(Color.inkBase.ignoresSafeArea())
+        .background(DS.AmbientBackground())
         .navigationTitle("How this works")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -34,11 +33,11 @@ struct InsightsView: View {
     // MARK: Intro
 
     private var intro: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Every number Amperly shows is computed on your device from Apple Health. Here is exactly how today added up.")
-                .font(.system(size: 16))
-                .foregroundStyle(Color.textMid)
-                .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: DS.Space.xs) {
+            Text("How your energy score works")
+                .font(.system(.title3, design: .default, weight: .semibold))
+                .foregroundStyle(Color.textHi)
+            paragraph("Your battery charges once, overnight, and drains through the day - the same idea as a car's fuel gauge. Everything is computed on your iPhone from Apple Health. Nothing is stored and nothing is sent anywhere.")
         }
     }
 
@@ -47,7 +46,7 @@ struct InsightsView: View {
     private var chargeSection: some View {
         section(title: "Charging from sleep", symbol: "moon.zzz.fill") {
             if let morning = score.morningBattery {
-                paragraph("Last night's sleep charged your battery to \(percent(morning)) by the time you woke. A full eight hours of restful sleep would charge it near 100. Stage quality and overnight recovery can nudge this up or down by a few points, and any accumulated sleep debt is subtracted.")
+                paragraph("The morning charge blends how long you slept with how well you slept. Duration is measured against your target (8 hours by default). Quality looks at your deep and REM sleep and how efficiently you slept. Recovery compares your overnight heart-rate variability, resting heart rate, and wrist temperature against your own recent baseline - the same body signals recovery trackers rely on most, because they reflect how rested your nervous system actually is. A consistent bed and wake schedule adds a small bonus, and a sustained spike in training load trims a few points.")
                 metricRow("Battery at wake", percent(morning))
             } else if !score.isAuthorized {
                 paragraph("Connect Apple Health to see how your sleep charged your battery.")
@@ -63,7 +62,7 @@ struct InsightsView: View {
 
     private var sleepDebtSection: some View {
         section(title: "Sleep debt", symbol: "clock.arrow.circlepath") {
-            paragraph("Sleep debt is a running balance. Nights shorter than your target add to it, and sleeping past your target pays it down. The balance is capped at \(format(ScoringConstants.sleepDebtCapHours)) hours. Each hour of debt carried into today costs \(format(ScoringConstants.debtPenaltyPerHour)) battery-% off the morning charge, up to a maximum of \(format(ScoringConstants.debtPenaltyMax))%.")
+            paragraph("Sleep adds up over time. Research on chronic short sleep shows missed sleep builds a debt night after night for about two weeks, and recovery is slow and only partial - one long lie-in pays back just part of what you owe. Amperly tracks a rolling 14-night sleep debt: short nights add to it, extra sleep chips away at it gradually, and it fades over roughly a week rather than all at once.")
             metricRow("Debt carried into today", "\(format(score.sleepDebtHours)) h")
             if score.sleepDebtHours > 0 {
                 metricRow("Battery cost this morning",
@@ -78,7 +77,7 @@ struct InsightsView: View {
 
     private var estimatedChargeSection: some View {
         section(title: "When sleep is missing", symbol: "questionmark.circle") {
-            paragraph("No sleep was recorded last night, so this morning's charge was ESTIMATED from your average sleep over the last seven days. Because it is an estimate rather than a measured night, a confidence discount of \(format(ScoringConstants.sleepFallbackConfidence * 100))% is applied to that charge. Record a night of sleep and the estimate disappears.")
+            paragraph("If a night is not recorded, Amperly never assumes zero or a perfect night. It estimates from your recent typical mornings and clearly marks the day as an estimate.")
             if let morning = score.morningBattery {
                 metricRow("Estimated battery at wake", percent(morning))
             }
@@ -89,7 +88,7 @@ struct InsightsView: View {
 
     private var drainSection: some View {
         section(title: "Draining across the day", symbol: "bolt.fill") {
-            paragraph("From the moment you wake, simply being awake spends about \(format(ScoringConstants.baselineDrainPerHour))% of battery per hour. Activity costs more: roughly \(format(ScoringConstants.activityDrainPerKcal * 100))% for every 100 active calories you burn. Daylight gives a small alertness rebate.")
+            paragraph("Through the day the battery drains from the energy you spend - a steady baseline for simply being awake, tuned to your own metabolism, plus the calories you burn moving, with a small lift when you get daylight.")
             metricRow("Energy spent so far", percent(score.energySpent))
             if let morning = score.morningBattery, let current = score.currentBattery {
                 paragraph("That took your battery from \(percent(morning)) at wake down to \(percent(current)) now.")
@@ -105,7 +104,7 @@ struct InsightsView: View {
     private var efficiencySection: some View {
         section(title: "Your efficiency score", symbol: "gauge.with.dots.needle.67percent") {
             if let efficiency = score.efficiency {
-                paragraph("Efficiency compares the energy you have spent against a standard daily budget of \(format(ScoringConstants.dailyEnergyBudget))%, the cost of one ordinary full day. Spending less than the budget by this point reads as high efficiency; spending more reads as low. It is a measure of pacing, not of doing less.")
+                paragraph("Your efficiency score compares the points you have earned against the energy you have spent, so it stays fair at 9am and at 9pm.")
                 metricRow("Daily energy budget", "\(format(ScoringConstants.dailyEnergyBudget))%")
                 metricRow("Energy spent", percent(score.energySpent))
                 metricRow("Efficiency", "\(Int(efficiency.rounded())) / 100")
@@ -140,19 +139,6 @@ struct InsightsView: View {
         }
     }
 
-    private var privacyNote: some View {
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: "lock.fill")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Color.chargeMint)
-            Text("All of this is calculated on your iPhone. Amperly has no account and stores or sends nothing.")
-                .font(.system(size: 14))
-                .foregroundStyle(Color.textMid)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(.top, 4)
-    }
-
     // MARK: Building blocks
 
     @ViewBuilder
@@ -166,7 +152,7 @@ struct InsightsView: View {
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(Color.chargeMint)
                     Text(title)
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.system(.headline, design: .default, weight: .semibold))
                         .foregroundStyle(Color.textHi)
                 }
                 content()

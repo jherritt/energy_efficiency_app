@@ -12,7 +12,13 @@ struct BatteryView: View {
     /// 0...100 current battery, or nil when HealthKit is unauthorized.
     let level: Double?
 
+    /// False until the first appearance so the fill can sweep from 0 to the
+    /// current level once on load.
+    @State private var appeared = false
+
     private var clamped: Double { min(100, max(0, level ?? 0)) }
+    /// The level actually drawn: 0 pre-appearance so the fill animates in.
+    private var renderedLevel: Double { appeared ? clamped : 0 }
     private var isLow: Bool { (level ?? 100) < AmperlyTheme.lowBatteryThreshold }
     private var hasValue: Bool { level != nil }
 
@@ -46,7 +52,7 @@ struct BatteryView: View {
                     // Fill, anchored to the bottom, animating with the level.
                     GeometryReader { inner in
                         let usableHeight = inner.size.height - inset * 2
-                        let fillHeight = max(0, usableHeight * CGFloat(clamped / 100))
+                        let fillHeight = max(0, usableHeight * CGFloat(renderedLevel / 100))
 
                         ZStack(alignment: .bottom) {
                             Color.clear
@@ -66,6 +72,11 @@ struct BatteryView: View {
                 .frame(width: shellWidth, height: shellHeight)
             }
             .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.9, dampingFraction: 0.85).delay(0.1)) {
+                appeared = true
+            }
         }
     }
 
@@ -100,10 +111,7 @@ struct BatteryView: View {
                     .monospacedDigit()
                     .foregroundStyle(Color.textHi)
                     .shadow(color: Color.inkBase.opacity(0.6), radius: 4, y: 1)
-                Text("PERCENT")
-                    .font(.system(size: 11, weight: .bold))
-                    .tracking(3)
-                    .foregroundStyle(Color.textLo)
+                    .dsNumeric(clamped)
             } else {
                 Text("--")
                     .font(.system(size: 44, weight: .heavy, design: .default))

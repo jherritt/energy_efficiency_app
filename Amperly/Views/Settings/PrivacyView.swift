@@ -5,7 +5,7 @@ import SwiftUI
 struct PrivacyView: View {
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
+            VStack(alignment: .leading, spacing: DS.Space.xl) {
                 header
 
                 summaryCard
@@ -16,11 +16,11 @@ struct PrivacyView: View {
 
                 footer
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 24)
+            .padding(.horizontal, DS.Space.lg)
+            .padding(.vertical, DS.Space.xl)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .background(PvColor.inkBase.ignoresSafeArea())
+        .background(DS.AmbientBackground())
         .navigationTitle("Privacy")
         .navigationBarTitleDisplayMode(.large)
     }
@@ -28,12 +28,15 @@ struct PrivacyView: View {
     // MARK: - Header
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: DS.Space.sm) {
             Image(systemName: "lock.shield")
                 .font(.system(size: 44, weight: .regular))
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(PvColor.energyGradient, PvColor.track)
                 .accessibilityHidden(true)
+
+            Text("PRIVATE BY DESIGN")
+                .eyebrowStyle()
 
             Text("Your data stays on your iPhone")
                 .font(.system(.title2, design: .default, weight: .heavy))
@@ -43,6 +46,7 @@ struct PrivacyView: View {
             Text("Amperly is built to measure your energy without ever collecting it. This page explains exactly what that means.")
                 .font(.body)
                 .foregroundStyle(PvColor.textMid)
+                .lineSpacing(3)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -50,9 +54,9 @@ struct PrivacyView: View {
     // MARK: - Summary card
 
     private var summaryCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: DS.Space.sm) {
             ForEach(Self.promises, id: \.self) { promise in
-                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                HStack(alignment: .firstTextBaseline, spacing: DS.Space.sm) {
                     Image(systemName: "checkmark.seal.fill")
                         .font(.subheadline)
                         .foregroundStyle(PvColor.energyGradient)
@@ -64,23 +68,33 @@ struct PrivacyView: View {
                 }
             }
         }
-        .padding(18)
+        .padding(DS.Space.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(PvColor.inkElev, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(PvColor.inkElev, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .strokeBorder(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.10), Color.white.opacity(0.02)],
+                        startPoint: .top, endPoint: .bottom
+                    ),
+                    lineWidth: 1
+                )
+        )
     }
 
     // MARK: - Footer
 
     private var footer: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: DS.Space.xxs) {
             Text("Last updated: 2025")
                 .font(.footnote)
                 .foregroundStyle(PvColor.textLo)
             Text("Measure the energy you actually use.")
-                .font(.footnote.italic())
+                .font(.footnote)
                 .foregroundStyle(PvColor.textLo)
         }
-        .padding(.top, 4)
+        .padding(.top, DS.Space.xxs)
     }
 
     // MARK: - Content
@@ -99,9 +113,9 @@ struct PrivacyView: View {
         let body: String
 
         @ViewBuilder var view: some View {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: DS.Space.xs) {
                 Text(title)
-                    .font(.system(.headline, design: .default, weight: .bold))
+                    .font(.system(.headline, design: .default, weight: .semibold))
                     .foregroundStyle(PvColor.textHi)
                 Text(body)
                     .font(.body)

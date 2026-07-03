@@ -70,6 +70,34 @@ enum WidgetTheme {
     static let textMid = Color(hex: "#A6B0BB")
     static let textLo = Color(hex: "#5C6772")
 
+    // Spacing (mirrors the app's DS.Space 4pt grid without importing it)
+    static let spaceXXS: CGFloat = 4
+    static let spaceXS: CGFloat = 8
+    static let spaceSM: CGFloat = 12
+    static let spaceMD: CGFloat = 16
+
+    /// Subtle top-lit hairline used on every card edge in the app: bright at
+    /// the top, fading out toward the bottom. Reads as machined, not drawn.
+    /// Copied verbatim from DS.hairline.
+    static let hairline = LinearGradient(
+        colors: [Color.white.opacity(0.10), Color.white.opacity(0.02)],
+        startPoint: .top, endPoint: .bottom
+    )
+
+    /// Ambient widget surface, copied verbatim from the app's
+    /// DS.AmbientBackground: near-black with a whisper of mint falloff at the
+    /// top, so the widget and the app read as one continuous material.
+    static var ambientBackground: some View {
+        ZStack {
+            inkBase
+            RadialGradient(
+                colors: [chargeMint.opacity(0.055), .clear],
+                center: .init(x: 0.5, y: -0.12),
+                startRadius: 0, endRadius: 420
+            )
+        }
+    }
+
     /// The signature energy gradient: lime -> mint -> cyan, bottom-leading to
     /// top-trailing. Paints the battery fill and the hero number.
     static let energyGradient = LinearGradient(
@@ -156,7 +184,7 @@ struct WidgetBattery: View {
                     .fill(WidgetTheme.track.opacity(0.55))
                     .overlay(
                         RoundedRectangle(cornerRadius: corner, style: .continuous)
-                            .strokeBorder(WidgetTheme.track, lineWidth: 1.5)
+                            .strokeBorder(WidgetTheme.hairline, lineWidth: 1)
                     )
 
                 // Fill grows left -> right
@@ -168,9 +196,12 @@ struct WidgetBattery: View {
                         .frame(width: level == nil ? 0 : fillWidth)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(inset)
+                        // Glow scales with the bar so the smallest canvas stays
+                        // lit rather than neon: radius tracks height, opacity
+                        // eases up only at the tallest (large-family) size.
                         .shadow(color: (isLow ? WidgetTheme.drainWarn : WidgetTheme.chargeMint)
-                            .opacity(level == nil ? 0 : 0.5),
-                                radius: 5, x: 0, y: 0)
+                            .opacity(level == nil ? 0 : (height >= 22 ? 0.5 : 0.35)),
+                                radius: height * 0.2, x: 0, y: 0)
                 }
             }
             .frame(width: bodyWidth, height: height)
