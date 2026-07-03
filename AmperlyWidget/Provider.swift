@@ -64,47 +64,73 @@ struct AmperlyProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<AmperlyEntry>) -> Void) {
+        let horizon = projectionHorizon
+        let step = projectionStep
+        let refresh = refreshInterval
         Task {
+            // Hard time-box: a widget process gets a small budget, and a single
+            // stalled HealthKit query would otherwise leave the widget as a dead
+            // placeholder forever (completion never called). Whichever finishes
+            // first wins; on timeout we ship a degraded-but-valid timeline that
+            // retries soon.
             let now = Date()
-            let snapshot = await HealthKitService.shared.currentSnapshot(now: now)
-
-            // Unauthorized: a single "--" entry, retry on the normal cadence.
-            guard snapshot.isAuthorized else {
-                let entry = AmperlyEntry(date: now, score: .unauthorized(date: now))
-                let timeline = Timeline(entries: [entry],
-                                        policy: .after(now.addingTimeInterval(refreshInterval)))
+            let timeline = await withTaskGroup(of: Timeline<AmperlyEntry>?.self) { group in
+                group.addTask {
+                    await Self.liveTimeline(now: now, horizon: horizon, step: step, refresh: refresh)
+                }
+                group.addTask {
+                    try? await Task.sleep(nanoseconds: 12_000_000_000)
+                    return nil
+                }
+                let first = await group.next() ?? nil
+                group.cancelAll()
+                return first
+            }
+            if let timeline {
                 completion(timeline)
-                return
+            } else {
+                let entry = AmperlyEntry(date: now, score: .unauthorized(date: now))
+                completion(Timeline(entries: [entry],
+                                    policy: .after(now.addingTimeInterval(10 * 60))))
             }
-
-            // Fetch today's cumulative activity checkpoints ONCE and derive the
-            // intraday efficiency curve with the same engine as the hero numbers.
-            // Projected future entries reuse the curve computed at `now`.
-            let hourly = await HealthKitService.shared.todayHourlyActivity(now: now)
-            let series = ScoringEngine.daySeries(snapshot: snapshot, hourly: hourly)
-
-            // Project the same live snapshot forward by advancing `asOf`. Reusing
-            // one snapshot keeps everything ephemeral (no extra HealthKit reads)
-            // while the battery visibly drains across the next couple of hours.
-            var entries: [AmperlyEntry] = []
-            var t: TimeInterval = 0
-            while t <= projectionHorizon {
-                let futureDate = now.addingTimeInterval(t)
-                var projected = snapshot
-                projected.asOf = futureDate
-                let score = ScoringEngine.score(projected)
-                entries.append(AmperlyEntry(date: futureDate, score: score, series: series))
-                t += projectionStep
-            }
-            if entries.isEmpty {
-                entries.append(AmperlyEntry(date: now, score: ScoringEngine.score(snapshot),
-                                            series: series))
-            }
-
-            let timeline = Timeline(entries: entries,
-                                    policy: .after(now.addingTimeInterval(refreshInterval)))
-            completion(timeline)
         }
+    }
+
+    /// The real timeline: live snapshot, intraday series, forward projections.
+    private static func liveTimeline(now: Date, horizon: TimeInterval, step: TimeInterval,
+                                     refresh: TimeInterval) async -> Timeline<AmperlyEntry> {
+        let snapshot = await HealthKitService.shared.currentSnapshot(now: now)
+
+        // Unauthorized: a single "--" entry, retry on the normal cadence.
+        guard snapshot.isAuthorized else {
+            let entry = AmperlyEntry(date: now, score: .unauthorized(date: now))
+            return Timeline(entries: [entry], policy: .after(now.addingTimeInterval(refresh)))
+        }
+
+        // Fetch today's cumulative activity checkpoints ONCE and derive the
+        // intraday efficiency curve with the same engine as the hero numbers.
+        // Projected future entries reuse the curve computed at `now`.
+        let hourly = await HealthKitService.shared.todayHourlyActivity(now: now)
+        let series = ScoringEngine.daySeries(snapshot: snapshot, hourly: hourly)
+
+        // Project the same live snapshot forward by advancing `asOf`. Reusing
+        // one snapshot keeps everything ephemeral (no extra HealthKit reads)
+        // while the battery visibly drains across the next couple of hours.
+        var entries: [AmperlyEntry] = []
+        var t: TimeInterval = 0
+        while t <= horizon {
+            let futureDate = now.addingTimeInterval(t)
+            var projected = snapshot
+            projected.asOf = futureDate
+            let score = ScoringEngine.score(projected)
+            entries.append(AmperlyEntry(date: futureDate, score: score, series: series))
+            t += step
+        }
+        if entries.isEmpty {
+            entries.append(AmperlyEntry(date: now, score: ScoringEngine.score(snapshot),
+                                        series: series))
+        }
+        return Timeline(entries: entries, policy: .after(now.addingTimeInterval(refresh)))
     }
 
     // MARK: Scoring helpers

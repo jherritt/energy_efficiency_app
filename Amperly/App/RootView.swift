@@ -71,20 +71,58 @@ private struct LaunchPlaceholder: View {
     }
 }
 
-/// The two-tab home: the energy dashboard and settings. Both subviews are owned
-/// by other agents; this file only references them by name.
+/// The three-tab home: the energy dashboard, the progress/history explorer, and
+/// settings. Subviews are owned by other files; this file only references them
+/// by name.
 struct MainTabView: View {
+    enum Tab: Hashable {
+        case energy, progress, settings
+    }
+
+    @State private var selection: Tab
+
+    init() {
+        var initial: Tab = .energy
+        #if DEBUG
+        // Screenshot/design-review mode: `-uiPreviewTab=progress` (or
+        // `=settings`) preselects a tab so each screen can be captured
+        // directly. Compiled out of Release builds entirely.
+        let arguments = ProcessInfo.processInfo.arguments
+        if arguments.contains("-uiPreviewTab=progress") {
+            initial = .progress
+        } else if arguments.contains("-uiPreviewTab=settings") {
+            initial = .settings
+        }
+        #endif
+        _selection = State(initialValue: initial)
+    }
+
     var body: some View {
-        TabView {
+        TabView(selection: $selection) {
             DashboardView()
                 .tabItem {
                     Label("Energy", systemImage: "bolt.fill")
                 }
+                .tag(Tab.energy)
+
+            ProgressTabView()
+                .tabItem {
+                    Label("Progress", systemImage: "chart.bar.fill")
+                }
+                .tag(Tab.progress)
 
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape")
                 }
+                .tag(Tab.settings)
         }
     }
+}
+
+#Preview {
+    MainTabView()
+        .environment(AmperlyModel.preview)
+        .preferredColorScheme(.dark)
+        .tint(Color.chargeMint)
 }

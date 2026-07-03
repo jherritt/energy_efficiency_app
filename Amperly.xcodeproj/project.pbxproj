@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0354F0D48B7B2B9621A36400 /* BreakdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E351BD9820880E8286FD48 /* BreakdownView.swift */; };
 		143A875E1A35C86EBD62FC6C /* WatchRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA50EE567148D61F5AA4457B /* WatchRootView.swift */; };
+		15486AFD8831AC65FBA5D4E1 /* ProgressHistoryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB39D3F31722FA370A1E3F37 /* ProgressHistoryViews.swift */; };
 		1B060158D1DCB6C37A6999BE /* AmperlyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F64169FF5D7B7A914CA5435 /* AmperlyWatchApp.swift */; };
 		22F962C21162E4439E1EC98B /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9878E772759CF14285BB457 /* DesignSystem.swift */; };
 		26D4E96E2FF496A786ADF0A7 /* EnergyKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4B305C59DD20ED8BCFB68556 /* EnergyKit */; };
@@ -46,6 +47,7 @@
 		EE49A824B913C597C480B037 /* PointsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67E88ED4BC8C1124C2D4107 /* PointsCardView.swift */; };
 		F2700F4D8B95C6B53773A648 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8388F3A9F82ACE5A63146075 /* DashboardView.swift */; };
 		F3B3C933E4A724E77DD4B3F8 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E6B3A067EB04961262BC4F /* RootView.swift */; };
+		F4419FE3F8C79A351817B969 /* ProgressTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7AC5DE00BC3EE5DCF3FDA /* ProgressTabView.swift */; };
 		FC40F229DB6603B6134F666A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 324DEE0FA8C9701058F50009 /* Assets.xcassets */; };
 		FF7A6283C96CB56F6E5DC298 /* WatchTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992E9BF0DC43C9904EE94D2D /* WatchTheme.swift */; };
 /* End PBXBuildFile section */
@@ -99,6 +101,7 @@
 		1518AB2520EC540B4C9F39AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1997A0F014D86A042D2BAB6D /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		27B55A2431F55A98CEE15B23 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		2AC7AC5DE00BC3EE5DCF3FDA /* ProgressTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressTabView.swift; sourceTree = "<group>"; };
 		324DEE0FA8C9701058F50009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		35FA02B564F267FCE76EED48 /* WatchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchModel.swift; sourceTree = "<group>"; };
 		408A55B6E03ED05BE6849D38 /* ProgressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionView.swift; sourceTree = "<group>"; };
@@ -133,6 +136,7 @@
 		D5605DE37EB69C63E8D7F10A /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
 		D8ED19119A9289B683EB4CF4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		D9878E772759CF14285BB457 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		DB39D3F31722FA370A1E3F37 /* ProgressHistoryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHistoryViews.swift; sourceTree = "<group>"; };
 		E3820470D4FE06C6FBCF8AB5 /* AmperlyWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmperlyWidgets.swift; sourceTree = "<group>"; };
 		F03350D7F34C3E7406A9EB9B /* Amperly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Amperly.entitlements; sourceTree = "<group>"; };
 		F1E351BD9820880E8286FD48 /* BreakdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakdownView.swift; sourceTree = "<group>"; };
@@ -243,6 +247,15 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		90416214444AEAD1F5F37A0F /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				DB39D3F31722FA370A1E3F37 /* ProgressHistoryViews.swift */,
+				2AC7AC5DE00BC3EE5DCF3FDA /* ProgressTabView.swift */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
 		917953FD5A8D8E59DB5DD348 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -273,6 +286,7 @@
 				BF1C764150E0B5D6C53592C0 /* Components */,
 				9D5395F283B00E4A25DEEE26 /* Dashboard */,
 				917953FD5A8D8E59DB5DD348 /* Onboarding */,
+				90416214444AEAD1F5F37A0F /* Progress */,
 				B1D4E82FFB05427BBE6ECC93 /* Settings */,
 			);
 			path = Views;
@@ -529,6 +543,8 @@
 				DA000A10BC49969F94B5B855 /* OnboardingView.swift in Sources */,
 				EE49A824B913C597C480B037 /* PointsCardView.swift in Sources */,
 				B23519DB5FC53C81D190C607 /* PrivacyView.swift in Sources */,
+				15486AFD8831AC65FBA5D4E1 /* ProgressHistoryViews.swift in Sources */,
+				F4419FE3F8C79A351817B969 /* ProgressTabView.swift in Sources */,
 				7ED764B02167B22A9F1001E5 /* ProgressionStore.swift in Sources */,
 				3B6D2C01F84469735135ADA9 /* ProgressionView.swift in Sources */,
 				F3B3C933E4A724E77DD4B3F8 /* RootView.swift in Sources */,
@@ -675,7 +691,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = VH5QK9LU35;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -750,7 +766,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = VH5QK9LU35;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

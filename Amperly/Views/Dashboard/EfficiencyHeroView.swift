@@ -1,32 +1,49 @@
 import SwiftUI
 
-/// The hero EFFICIENCY readout: a 0...100 number painted with the energy
-/// gradient, an ALL-CAPS eyebrow, and a circular ring tracing the same value.
-/// This is the app's signature element. A `nil` value renders as "--" with an
-/// empty ring, never a fabricated zero.
+/// Amperly's signature element: a single centered ring gauge. The efficiency
+/// number lives INSIDE the ring - eyebrow above, gradient-painted score in the
+/// middle, "/100" beneath - with the energy gradient tracing the ring itself.
+/// The ring sweeps from zero to the value once on appear. A `nil` value renders
+/// as "--" over a dimmed track with no glow, never a fabricated zero.
 struct EfficiencyHeroView: View {
     /// 0...100 efficiency, or nil when HealthKit is unauthorized.
     let efficiency: Double?
 
+    /// False until first appearance so the ring can sweep in once on load.
     @State private var appeared = false
 
     private var clamped: Double { min(100, max(0, efficiency ?? 0)) }
     private var hasValue: Bool { efficiency != nil }
     private var fraction: Double { clamped / 100 }
 
+    private let ringSize: CGFloat = 205
+    private let ringWidth: CGFloat = 12
+
     var body: some View {
-        VStack(alignment: .leading, spacing: DS.Space.sm) {
-            Text("EFFICIENCY")
-                .eyebrowStyle()
+        VStack(spacing: DS.Space.md) {
+            ZStack {
+                // Track ring; dimmed when there is no data.
+                Circle()
+                    .stroke(Color.track.opacity(hasValue ? 1 : 0.45),
+                            lineWidth: ringWidth)
 
-            HStack(spacing: DS.Space.md) {
-                numberRow
+                // Value stroke. The soft mint glow lives on the ring only.
+                if hasValue {
+                    Circle()
+                        .trim(from: 0, to: appeared ? fraction : 0)
+                        .stroke(
+                            AmperlyTheme.energyGradient,
+                            style: StrokeStyle(lineWidth: ringWidth, lineCap: .round)
+                        )
+                        .rotationEffect(.degrees(-90))
+                        .shadow(color: Color.chargeMint.opacity(0.45), radius: 12)
+                        .animation(.spring(response: 0.9, dampingFraction: 0.85),
+                                   value: fraction)
+                }
 
-                Spacer(minLength: 8)
-
-                ring
-                    .frame(width: 116, height: 116)
+                readout
             }
+            .frame(width: ringSize, height: ringSize)
 
             Text(subtitle)
                 .font(.footnote)
@@ -34,7 +51,7 @@ struct EfficiencyHeroView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .onAppear {
-            withAnimation(.spring(response: 0.7, dampingFraction: 0.85).delay(0.15)) {
+            withAnimation(.spring(response: 0.9, dampingFraction: 0.85).delay(0.15)) {
                 appeared = true
             }
         }
@@ -43,8 +60,12 @@ struct EfficiencyHeroView: View {
         .accessibilityValue(hasValue ? "\(Int(clamped.rounded())) out of 100" : "No data")
     }
 
-    private var numberRow: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 3) {
+    /// Eyebrow, score, and "/100" stacked inside the ring.
+    private var readout: some View {
+        VStack(spacing: 2) {
+            Text("EFFICIENCY")
+                .eyebrowStyle()
+
             Group {
                 if hasValue {
                     Text("\(Int(clamped.rounded()))")
@@ -55,42 +76,18 @@ struct EfficiencyHeroView: View {
                         .foregroundStyle(Color.textLo)
                 }
             }
-            .font(.system(size: 120, weight: .heavy, design: .default))
+            .font(.system(size: 64, weight: .heavy, design: .default))
             .monospacedDigit()
-            .tracking(-2)
-            .shadow(color: Color.chargeMint.opacity(hasValue ? 0.45 : 0),
-                    radius: 18, x: 0, y: 0)
+            .tracking(-1)
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
 
             Text("/100")
-                .font(.system(size: 22, weight: .semibold))
+                .font(.system(size: 14, weight: .semibold))
                 .monospacedDigit()
                 .foregroundStyle(Color.textLo)
         }
-        .minimumScaleFactor(0.45)
-        .lineLimit(1)
-    }
-
-    private var ring: some View {
-        ZStack {
-            Circle()
-                .stroke(Color.track, lineWidth: 13)
-
-            Circle()
-                .trim(from: 0, to: appeared && hasValue ? fraction : 0)
-                .stroke(
-                    AmperlyTheme.energyGradient,
-                    style: StrokeStyle(lineWidth: 13, lineCap: .round)
-                )
-                .rotationEffect(.degrees(-90))
-                .shadow(color: Color.chargeMint.opacity(0.5), radius: 9, x: 0, y: 0)
-                .animation(.spring(response: 0.7, dampingFraction: 0.85), value: fraction)
-
-            if !hasValue {
-                Image(systemName: "bolt.slash")
-                    .font(.system(size: 26, weight: .semibold))
-                    .foregroundStyle(Color.textLo)
-            }
-        }
+        .padding(.horizontal, ringWidth + DS.Space.sm)
     }
 
     /// One-line interpretation of the score, shown beneath the ring.
@@ -117,6 +114,14 @@ struct EfficiencyHeroView: View {
     ZStack {
         Color.inkBase.ignoresSafeArea()
         EfficiencyHeroView(efficiency: 54)
+            .padding()
+    }
+}
+
+#Preview("Low") {
+    ZStack {
+        Color.inkBase.ignoresSafeArea()
+        EfficiencyHeroView(efficiency: 21)
             .padding()
     }
 }

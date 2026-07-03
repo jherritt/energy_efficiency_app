@@ -128,7 +128,10 @@ struct EfficiencyChartView: View {
                     Text("avg \(Int(averageEfficiency.rounded()))")
                         .font(.system(size: 10, weight: .semibold))
                         .monospacedDigit()
-                        .foregroundStyle(Color.textLo)
+                        .foregroundStyle(Color.textMid)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(Capsule().fill(Color.inkBase.opacity(0.85)))
                 }
         }
         .chartXScale(domain: xDomain)

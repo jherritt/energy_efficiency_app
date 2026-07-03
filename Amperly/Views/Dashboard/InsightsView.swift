@@ -1,188 +1,255 @@
 import SwiftUI
 import EnergyKit
 
-/// A plain-language transparency screen. It walks through, using the real
-/// numbers from `score`, how the battery charged overnight, how it drained,
-/// how each points line was earned, and how the efficiency hero number was
-/// computed. There is no hidden math: every figure shown here can be reproduced
-/// from `ScoringConstants` and the values displayed.
+/// The transparency screen: a plain-language, card-by-card explainer of every
+/// number Amperly computes. Each card pairs the rule (in words a reviewer could
+/// re-derive from `ScoringConstants`) with the user's live figure for today, so
+/// nothing on the dashboard is a black box.
 struct InsightsView: View {
     let score: DayScore
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: DS.Space.xl) {
-                intro
-                chargeSection
-                sleepDebtSection
-                if score.batteryIsEstimated {
-                    estimatedChargeSection
-                }
-                drainSection
-                efficiencySection
-                pointsSection
+            VStack(spacing: DS.Space.md) {
+                headerCard
+                morningChargeCard
+                drainCard
+                sleepDebtCard
+                missingSleepCard
+                pointsCard
+                efficiencyCard
+                privacyCard
             }
-            .padding(DS.Space.lg)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, DS.Space.md)
+            .padding(.vertical, DS.Space.lg)
         }
         .background(DS.AmbientBackground())
         .navigationTitle("How this works")
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    // MARK: Intro
+    // MARK: Header
 
-    private var intro: some View {
-        VStack(alignment: .leading, spacing: DS.Space.xs) {
-            Text("How your energy score works")
-                .font(.system(.title3, design: .default, weight: .semibold))
+    private var headerCard: some View {
+        VStack(alignment: .leading, spacing: DS.Space.sm) {
+            Text("Transparency").eyebrowStyle()
+            Text("How Amperly works")
+                .font(.system(.title2, design: .default, weight: .semibold))
                 .foregroundStyle(Color.textHi)
-            paragraph("Your battery charges once, overnight, and drains through the day - the same idea as a car's fuel gauge. Everything is computed on your iPhone from Apple Health. Nothing is stored and nothing is sent anywhere.")
+            bodyText("Every number below is computed on your iPhone from Apple Health. Nothing is stored. Nothing leaves your device.")
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .dsCard()
+    }
+
+    // MARK: The morning charge
+
+    private var morningChargeCard: some View {
+        explainerCard(eyebrow: "The morning charge", symbol: "moon.zzz.fill") {
+            bodyText("Your battery charges once, overnight. Five things set the size of the charge.")
+            VStack(alignment: .leading, spacing: DS.Space.xs) {
+                factRow("Duration",
+                        "sleep length against your target earns up to 85 points.")
+                factRow("Quality",
+                        "your deep and REM share and your sleep efficiency scale the charge by \u{00D7}0.85 to \u{00D7}1.08.")
+                factRow("Recovery",
+                        "overnight HRV, resting heart rate, wrist temperature, and breathing rate, each measured against your own baseline, scale it by \u{00D7}0.88 to \u{00D7}1.10.")
+                factRow("Consistency",
+                        "an on-time bed and wake adds up to 15 points, and a steady 7-day schedule adds up to 5 more.")
+                factRow("Training load",
+                        "when your 7-day load spikes over your 28-day norm, up to 5 points are trimmed.")
+            }
+            if let morning = score.morningBattery {
+                liveRow("This morning", percent(morning))
+            }
         }
     }
 
-    // MARK: Charge
+    // MARK: The drain
 
-    private var chargeSection: some View {
-        section(title: "Charging from sleep", symbol: "moon.zzz.fill") {
-            if let morning = score.morningBattery {
-                paragraph("The morning charge blends how long you slept with how well you slept. Duration is measured against your target (8 hours by default). Quality looks at your deep and REM sleep and how efficiently you slept. Recovery compares your overnight heart-rate variability, resting heart rate, and wrist temperature against your own recent baseline - the same body signals recovery trackers rely on most, because they reflect how rested your nervous system actually is. A consistent bed and wake schedule adds a small bonus, and a sustained spike in training load trims a few points.")
-                metricRow("Battery at wake", percent(morning))
-            } else if !score.isAuthorized {
-                paragraph("Connect Apple Health to see how your sleep charged your battery.")
-            } else if !score.hasSleepData {
-                paragraph("No sleep was recorded for last night, so the battery starts from your activity instead. Wear your device to bed or log sleep to see the morning charge.")
-            } else {
-                paragraph("Sleep was detected but the morning battery is not available yet.")
-            }
+    private var drainCard: some View {
+        explainerCard(eyebrow: "The drain", symbol: "bolt.fill") {
+            bodyText("Being awake costs about 3% per hour, tuned to your metabolism. Each active calorie you burn adds about 0.06% on top. Time in daylight gives a small relief.")
+            liveRow("Spent so far", percent(score.energySpent))
         }
     }
 
     // MARK: Sleep debt
 
-    private var sleepDebtSection: some View {
-        section(title: "Sleep debt", symbol: "clock.arrow.circlepath") {
-            paragraph("Sleep adds up over time. Research on chronic short sleep shows missed sleep builds a debt night after night for about two weeks, and recovery is slow and only partial - one long lie-in pays back just part of what you owe. Amperly tracks a rolling 14-night sleep debt: short nights add to it, extra sleep chips away at it gradually, and it fades over roughly a week rather than all at once.")
-            metricRow("Debt carried into today", "\(format(score.sleepDebtHours)) h")
-            if score.sleepDebtHours > 0 {
-                metricRow("Battery cost this morning",
-                          "-\(format(min(ScoringConstants.debtPenaltyMax, score.sleepDebtHours * ScoringConstants.debtPenaltyPerHour)))%")
-            } else {
-                paragraph("You are carrying no debt right now, so nothing was subtracted.")
-            }
+    private var sleepDebtCard: some View {
+        explainerCard(eyebrow: "Sleep debt", symbol: "clock.arrow.circlepath") {
+            bodyText("Amperly keeps a rolling 14-night balance. Short nights add debt. Oversleep pays it down at half rate, with at most 2 hours of credit per night. The balance fades on its own over about a week and never grows past 20 hours. Each hour of debt costs 2% of the morning charge, up to 15%.")
+            liveRow("Current debt",
+                    score.sleepDebtHours > 0
+                        ? "\(format(score.sleepDebtHours))h"
+                        : "None")
         }
     }
 
-    // MARK: Estimated charge (no sleep recorded)
+    // MARK: When sleep is missing
 
-    private var estimatedChargeSection: some View {
-        section(title: "When sleep is missing", symbol: "questionmark.circle") {
-            paragraph("If a night is not recorded, Amperly never assumes zero or a perfect night. It estimates from your recent typical mornings and clearly marks the day as an estimate.")
-            if let morning = score.morningBattery {
-                metricRow("Estimated battery at wake", percent(morning))
-            }
-        }
-    }
-
-    // MARK: Drain
-
-    private var drainSection: some View {
-        section(title: "Draining across the day", symbol: "bolt.fill") {
-            paragraph("Through the day the battery drains from the energy you spend - a steady baseline for simply being awake, tuned to your own metabolism, plus the calories you burn moving, with a small lift when you get daylight.")
-            metricRow("Energy spent so far", percent(score.energySpent))
-            if let morning = score.morningBattery, let current = score.currentBattery {
-                paragraph("That took your battery from \(percent(morning)) at wake down to \(percent(current)) now.")
-                metricRow("Battery now", percent(current))
-            } else if let current = score.currentBattery {
-                metricRow("Battery now", percent(current))
-            }
-        }
-    }
-
-    // MARK: Efficiency
-
-    private var efficiencySection: some View {
-        section(title: "Your efficiency score", symbol: "gauge.with.dots.needle.67percent") {
-            if let efficiency = score.efficiency {
-                paragraph("Your efficiency score compares the points you have earned against the energy you have spent, so it stays fair at 9am and at 9pm.")
-                metricRow("Daily energy budget", "\(format(ScoringConstants.dailyEnergyBudget))%")
-                metricRow("Energy spent", percent(score.energySpent))
-                metricRow("Efficiency", "\(Int(efficiency.rounded())) / 100")
-            } else {
-                paragraph("Connect Apple Health to compute your efficiency score.")
+    private var missingSleepCard: some View {
+        explainerCard(eyebrow: "When sleep is missing", symbol: "questionmark.circle") {
+            bodyText("If no sleep is recorded, Amperly never assumes zero or a perfect night. It estimates from your recent typical mornings, takes a small haircut for the uncertainty, and marks the day Estimated.")
+            if score.batteryIsEstimated {
+                noteRow("Today is an estimated day.")
             }
         }
     }
 
     // MARK: Points
 
-    private var pointsSection: some View {
-        section(title: "How points were earned", symbol: "list.bullet.rectangle") {
-            paragraph("Points are a separate daily ledger out of \(format(score.points.maxAvailable)). They reward hitting your goals and never change your efficiency score.")
-            pointLine("Move", score.points.move, ScoringConstants.movePointsMax)
-            pointLine("Exercise", score.points.exercise, ScoringConstants.exercisePointsMax)
-            pointLine("Stand", score.points.stand, ScoringConstants.standPointsMax)
-            if score.points.sleepPointsAvailable {
-                pointLine("On-time bedtime", score.points.bedtime, ScoringConstants.bedtimePointsMax)
-                pointLine("On-time wake", score.points.wake, ScoringConstants.wakePointsMax)
-            } else {
-                paragraph("Bedtime and wake points need sleep data, which was not recorded, so today's maximum is \(format(ScoringConstants.totalPointsNoSleep)) instead of \(format(ScoringConstants.totalPointsWithSleep)).")
+    private var pointsCard: some View {
+        explainerCard(eyebrow: "Points", symbol: "checklist") {
+            bodyText("Points are a separate daily ledger. Every line pays partial credit, so progress counts even when you miss the goal. Bedtime and Wake pause when sleep is not recorded, and that day is scored out of 80 instead of 100.")
+            VStack(spacing: DS.Space.xs) {
+                pointRow("Move", score.points.move, ScoringConstants.movePointsMax)
+                pointRow("Exercise", score.points.exercise, ScoringConstants.exercisePointsMax)
+                pointRow("Stand", score.points.stand, ScoringConstants.standPointsMax)
+                pointRow("Bedtime", score.points.bedtime, ScoringConstants.bedtimePointsMax,
+                         paused: !score.points.sleepPointsAvailable)
+                pointRow("Wake", score.points.wake, ScoringConstants.wakePointsMax,
+                         paused: !score.points.sleepPointsAvailable)
+                pointRow("Hydration", score.points.hydration, ScoringConstants.hydrationPointsMax)
             }
-            pointLine("Hydration", score.points.hydration, ScoringConstants.hydrationPointsMax)
+            liveRow("Total today", "\(format(score.points.total)) / \(format(score.points.maxAvailable))")
+        }
+    }
 
-            Divider().overlay(Color.track)
-            metricRow("Total today", "\(format(score.points.total)) / \(format(score.points.maxAvailable))")
+    // MARK: The efficiency score
 
-            if score.caffeineLateFlag {
-                paragraph("Note: caffeine was logged within \(format(ScoringConstants.caffeineCutoffHoursBeforeBed)) hours of your target bedtime, which can affect tonight's sleep.")
+    private var efficiencyCard: some View {
+        explainerCard(eyebrow: "The efficiency score", symbol: "gauge.with.dots.needle.67percent") {
+            bodyText("The score compares the points you have earned with the points your energy spend should have produced. A full day of spend is budgeted at 78%. Early in the morning the comparison is floored so a small spend cannot swing it. The score is fair at 9am and at 9pm.")
+            if let efficiency = score.efficiency {
+                liveRow("Right now", "\(Int(efficiency.rounded())) of 100")
             }
+        }
+    }
+
+    // MARK: Privacy
+
+    private var privacyCard: some View {
+        explainerCard(eyebrow: "Privacy", symbol: "lock.fill") {
+            bodyText("Amperly has read-only access to Apple Health. All scoring runs on this iPhone. There is no account and no analytics. Nothing is stored and nothing is transmitted.")
         }
     }
 
     // MARK: Building blocks
 
-    @ViewBuilder
-    private func section<Content: View>(title: String,
-                                        symbol: String,
-                                        @ViewBuilder content: () -> Content) -> some View {
-        CardContainer {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 10) {
-                    Image(systemName: symbol)
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(Color.chargeMint)
-                    Text(title)
-                        .font(.system(.headline, design: .default, weight: .semibold))
-                        .foregroundStyle(Color.textHi)
-                }
-                content()
+    /// One explainer card: icon badge + eyebrow, then the caller's content.
+    private func explainerCard<Content: View>(eyebrow: String,
+                                              symbol: String,
+                                              @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: DS.Space.sm) {
+            HStack(spacing: DS.Space.xs) {
+                iconBadge(symbol)
+                Text(eyebrow).eyebrowStyle()
+            }
+            content()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .dsCard()
+    }
+
+    /// Small tinted square holding the section's SF Symbol.
+    private func iconBadge(_ symbol: String) -> some View {
+        Image(systemName: symbol)
+            .font(.system(size: 11, weight: .semibold))
+            .foregroundStyle(Color.chargeMint)
+            .frame(width: 24, height: 24)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.chargeMint.opacity(0.10))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .strokeBorder(Color.chargeMint.opacity(0.16), lineWidth: 1)
+            )
+    }
+
+    /// Footnote-size explanatory copy.
+    private func bodyText(_ text: String) -> some View {
+        Text(text)
+            .font(.footnote)
+            .foregroundStyle(Color.textMid)
+            .lineSpacing(3)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// One rule of the model: a bolded term followed by its plain-language detail.
+    private func factRow(_ term: String, _ detail: String) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: DS.Space.xs) {
+            Circle()
+                .fill(Color.chargeMint.opacity(0.55))
+                .frame(width: 5, height: 5)
+            (Text(term).fontWeight(.semibold).foregroundStyle(Color.textHi)
+                + Text(" \u{2014} \(detail)").foregroundStyle(Color.textMid))
+                .font(.footnote)
+                .lineSpacing(3)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    /// The user's live figure for this rule, separated by a hairline and marked
+    /// with a small gradient dot.
+    private func liveRow(_ label: String, _ value: String) -> some View {
+        VStack(spacing: DS.Space.sm) {
+            Divider().overlay(Color.track)
+            HStack(spacing: DS.Space.xs) {
+                Circle()
+                    .fill(AmperlyTheme.energyGradient)
+                    .frame(width: 6, height: 6)
+                Text(label)
+                    .font(.footnote)
+                    .foregroundStyle(Color.textMid)
+                Spacer()
+                Text(value)
+                    .font(.system(.callout, design: .default, weight: .semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(Color.textHi)
             }
         }
     }
 
-    private func paragraph(_ text: String) -> some View {
-        Text(text)
-            .font(.system(size: 15))
-            .foregroundStyle(Color.textMid)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-
-    private func metricRow(_ label: String, _ value: String) -> some View {
-        HStack {
-            Text(label)
-                .font(.system(size: 15, weight: .regular))
-                .foregroundStyle(Color.textMid)
-            Spacer()
-            Text(value)
-                .font(.system(size: 15, weight: .semibold))
-                .monospacedDigit()
-                .foregroundStyle(Color.textHi)
+    /// A quiet status note (for example, the estimated-day marker).
+    private func noteRow(_ text: String) -> some View {
+        VStack(spacing: DS.Space.sm) {
+            Divider().overlay(Color.track)
+            HStack(spacing: DS.Space.xs) {
+                Image(systemName: "circle.dashed")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(Color.chargeCyan)
+                Text(text)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Color.textHi)
+                Spacer(minLength: 0)
+            }
         }
     }
 
-    private func pointLine(_ label: String, _ earned: Double, _ max: Double) -> some View {
-        metricRow(label, "\(format(earned)) / \(format(max)) pts")
+    /// One points line: earned versus maximum, or "Paused" when sleep is missing.
+    private func pointRow(_ label: String, _ earned: Double, _ max: Double,
+                          paused: Bool = false) -> some View {
+        HStack {
+            Text(label)
+                .font(.footnote)
+                .foregroundStyle(Color.textMid)
+            Spacer()
+            if paused {
+                Text("Paused")
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(Color.textLo)
+            } else {
+                Text("\(format(earned)) / \(format(max))")
+                    .font(.footnote.weight(.semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(Color.textHi)
+            }
+        }
     }
+
+    // MARK: Formatting
 
     private func percent(_ value: Double) -> String {
         "\(Int(value.rounded()))%"
@@ -212,11 +279,12 @@ struct InsightsView: View {
                 bedtime: 9, wake: 8, hydration: 14,
                 sleepPointsAvailable: true),
             xp: 320,
-            caffeineLateFlag: false))
+            caffeineLateFlag: false,
+            sleepDebtHours: 1.5))
     }
 }
 
-#Preview("No sleep") {
+#Preview("Estimated day") {
     NavigationStack {
         InsightsView(score: DayScore(
             date: Date(),

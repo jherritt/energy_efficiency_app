@@ -87,6 +87,10 @@ final class AmperlyModel {
     /// first refresh (or when unauthorized).
     var hourlySeries: [EnergySeriesPoint] = []
 
+    /// The last 30 days scored live from Apple Health (oldest -> newest,
+    /// including today). Powers the Progress tab's history charts and list.
+    var history: [DayScore] = []
+
     /// Active user targets (bed/wake/water goal etc.).
     var targets: UserTargets
 
@@ -194,6 +198,9 @@ final class AmperlyModel {
             }
             self.progression = ScoringEngine.progression(from: store.allDays())
 
+            // Last 30 days for the Progress tab, computed live (nothing stored).
+            self.history = await HealthKitService.shared.recentDayScores(days: 30, targets: currentTargets, now: now)
+
             await scheduleNudgeIfNeeded()
             return
         }
@@ -263,6 +270,27 @@ extension AmperlyModel {
             EnergySeriesPoint(date: wake.addingTimeInterval(Double(i) * 3600),
                               battery: batCurve[i], efficiency: effCurve[i],
                               energySpent: Double(i) * 4.2, points: Double(i) * 9)
+        }
+        // A plausible month of history for the Progress tab.
+        let effHistory: [Double] = [72, 81, 88, 64, 90, 95, 78, 84, 91, 70,
+                                    86, 93, 75, 88, 96, 82, 68, 89, 94, 79,
+                                    85, 92, 71, 87, 90, 83, 76, 94, 91, 88]
+        model.history = (0..<30).map { i in
+            let day = cal.date(byAdding: .day, value: i - 29, to: cal.startOfDay(for: Date())) ?? Date()
+            let eff = effHistory[i]
+            let pts = eff * 0.9 + Double(i % 7)
+            return DayScore(date: day, isAuthorized: true, hasSleepData: i % 9 != 4,
+                            morningBattery: 70 + Double(i % 5) * 6,
+                            currentBattery: 18 + Double(i % 4) * 5,
+                            energySpent: 62 + Double(i % 6) * 3,
+                            efficiency: eff,
+                            points: PointsBreakdown(move: pts * 0.25, exercise: pts * 0.20,
+                                                    stand: pts * 0.15, bedtime: pts * 0.10,
+                                                    wake: pts * 0.10, hydration: pts * 0.20,
+                                                    sleepPointsAvailable: i % 9 != 4),
+                            xp: pts, caffeineLateFlag: false,
+                            sleepDebtHours: Double(i % 4),
+                            batteryIsEstimated: i % 9 == 4)
         }
         return model
     }
